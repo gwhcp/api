@@ -1,9 +1,11 @@
 import os
 import sys
+
 import environ
 
 env = environ.Env(
-    DEBUG=(bool, False)
+    DEBUG=(bool, False),
+    ALLOWED_HOSTS=(list, [])
 )
 
 environ.Env.read_env()
@@ -91,8 +93,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'application.wsgi.application'
 
 # Database
-
-DATABASES = env('DATABASES')
+DATABASES = {
+    'default': env.db('DATABASE_DEFAULT'),
+    'default_read1': env.db('DATABASE_READ1')
+}
 
 # Database Routers
 DATABASE_ROUTERS = [
@@ -194,7 +198,7 @@ DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
 # Example; Queue failed to process
 #
 # For more than 1 admin, recommended to use a mailing list address here
-ADMINS = [x.split(':') for x in env.list('ADMINS')]
+ADMINS = [x for x in env.list('ADMINS')]
 
 #
 # Set the manager email address(es)
@@ -203,7 +207,7 @@ ADMINS = [x.split(':') for x in env.list('ADMINS')]
 # Example; 404 Errors
 #
 # For more than 1 manager, recommended to use a mailing list address here
-MANAGERS = [x.split(':') for x in env.list('MANAGERS')]
+MANAGERS = [x for x in env.list('MANAGERS')]
 
 """
 COR Headers
