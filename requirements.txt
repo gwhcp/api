@@ -1,0 +1,21 @@
+# Django Modules
+django
+django-cors-headers
+django-environ
+django-ipware
+django-model-utils
+
+# Django Rest Modules
+djangorestframework
+django-rest-auth
+
+# Other Modules
+coreapi
+cryptography
+money
+requests
+passlib
+psycopg2
+pytz
+validators
+wheel
