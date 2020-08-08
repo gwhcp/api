@@ -84,7 +84,17 @@ class Account(auth_models.AbstractBaseUser, auth_models.PermissionsMixin, abstra
 
     tracker = FieldTracker()
 
-    REQUIRED_FIELDS = ['address', 'city', 'country', 'first_name', 'last_name', 'primary_phone', 'state', 'zipcode']
+    REQUIRED_FIELDS = [
+        'address',
+        'city',
+        'country',
+        'first_name',
+        'last_name',
+        'primary_phone',
+        'state',
+        'zipcode'
+    ]
+
     USERNAME_FIELD = 'email'
 
     objects = manager.UserManager()
@@ -98,7 +108,10 @@ class Account(auth_models.AbstractBaseUser, auth_models.PermissionsMixin, abstra
         verbose_name_plural = 'Accounts'
 
     def __str__(self):
-        return '%s %s' % (self.first_name, self.last_name)
+        return '%s %s' % (
+            self.first_name,
+            self.last_name
+        )
 
     @staticmethod
     def get_time_zones():

@@ -33,7 +33,11 @@ class Server(abstract.ServerResource):
     domain = models.ForeignKey(
         'Domain',
         blank=False,
-        limit_choices_to={'company__isnull': False, 'related_to__isnull': True, 'is_active': True},
+        limit_choices_to={
+            'company__isnull': False,
+            'related_to__isnull': True,
+            'is_active': True
+        },
         null=False,
         on_delete=models.CASCADE,
         related_name='server_domain'
