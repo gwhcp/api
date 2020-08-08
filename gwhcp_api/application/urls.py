@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.conf.urls import include
 from django.urls import path
 from rest_framework.documentation import include_docs_urls
@@ -19,9 +20,11 @@ urlpatterns = [
     path('store/fraud/', include('store.fraud.urls')),
     path('store/product/', include('store.product.urls')),
     path('store/product/domain/', include('store.product.domain.urls')),
-    path('store/product/mail/', include('store.product.mail.urls')),
-    path('store/product/mysql/', include('store.product.mysql.urls')),
-    path('store/product/postgresql/', include('store.product.postgresql.urls')),
+    # path('store/product/mail/', include('store.product.mail.urls')),
+    # path('store/product/mysql/', include('store.product.mysql.urls')),
+    # path('store/product/postgresql/', include('store.product.postgresql.urls')),
+    path('store/product/price/', include('store.product.price.urls')),
+    # path('store/product/server/', include('store.product.server.urls')),
 
     # Rest API URLs
     path('api-auth/', include('rest_framework.urls')),
@@ -30,3 +33,11 @@ urlpatterns = [
     # API Documentation
     path('docs/', include_docs_urls(title='Documentation'))
 ]
+
+# Debug Settings
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns += [
+        path('__debug__/', include(debug_toolbar.urls))
+    ]
