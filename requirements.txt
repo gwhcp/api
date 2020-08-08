@@ -1,6 +1,7 @@
 # Django Modules
 django
 django-cors-headers
+django-debug-toolbar
 django-environ
 django-ipware
 django-model-utils
