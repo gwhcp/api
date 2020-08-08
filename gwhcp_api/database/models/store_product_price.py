@@ -15,7 +15,11 @@ class StoreProductPrice(models.Model):
     )
 
     billing_cycle = models.PositiveIntegerField(
-        default=0
+        blank=False,
+        null=False,
+        validators=[
+            validators.MinValueValidator(1)
+        ]
     )
 
     base_price = models.DecimalField(
