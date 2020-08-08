@@ -12,8 +12,13 @@ class CreateSerializer(serializers.ModelSerializer):
         ]
 
     def validate_name(self, value):
-        if models.Company.objects.filter(name__iexact=value).exists():
-            raise serializers.ValidationError('Name already exists.')
+        if models.Company.objects.filter(
+                name__iexact=value
+        ).exists():
+            raise serializers.ValidationError(
+                'Name already exists.',
+                code='exists'
+            )
 
         return value
 
@@ -25,8 +30,15 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate_name(self, value):
-        if models.Company.objects.filter(name__iexact=value).exclude(pk=self.instance.pk).exists():
-            raise serializers.ValidationError('Name already exists.')
+        if models.Company.objects.filter(
+                name__iexact=value
+        ).exclude(
+            pk=self.instance.pk
+        ).exists():
+            raise serializers.ValidationError(
+                'Name already exists.',
+                code='exists'
+            )
 
         return value
 

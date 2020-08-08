@@ -13,7 +13,10 @@ class ChoiceTypes(views.APIView):
     View available banned types
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['setting.banned.view_banned']
@@ -28,7 +31,10 @@ class Create(generics.CreateAPIView):
     Create banned item
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['setting.banned.view_banned'],
@@ -45,7 +51,10 @@ class Delete(generics.RetrieveDestroyAPIView):
     Delete banned item
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['setting.banned.view_banned'],
@@ -62,7 +71,10 @@ class Profile(generics.RetrieveAPIView):
     View banned item profile
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['setting.banned.view_banned']
@@ -78,7 +90,10 @@ class Search(generics.ListAPIView):
     Search banned items
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['setting.banned.view_banned']

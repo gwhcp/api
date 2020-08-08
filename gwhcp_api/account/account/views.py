@@ -13,7 +13,9 @@ class AccessLog(generics.ListAPIView):
     Search access logs
     """
 
-    permission_classes = (gacl.GaclPermissions,)
+    permission_classes = (
+        gacl.GaclPermissions,
+    )
 
     gacl = {
         'view': ['account.account.view_accesslog']
@@ -30,7 +32,10 @@ class ChoiceCommentOrder(views.APIView):
     View available comment ordering options
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['account.account.view_account']
@@ -45,7 +50,10 @@ class ChoiceTimeFormat(views.APIView):
     View available time format options
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['account.account.view_account']
@@ -60,7 +68,10 @@ class ChoiceTimeZone(views.APIView):
     View available time zone options
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['account.account.view_account']
@@ -75,7 +86,10 @@ class ManageAccessLog(generics.ListAPIView):
     Search account access logs
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['account.account.view_manage']
@@ -92,7 +106,10 @@ class ManageProfile(generics.RetrieveUpdateAPIView):
     View account profile
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['account.account.view_manage'],
@@ -109,7 +126,9 @@ class Profile(generics.RetrieveUpdateAPIView):
     View account profile
     """
 
-    permission_classes = (gacl.GaclPermissions,)
+    permission_classes = (
+        gacl.GaclPermissions,
+    )
 
     gacl = {
         'view': ['account.account.view_account'],
@@ -121,13 +140,7 @@ class Profile(generics.RetrieveUpdateAPIView):
     serializer_class = serializers.ProfileSerializer
 
     def get_object(self):
-        queryset = self.filter_queryset(self.get_queryset())
-
-        obj = queryset.get(pk=self.request.user.pk)
-
-        self.check_object_permissions(self.request, obj)
-
-        return obj
+        return models.Account.objects.get(pk=self.request.user.pk)
 
 
 class Search(generics.ListAPIView):
@@ -135,7 +148,10 @@ class Search(generics.ListAPIView):
     Search accounts
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['account.account.view_manage']

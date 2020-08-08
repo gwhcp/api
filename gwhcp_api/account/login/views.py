@@ -12,7 +12,10 @@ class BasePermissions(generics.ListAPIView):
     Base permissions
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['auth.view_permission']
@@ -28,7 +31,10 @@ class Create(generics.CreateAPIView):
     Create account
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['account.account.view_manage'],
@@ -45,7 +51,10 @@ class Delete(generics.DestroyAPIView):
     Delete account
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['account.account.view_manage'],
@@ -55,12 +64,14 @@ class Delete(generics.DestroyAPIView):
     queryset = models.Account.objects.all()
 
 
-class Password(generics.UpdateAPIView):
+class Password(generics.RetrieveUpdateAPIView):
     """
     Update account password
     """
 
-    permission_classes = (gacl.GaclPermissions,)
+    permission_classes = (
+        gacl.GaclPermissions,
+    )
 
     gacl = {
         'view': ['account.account.view_account']
@@ -70,14 +81,10 @@ class Password(generics.UpdateAPIView):
 
     serializer_class = serializers.PasswordSerializer
 
-    def get_object(self): # TODO check what this is doing
-        queryset = self.filter_queryset(self.get_queryset())
-
-        obj = queryset.get(pk=self.request.user.pk)
-
-        self.check_object_permissions(self.request, obj)
-
-        return obj
+    def get_object(self):
+        return models.Account.objects.get(
+            pk=self.request.user.pk
+        )
 
 
 class Permission(generics.RetrieveUpdateAPIView):
@@ -85,7 +92,10 @@ class Permission(generics.RetrieveUpdateAPIView):
     View account permissions
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['auth.view_permission'],
@@ -102,7 +112,10 @@ class UserPermission(generics.ListAPIView):
     Search account permissions
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['auth.view_permission']
@@ -111,4 +124,6 @@ class UserPermission(generics.ListAPIView):
     serializer_class = serializers.UserPermissionsSerializer
 
     def get_queryset(self):
-        return auth_models.Permission.objects.filter(user=self.request.user)
+        return auth_models.Permission.objects.filter(
+            user=self.request.user
+        )

@@ -77,7 +77,14 @@ class Server:
 
     def _query(self):
         # Hardware Company
-        if not self.hardware_type and self.target_type in ['admin', 'bind', 'cp', 'mail', 'store', 'xmpp']:
+        if not self.hardware_type and self.target_type in [
+            'admin',
+            'bind',
+            'cp',
+            'mail',
+            'store',
+            'xmpp'
+        ]:
             obj = models.Server.objects.filter(
                 self._target(),
                 company=self.domain.company,

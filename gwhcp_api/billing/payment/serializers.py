@@ -5,7 +5,10 @@ from utils import security
 
 
 class AuthorizeAuthenticationSerializer(serializers.ModelSerializer):
-    merchant = serializers.StringRelatedField(read_only=True, source='payment_gateway')
+    merchant = serializers.StringRelatedField(
+        read_only=True,
+        source='payment_gateway'
+    )
 
     class Meta:
         model = models.PaymentAuthorizeCc
@@ -41,25 +44,37 @@ class AuthorizeAuthenticationSerializer(serializers.ModelSerializer):
         ]
 
         if value and True not in payment_list:
-            raise serializers.ValidationError('At least one Payment Method must be enabled.')
+            raise serializers.ValidationError(
+                'At least one Payment Method must be enabled.',
+                code='required'
+            )
 
         return value
 
     def validate_login_id(self, value):
         if value is None:
-            raise serializers.ValidationError('This field is required.')
+            raise serializers.ValidationError(
+                'This field is required.',
+                code='required'
+            )
 
         return security.encrypt_string(value)
 
     def validate_transaction_key(self, value):
         if value is None:
-            raise serializers.ValidationError('This field is required.')
+            raise serializers.ValidationError(
+                'This field is required.',
+                code='required'
+            )
 
         return security.encrypt_string(value)
 
 
 class AuthorizeMethodSerializer(serializers.ModelSerializer):
-    merchant = serializers.StringRelatedField(read_only=True, source='payment_gateway')
+    merchant = serializers.StringRelatedField(
+        read_only=True,
+        source='payment_gateway'
+    )
 
     class Meta:
         model = models.PaymentAuthorizeCc
@@ -86,7 +101,10 @@ class AuthorizeMethodSerializer(serializers.ModelSerializer):
         ]
 
         if self.instance.is_active and True not in payment_list:
-            raise serializers.ValidationError('At least one Payment Method must be enabled.')
+            raise serializers.ValidationError(
+                'At least one Payment Method must be enabled.',
+                code='required'
+            )
 
         return attrs
 
@@ -101,17 +119,28 @@ class CreateSerializer(serializers.ModelSerializer):
 
     def validate_name(self, value):
         if models.PaymentGateway.objects.filter(name__iexact=value).exists():
-            raise serializers.ValidationError('Name already exists.')
+            raise serializers.ValidationError(
+                'Name already exists.',
+                code='exists'
+            )
 
         return value
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    company = serializers.StringRelatedField(read_only=True)
+    company = serializers.StringRelatedField(
+        read_only=True
+    )
 
-    merchant_name = serializers.CharField(read_only=True, source='get_merchant_display')
+    merchant_name = serializers.CharField(
+        read_only=True,
+        source='get_merchant_display'
+    )
 
-    payment_method_name = serializers.CharField(read_only=True, source='get_payment_method_display')
+    payment_method_name = serializers.CharField(
+        read_only=True,
+        source='get_payment_method_display'
+    )
 
     class Meta:
         model = models.PaymentGateway
@@ -120,11 +149,19 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class SearchSerializer(serializers.ModelSerializer):
-    company = serializers.StringRelatedField(read_only=True)
+    company = serializers.StringRelatedField(
+        read_only=True
+    )
 
-    merchant_name = serializers.CharField(read_only=True, source='get_merchant_display')
+    merchant_name = serializers.CharField(
+        read_only=True,
+        source='get_merchant_display'
+    )
 
-    payment_method_name = serializers.CharField(read_only=True, source='get_payment_method_display')
+    payment_method_name = serializers.CharField(
+        read_only=True,
+        source='get_payment_method_display'
+    )
 
     class Meta:
         model = models.PaymentGateway

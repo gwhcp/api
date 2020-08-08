@@ -5,7 +5,10 @@ from database import models
 
 class DomainManager(django_models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(company__isnull=False, related_to__isnull=True)
+        return super().get_queryset().filter(
+            company__isnull=False,
+            related_to__isnull=True
+        )
 
 
 class Domain(models.Domain):
@@ -42,7 +45,9 @@ class IpaddressPool(models.IpaddressPool):
 
 class ServerManager(django_models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(server_type='client')
+        return super().get_queryset().filter(
+            server_type='client'
+        )
 
 
 class Server(models.Server):

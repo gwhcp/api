@@ -13,7 +13,10 @@ class ChoiceType(views.APIView):
     View available billing reason types
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['billing.reason.view_reason']
@@ -28,7 +31,10 @@ class Create(generics.CreateAPIView):
     Create billing reason
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['billing.reason.view_reason'],
@@ -45,7 +51,10 @@ class Delete(generics.RetrieveDestroyAPIView):
     Delete billing reason
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['billing.reason.view_reason'],
@@ -62,7 +71,10 @@ class Profile(generics.RetrieveAPIView):
     View billing reason profile
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['billing.reason.view_reason']
@@ -78,7 +90,10 @@ class Search(generics.ListAPIView):
     Search billing reasons
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['billing.reason.view_reason']

@@ -13,7 +13,10 @@ class ChoiceCompany(views.APIView):
     Company choices
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['company.domain.view_domain']
@@ -23,7 +26,9 @@ class ChoiceCompany(views.APIView):
         result = {}
 
         for company in models.Company.objects.all():
-            result.update({company.pk: company.name})
+            result.update({
+                company.pk: company.name
+            })
 
         return Response(result)
 
@@ -33,7 +38,10 @@ class Create(generics.CreateAPIView):
     Create company domain
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['company.domain.view_domain'],
@@ -50,7 +58,10 @@ class Delete(generics.RetrieveDestroyAPIView):
     Delete company domain
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['company.domain.view_domain'],
@@ -67,7 +78,10 @@ class Profile(generics.RetrieveAPIView):
     View company domain
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['company.domain.view_domain']
@@ -83,7 +97,10 @@ class Search(generics.ListAPIView):
     Search company domains
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['company.domain.view_domain']

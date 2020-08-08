@@ -17,12 +17,15 @@ class GaclPermissions(permissions.BasePermission):
         if request.method == 'GET' and 'view' in perms:
             for perm in perms['view']:
                 return request.user.has_perm(perm)
+
         elif request.method == 'POST' and 'add' in perms:
             for perm in perms['add']:
                 return request.user.has_perm(perm)
+
         elif (request.method == 'PATCH' or request.method == 'PUT') and 'change' in perms:
             for perm in perms['change']:
                 return request.user.has_perm(perm)
+
         elif request.method == 'DELETE' and 'delete' in perms:
             for perm in perms['delete']:
                 return request.user.has_perm(perm)

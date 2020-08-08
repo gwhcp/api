@@ -13,7 +13,10 @@ class ChoiceType(views.APIView):
     View available fraud string types
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['store.fraud.view_fraudstring']
@@ -28,7 +31,10 @@ class Create(generics.CreateAPIView):
     Create fraud string
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['store.fraud.view_fraudstring'],
@@ -45,7 +51,10 @@ class Delete(generics.RetrieveDestroyAPIView):
     Delete fraud string
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['store.fraud.view_fraudstring'],
@@ -62,7 +71,10 @@ class Profile(generics.RetrieveAPIView):
     View fraud string profile
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['store.fraud.view_fraudstring']
@@ -78,7 +90,10 @@ class Search(generics.ListAPIView):
     Search fraud strings
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['store.fraud.view_fraudstring']

@@ -48,8 +48,10 @@ class PaymentGateway(models.PaymentGateway):
             # Credit Card
             if self.payment_method == 'cc':
                 if self.merchant == 'authorize':
-                    PaymentAuthorizeCc.objects.create(payment_gateway_authorize_cc=self,
-                                                      payment_gateway=self)
+                    PaymentAuthorizeCc.objects.create(
+                        payment_gateway_authorize_cc=self,
+                        payment_gateway=self
+                    )
 
 
 class PaymentAuthorizeCc(models.PaymentAuthorizeCc):

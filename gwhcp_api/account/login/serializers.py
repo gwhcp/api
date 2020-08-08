@@ -39,14 +39,14 @@ class CreateSerializer(serializers.ModelSerializer):
 
 
 class PasswordSerializer(serializers.ModelSerializer):
-    old_password = serializers.CharField(
+    confirmed_password = serializers.CharField(
         max_length=30,
         required=True,
         style={'input_type': 'password'},
         write_only=True
     )
 
-    confirmed_password = serializers.CharField(
+    old_password = serializers.CharField(
         max_length=30,
         required=True,
         style={'input_type': 'password'},
@@ -77,22 +77,22 @@ class PasswordSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         error = {}
 
-        if not self.instance.check_password(attrs.get('old_password')):
-            error['old_password'] = 'Old password does not match'
-
-        if attrs.get('password') is None:
-            error['password'] = 'This field may not be blank.'
-
-        if attrs.get('confirmed_password') is None:
-            error['confirmed_password'] = 'This field may not be blank.'
-
         if attrs.get('password') != attrs.get('confirmed_password'):
-            error['confirmed_password'] = 'Confirmed password does not match password'
+            error['confirmed_password'] = 'Confirmed password does not match password.'
 
         if error:
-            raise serializers.ValidationError(error)
+            raise serializers.ValidationError(error, code='invalid')
 
         return attrs
+
+    def validate_old_password(self, value):
+        if not self.instance.check_password(value):
+            raise serializers.ValidationError(
+                'Old password does not match.',
+                code='invalid'
+            )
+
+        return value
 
     def validate_password(self, value):
         validate_password(value)
@@ -123,4 +123,7 @@ class UserPermissionsSerializer(serializers.ModelSerializer):
         ]
 
     def get_perm(self, obj):
-        return '{}.{}'.format(obj.content_type.app_label, obj.codename)
+        return '{}.{}'.format(
+            obj.content_type.app_label,
+            obj.codename
+        )

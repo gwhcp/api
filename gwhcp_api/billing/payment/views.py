@@ -14,7 +14,10 @@ class AuthorizeAuthentication(generics.RetrieveUpdateAPIView):
     Payment gateway authentication
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['billing.payment.view_paymentgateway'],
@@ -31,7 +34,10 @@ class AuthorizeMethod(generics.RetrieveUpdateAPIView):
     Payment gateway payment methods
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['billing.payment.view_paymentgateway'],
@@ -48,7 +54,10 @@ class ChoiceCompany(views.APIView):
     Company choices
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['billing.payment.view_paymentgateway']
@@ -58,7 +67,9 @@ class ChoiceCompany(views.APIView):
         result = {}
 
         for company in models.Company.objects.all():
-            result.update({company.pk: company.name})
+            result.update({
+                company.pk: company.name
+            })
 
         return Response(result)
 
@@ -68,7 +79,10 @@ class ChoiceMerchant(views.APIView):
     View available payment gateways
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['billing.payment.view_paymentgateway']
@@ -83,7 +97,10 @@ class ChoiceMethod(views.APIView):
     View available payment methods based on merchant
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['billing.payment.view_paymentgateway']
@@ -98,7 +115,10 @@ class Create(generics.CreateAPIView):
     Create payment gateway
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['billing.payment.view_paymentgateway'],
@@ -115,7 +135,10 @@ class Delete(generics.RetrieveDestroyAPIView):
     Delete payment gateway
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['billing.payment.view_paymentgateway'],
@@ -132,7 +155,10 @@ class Profile(generics.RetrieveAPIView):
     View payment gateway profile
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['billing.payment.view_paymentgateway']
@@ -148,7 +174,10 @@ class Search(generics.ListAPIView):
     Search payment gateways
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['billing.payment.view_paymentgateway']

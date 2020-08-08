@@ -11,7 +11,10 @@ class Create(generics.CreateAPIView):
     Create company
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['company.company.view_company'],
@@ -28,7 +31,10 @@ class Delete(generics.RetrieveDestroyAPIView):
     Delete company
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['company.company.view_company'],
@@ -45,7 +51,10 @@ class Profile(generics.RetrieveUpdateAPIView):
     View and edit company profile
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['company.company.view_company'],
@@ -62,7 +71,10 @@ class Search(generics.ListAPIView):
     Search companies
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['company.company.view_company']

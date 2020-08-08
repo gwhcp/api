@@ -10,8 +10,13 @@ class CreateSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate_host(self, value):
-        if models.DnsZone.objects.filter(host__iexact=value).exists():
-            raise serializers.ValidationError('Host already exists.', code='exists')
+        if models.DnsZone.objects.filter(
+                host__iexact=value
+        ).exists():
+            raise serializers.ValidationError(
+                'Host already exists.',
+                code='exists'
+            )
 
         return value
 
@@ -27,7 +32,10 @@ class DeleteSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    company_name = serializers.StringRelatedField(read_only=True, source='company')
+    company_name = serializers.StringRelatedField(
+        read_only=True,
+        source='company'
+    )
 
     class Meta:
         model = models.Domain

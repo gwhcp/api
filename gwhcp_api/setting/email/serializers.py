@@ -12,14 +12,22 @@ class CreateSerializer(serializers.ModelSerializer):
         ]
 
     def validate_template(self, value):
-        if models.EmailTemplate.objects.filter(template=value).exists():
-            raise serializers.ValidationError('Template already exists.')
+        if models.EmailTemplate.objects.filter(
+                template=value
+        ).exists():
+            raise serializers.ValidationError(
+                'Template already exists.',
+                code='exists'
+            )
 
         return value
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    template_name = serializers.CharField(read_only=True, source='get_template_display')
+    template_name = serializers.CharField(
+        read_only=True,
+        source='get_template_display'
+    )
 
     class Meta:
         model = models.EmailTemplate
@@ -28,7 +36,10 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class SearchSerializer(serializers.ModelSerializer):
-    template_name = serializers.CharField(read_only=True, source='get_template_display')
+    template_name = serializers.CharField(
+        read_only=True,
+        source='get_template_display'
+    )
 
     class Meta:
         model = models.EmailTemplate

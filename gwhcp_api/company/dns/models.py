@@ -5,7 +5,9 @@ from database import models
 
 class DnsZoneManager(django_models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(domain__company__isnull=False)
+        return super().get_queryset().filter(
+            domain__company__isnull=False
+        )
 
 
 class DnsZone(models.DnsZone):
@@ -20,7 +22,10 @@ class DnsZone(models.DnsZone):
 
 class DomainManager(django_models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(company__isnull=False, related_to__isnull=True)
+        return super().get_queryset().filter(
+            company__isnull=False,
+            related_to__isnull=True
+        )
 
 
 class Domain(models.Domain):

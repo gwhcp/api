@@ -13,7 +13,10 @@ class ChoiceAssigned(views.APIView):
     View assigned options
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['network.pool.view_ipaddresssetup']
@@ -28,7 +31,10 @@ class Create(generics.CreateAPIView):
     Create IP address pool
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['network.pool.view_ipaddresssetup'],
@@ -45,7 +51,10 @@ class Delete(generics.RetrieveDestroyAPIView):
     Delete IP address pool
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['network.pool.view_ipaddresssetup'],
@@ -62,7 +71,10 @@ class Profile(generics.RetrieveUpdateAPIView):
     View IP address profile
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['network.pool.view_ipaddresssetup']
@@ -78,7 +90,10 @@ class Search(generics.ListAPIView):
     Search IP address pools
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['network.pool.view_ipaddresssetup']

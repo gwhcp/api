@@ -13,7 +13,10 @@ class ChoiceDomain(views.APIView):
     Domain choices
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['hardware.client.view_server']
@@ -23,7 +26,9 @@ class ChoiceDomain(views.APIView):
         result = {}
 
         for domain in models.Domain.objects.all():
-            result.update({domain.pk: domain.name})
+            result.update({
+                domain.pk: domain.name
+            })
 
         return Response(result)
 
@@ -33,7 +38,10 @@ class ChoiceHardware(views.APIView):
     View available hardware types
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['hardware.client.view_server']
@@ -48,7 +56,10 @@ class ChoiceTarget(views.APIView):
     View available target types
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['hardware.client.view_server']
@@ -63,7 +74,10 @@ class ChoiceWeb(views.APIView):
     View available web types
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['hardware.client.view_server']
@@ -78,7 +92,10 @@ class Create(generics.CreateAPIView):
     Create client domain
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['hardware.client.view_server'],
@@ -95,7 +112,10 @@ class Delete(generics.RetrieveDestroyAPIView):
     Delete client domain
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['hardware.client.view_server'],
@@ -112,7 +132,10 @@ class Install(generics.RetrieveUpdateAPIView):
     Install client domain
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['hardware.client.view_server'],
@@ -129,7 +152,10 @@ class Profile(generics.RetrieveUpdateAPIView):
     View client domain
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['hardware.client.view_server'],
@@ -146,7 +172,10 @@ class Search(generics.ListAPIView):
     Search client domains
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['hardware.client.view_server']

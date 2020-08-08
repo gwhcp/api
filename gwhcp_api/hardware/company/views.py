@@ -13,7 +13,10 @@ class ChoiceDomain(views.APIView):
     Domain choices
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['hardware.company.view_server']
@@ -23,7 +26,9 @@ class ChoiceDomain(views.APIView):
         result = {}
 
         for domain in models.Domain.objects.all():
-            result.update({domain.pk: domain.name})
+            result.update({
+                domain.pk: domain.name
+            })
 
         return Response(result)
 
@@ -33,7 +38,10 @@ class ChoiceTarget(views.APIView):
     View available target types
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['hardware.company.view_server']
@@ -48,7 +56,10 @@ class Create(generics.CreateAPIView):
     Create company domain
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['hardware.company.view_server'],
@@ -65,7 +76,10 @@ class Delete(generics.RetrieveDestroyAPIView):
     Delete company domain
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['hardware.company.view_server'],
@@ -82,7 +96,10 @@ class Install(generics.RetrieveUpdateAPIView):
     Install company domain
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['hardware.company.view_server'],
@@ -99,7 +116,10 @@ class Profile(generics.RetrieveUpdateAPIView):
     View company domain
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['hardware.company.view_server'],
@@ -116,7 +136,10 @@ class Search(generics.ListAPIView):
     Search company domains
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['hardware.company.view_server']

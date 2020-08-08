@@ -11,7 +11,10 @@ class Create(generics.CreateAPIView):
     Create store domain product
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['store.product.view_storeproduct'],
@@ -28,7 +31,10 @@ class Delete(generics.RetrieveDestroyAPIView):
     Delete store domain product
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['store.product.view_storeproduct'],
@@ -45,7 +51,10 @@ class Profile(generics.RetrieveUpdateAPIView):
     View store product domain profile
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['store.product.view_storeproduct']
@@ -61,7 +70,10 @@ class Resource(generics.RetrieveUpdateAPIView):
     View store product domain resource
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['store.product.view_storeproduct']
@@ -77,7 +89,10 @@ class Search(generics.ListAPIView):
     Search store domain products
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['store.product.view_storeproduct']

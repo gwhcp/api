@@ -13,38 +13,63 @@ class CreateSerializer(serializers.ModelSerializer):
             'date_from'
         ]
 
-    def validate_name(self, value):
-        if models.IpaddressSetup.objects.filter(name__iexact=value).exists():
-            raise serializers.ValidationError('Name already exists.')
-
-        return value
-
-    def validate_network(self, value):
-        if models.IpaddressSetup.objects.filter(network=value).exists():
-            raise serializers.ValidationError('Network already exists.')
-
-        return value
-
     def validate(self, attrs):
         error = {}
 
         try:
-            ipaddress.ip_network('%s/%s' % (attrs['network'], attrs['subnet']))
+            ipaddress.ip_network('%s/%s' % (
+                attrs['network'],
+                attrs['subnet']
+            ))
         except ValueError:
             error['subnet'] = 'Invalid network subnet.'
 
-        for item in models.IpaddressSetup.objects.all():
-            if ipaddress.ip_address(attrs['network']) in ipaddress.ip_network(item.network + '/' + str(item.subnet)):
-                error['network'] = 'Network IP Address was found in another network.'
-
         if error:
-            raise serializers.ValidationError(error)
+            raise serializers.ValidationError(
+                error,
+                code='invalid'
+            )
 
         return attrs
 
+    def validate_name(self, value):
+        if models.IpaddressSetup.objects.filter(
+                name__iexact=value
+        ).exists():
+            raise serializers.ValidationError(
+                'Name already exists.',
+                code='exists'
+            )
+
+        return value
+
+    def validate_network(self, value):
+        if models.IpaddressSetup.objects.filter(
+                network=value
+        ).exists():
+            raise serializers.ValidationError(
+                'Network already exists.',
+                code='exists'
+            )
+
+        for item in models.IpaddressSetup.objects.all():
+            if ipaddress.ip_address(value) in ipaddress.ip_network('%s/%s' % (
+                    item.network,
+                    item.subnet
+            )):
+                raise serializers.ValidationError(
+                    'Network IP Address was found in another network.',
+                    code='exists'
+                )
+
+        return value
+
 
 class ProfileSerializer(serializers.ModelSerializer):
-    assigned_name = serializers.CharField(read_only=True, source='get_assigned_display')
+    assigned_name = serializers.CharField(
+        read_only=True,
+        source='get_assigned_display'
+    )
 
     broadcast = serializers.SerializerMethodField()
 
@@ -63,21 +88,32 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def get_broadcast(self, obj):
         if self.get_ip_type(obj) == 4:
-            network = ipaddress.ip_network('%s/%s' % (obj.network, obj.subnet))
+            network = ipaddress.ip_network('%s/%s' % (
+                obj.network,
+                obj.subnet
+            ))
 
             return str(network.broadcast_address)
         else:
             return None
 
     def get_ip_available(self, obj):
-        network = ipaddress.ip_network('%s/%s' % (obj.network, obj.subnet))
+        network = ipaddress.ip_network('%s/%s' % (
+            obj.network,
+            obj.subnet
+        ))
 
-        ipaddress_pool = models.IpaddressPool.objects.filter(ipaddress_setup__network=obj.network)
+        ipaddress_pool = models.IpaddressPool.objects.filter(
+            ipaddress_setup__network=obj.network
+        )
 
         return network.num_addresses - ipaddress_pool.count()
 
     def get_ip_total(self, obj):
-        network = ipaddress.ip_network('%s/%s' % (obj.network, obj.subnet))
+        network = ipaddress.ip_network('%s/%s' % (
+            obj.network,
+            obj.subnet
+        ))
 
         return int(network.num_addresses)
 
@@ -86,7 +122,10 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def get_netmask(self, obj):
         if self.get_ip_type(obj) == 4:
-            network = ipaddress.ip_network('%s/%s' % (obj.network, obj.subnet))
+            network = ipaddress.ip_network('%s/%s' % (
+                obj.network,
+                obj.subnet
+            ))
 
             return str(network.netmask)
         else:
@@ -94,10 +133,15 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def validate_assigned(self, value):
         try:
-            result = models.IpaddressSetup.objects.get(pk=self.instance.pk)
+            result = models.IpaddressSetup.objects.get(
+                pk=self.instance.pk
+            )
 
             if result.assigned != value and not self.instance.can_delete():
-                raise serializers.ValidationError('Assignment cannot be changed as it is currently in use.')
+                raise serializers.ValidationError(
+                    'Assignment cannot be changed as it is currently in use.',
+                    code='in_use'
+                )
         except models.IpaddressSetup.DoesNotExist:
             pass
 
@@ -105,7 +149,10 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class SearchSerializer(serializers.ModelSerializer):
-    assigned_name = serializers.CharField(read_only=True, source='get_assigned_display')
+    assigned_name = serializers.CharField(
+        read_only=True,
+        source='get_assigned_display'
+    )
 
     class Meta:
         model = models.IpaddressSetup

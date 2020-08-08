@@ -13,7 +13,10 @@ class ChoiceTemplate(views.APIView):
     View available email templates
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['setting.email.view_emailtemplate']
@@ -28,7 +31,10 @@ class Create(generics.CreateAPIView):
     Create email template
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['setting.email.view_emailtemplate'],
@@ -45,7 +51,10 @@ class Delete(generics.RetrieveDestroyAPIView):
     Delete email template
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['setting.email.view_emailtemplate'],
@@ -62,7 +71,10 @@ class Profile(generics.RetrieveUpdateAPIView):
     View email template profile
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['setting.email.view_emailtemplate']
@@ -78,7 +90,10 @@ class Search(generics.ListAPIView):
     Search email templates
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['setting.email.view_emailtemplate']

@@ -12,14 +12,22 @@ class CreateSerializer(serializers.ModelSerializer):
         ]
 
     def validate_name(self, value):
-        if models.Banned.objects.filter(name__iexact=value).exists():
-            raise serializers.ValidationError('Name already exists.')
+        if models.Banned.objects.filter(
+                name__iexact=value
+        ).exists():
+            raise serializers.ValidationError(
+                'Name already exists.',
+                code='exists'
+            )
 
         return value
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    banned_type_name = serializers.CharField(read_only=True, source='get_banned_type_display')
+    banned_type_name = serializers.CharField(
+        read_only=True,
+        source='get_banned_type_display'
+    )
 
     class Meta:
         model = models.Banned
@@ -28,7 +36,10 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class SearchSerializer(serializers.ModelSerializer):
-    banned_type_name = serializers.CharField(read_only=True, source='get_banned_type_display')
+    banned_type_name = serializers.CharField(
+        read_only=True,
+        source='get_banned_type_display'
+    )
 
     class Meta:
         model = models.Banned

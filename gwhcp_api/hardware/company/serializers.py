@@ -47,7 +47,11 @@ class CreateSerializer(serializers.ModelSerializer):
             '',
             validated_data['target_type']).re_use_id()
 
-        domain_name = '%s%s.%s' % (validated_data['target_type'], server_id, validated_data['domain'].name)
+        domain_name = '%s%s.%s' % (
+            validated_data['target_type'],
+            server_id,
+            validated_data['domain'].name
+        )
 
         if validated_data['is_admin'] or validated_data['is_cp'] or validated_data['is_store']:
             validated_data['web_type'] = 'nginx'
@@ -82,7 +86,10 @@ class CreateSerializer(serializers.ModelSerializer):
 
         ipaddress_pool.domain = domain
         ipaddress_pool.server = instance
-        ipaddress_pool.save(update_fields=['domain', 'server'])
+        ipaddress_pool.save(update_fields=[
+            'domain',
+            'server'
+        ])
 
         if domain.related_to.manage_dns:
             models.DnsZone.objects.create(
@@ -104,12 +111,18 @@ class CreateSerializer(serializers.ModelSerializer):
 
     def validate_ip(self, value):
         if not ip.ip_in_network('reserved', value):
-            raise serializers.ValidationError('%s was not found in any reserved IP Address Networks.' % value,
-                                              code='not_found')
+            raise serializers.ValidationError(
+                '%s was not found in any reserved IP Address Networks.' % value,
+                code='not_found'
+            )
 
-        if models.IpaddressPool.objects.filter(ipaddress=value).exists():
-            raise serializers.ValidationError('%s is currently in use.' % value,
-                                              code='found')
+        if models.IpaddressPool.objects.filter(
+                ipaddress=value
+        ).exists():
+            raise serializers.ValidationError(
+                '%s is currently in use.' % value,
+                code='found'
+            )
 
         return value
 
@@ -126,15 +139,19 @@ class InstallSerializer(serializers.ModelSerializer):
 
     def validate_in_queue(self, value):
         if self.instance.in_queue and value:
-            raise serializers.ValidationError('Hardware is currently in queue.',
-                                              code='queue')
+            raise serializers.ValidationError(
+                'Hardware is currently in queue.',
+                code='queue'
+            )
 
         return value
 
     def validate_is_installed(self, value):
         if self.instance.is_installed and value:
-            raise serializers.ValidationError('Hardware has already been installed.',
-                                              code='installed')
+            raise serializers.ValidationError(
+                'Hardware has already been installed.',
+                code='installed'
+            )
 
         return value
 

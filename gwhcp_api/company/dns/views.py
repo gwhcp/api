@@ -13,7 +13,10 @@ class ChoiceRecordType(views.APIView):
     View available record type options
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['company.dns.view_dnszone']
@@ -28,7 +31,10 @@ class Create(generics.CreateAPIView):
     Create DNS record
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['company.dns.view_dnszone'],
@@ -45,7 +51,10 @@ class Delete(generics.RetrieveDestroyAPIView):
     Delete DNS record
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['company.dns.view_dnszone'],
@@ -62,7 +71,10 @@ class Profile(generics.RetrieveUpdateAPIView):
     View and edit DNS record
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['company.dns.view_dnszone'],
@@ -79,7 +91,10 @@ class Search(generics.ListAPIView):
     Search DNS domains
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['company.dns.view_dnszone']
@@ -95,7 +110,10 @@ class SearchRecord(generics.ListAPIView):
     Search DNS records
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['company.dns.view_dnszone']

@@ -53,10 +53,14 @@ class CreateSerializer(serializers.ModelSerializer):
         server_id = server.Server(
             validated_data['domain'],
             validated_data['hardware_type'],
-            validated_data['target_type']).re_use_id()  # TODO Fix domain exists with managed/unmanaged only
+            validated_data['target_type']).re_use_id()
 
         if validated_data['hardware_type'] == 'dedicated':
-            domain_name = '%s%s.%s' % (validated_data['target_type'], server_id, validated_data['domain'].name)
+            domain_name = '%s%s.%s' % (
+                validated_data['target_type'],
+                server_id,
+                validated_data['domain'].name
+            )
 
             validated_data['web_type'] = (
                 validated_data['web_type'] if validated_data['target_type'] == 'domain' else None)
@@ -66,7 +70,11 @@ class CreateSerializer(serializers.ModelSerializer):
             else:
                 target_type = 'managed'
 
-            domain_name = '%s%s.%s' % (target_type, server_id, validated_data['domain'].name)
+            domain_name = '%s%s.%s' % (
+                target_type,
+                server_id,
+                validated_data['domain'].name
+            )
 
         validated_data['server_type'] = 'client'
 
@@ -97,7 +105,10 @@ class CreateSerializer(serializers.ModelSerializer):
 
         ipaddress_pool.domain = domain
         ipaddress_pool.server = instance
-        ipaddress_pool.save(update_fields=['domain', 'server'])
+        ipaddress_pool.save(update_fields=[
+            'domain',
+            'server'
+        ])
 
         if domain.related_to.manage_dns:
             models.DnsZone.objects.create(
@@ -119,12 +130,18 @@ class CreateSerializer(serializers.ModelSerializer):
 
     def validate_ip(self, value):
         if not ip.ip_in_network('reserved', value):
-            raise serializers.ValidationError('%s was not found in any reserved IP Address Networks.' % value,
-                                              code='not_found')
+            raise serializers.ValidationError(
+                '%s was not found in any reserved IP Address Networks.' % value,
+                code='not_found'
+            )
 
-        if models.IpaddressPool.objects.filter(ipaddress=value).exists():
-            raise serializers.ValidationError('%s is currently in use.' % value,
-                                              code='found')
+        if models.IpaddressPool.objects.filter(
+                ipaddress=value
+        ).exists():
+            raise serializers.ValidationError(
+                '%s is currently in use.' % value,
+                code='found'
+            )
 
         return value
 
@@ -141,15 +158,19 @@ class InstallSerializer(serializers.ModelSerializer):
 
     def validate_in_queue(self, value):
         if self.instance.in_queue and value:
-            raise serializers.ValidationError('Hardware is currently in queue.',
-                                              code='queue')
+            raise serializers.ValidationError(
+                'Hardware is currently in queue.',
+                code='queue'
+            )
 
         return value
 
     def validate_is_installed(self, value):
         if self.instance.is_installed and value:
-            raise serializers.ValidationError('Hardware has already been installed.',
-                                              code='installed')
+            raise serializers.ValidationError(
+                'Hardware has already been installed.',
+                code='installed'
+            )
 
         return value
 

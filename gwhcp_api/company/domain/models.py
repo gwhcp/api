@@ -15,7 +15,10 @@ class Company(models.Company):
 
 class DomainManager(django_models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(company__isnull=False, related_to__isnull=True)
+        return super().get_queryset().filter(
+            company__isnull=False,
+            related_to__isnull=True
+        )
 
 
 class Domain(models.Domain):

@@ -5,7 +5,10 @@ from database import models
 
 class StoreProductManager(django_models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(hardware_type='dedicated', product_type='domain')
+        return super().get_queryset().filter(
+            hardware_type='dedicated',
+            product_type='domain'
+        )
 
 
 class StoreProduct(models.StoreProduct):
@@ -19,8 +22,7 @@ class StoreProduct(models.StoreProduct):
         verbose_name = 'Store Product'
         verbose_name_plural = 'Store Products'
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
 
         if not self.pk:
             self.created = True

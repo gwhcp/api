@@ -11,7 +11,10 @@ class ChoiceCompany(views.APIView):
     View company choices
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['store.product.view_storeproduct']
@@ -21,7 +24,9 @@ class ChoiceCompany(views.APIView):
         result = {}
 
         for company in models.Company.objects.all():
-            result.update({company.pk: company.name})
+            result.update({
+                company.pk: company.name
+            })
 
         return Response(result)
 
@@ -31,7 +36,10 @@ class ChoiceIpType(views.APIView):
     View available IP Address choices
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['store.product.view_storeproduct']
@@ -46,7 +54,10 @@ class ChoiceWeb(views.APIView):
     View available web types
     """
 
-    permission_classes = (gacl.GaclPermissions, IsAdminUser)
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
 
     gacl = {
         'view': ['store.product.view_storeproduct']
