@@ -3,6 +3,16 @@ from django.db import models as django_models
 from database import models
 
 
+class ProductProfile(models.ProductProfile):
+    class Meta:
+        default_permissions = ()
+
+        proxy = True
+
+        verbose_name = 'Product Profile'
+        verbose_name_plural = 'Product Profiles'
+
+
 class StoreProductManager(django_models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(
@@ -23,7 +33,6 @@ class StoreProduct(models.StoreProduct):
         verbose_name_plural = 'Store Products'
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-
         if not self.pk:
             self.created = True
 
@@ -33,3 +42,13 @@ class StoreProduct(models.StoreProduct):
             self.product_type = 'domain'
 
         super(StoreProduct, self).save()
+
+
+class StoreProductPrice(models.StoreProductPrice):
+    class Meta:
+        default_permissions = ()
+
+        proxy = True
+
+        verbose_name = 'Store Product Price'
+        verbose_name_plural = 'Store Product Prices'
