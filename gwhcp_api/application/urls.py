@@ -25,6 +25,7 @@ urlpatterns = [
     # path('store/product/postgresql/', include('store.product.postgresql.urls')),
     path('store/product/price/', include('store.product.price.urls')),
     # path('store/product/server/', include('store.product.server.urls')),
+    path('worker/web/', include('worker.web.urls')),
 
     # Rest API URLs
     path('api-auth/', include('rest_framework.urls')),

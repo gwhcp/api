@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.sites',
     'django.contrib.staticfiles',
+    'django_celery_results',
     'debug_toolbar',
     'rest_auth',
     'rest_framework',
@@ -60,7 +61,9 @@ INSTALLED_APPS.extend([
     'store.fraud',
     'store.product',
     'store.product.domain',
-    'store.product.price'
+    'store.product.price',
+    'worker.queue',
+    'worker.web'
 ])
 
 MIDDLEWARE = [
@@ -203,7 +206,9 @@ DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
 # Example; Queue failed to process
 #
 # For more than 1 admin, recommended to use a mailing list address here
-ADMINS = [x for x in env.list('ADMINS')]
+ADMINS = [
+    env.tuple('ADMINS')
+]
 
 #
 # Set the manager email address(es)
@@ -212,7 +217,9 @@ ADMINS = [x for x in env.list('ADMINS')]
 # Example; 404 Errors
 #
 # For more than 1 manager, recommended to use a mailing list address here
-MANAGERS = [x for x in env.list('MANAGERS')]
+MANAGERS = [
+    env.tuple('MANAGERS')
+]
 
 """
 COR Headers
@@ -254,3 +261,16 @@ DEBUG_TOOLBAR_PANELS = [
     # 'debug_toolbar.panels.redirects.RedirectsPanel',
     # 'debug_toolbar.panels.profiling.ProfilingPanel'
 ]
+
+"""
+Celery
+"""
+
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
+
+"""
+OS Type
+"""
+
+OS_TYPE = env('OS_TYPE')
