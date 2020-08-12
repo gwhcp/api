@@ -10,7 +10,9 @@ class TaskHandler(celery.Task):
     """
 
     def on_failure(self, exc, task_id, args, kwargs, einfo):
-        result = models.QueueItem.objects.filter(task_id=task_id)
+        result = models.QueueItem.objects.filter(
+            task_id=task_id
+        )
 
         if result.exists():
             get = result.get()
@@ -20,7 +22,9 @@ class TaskHandler(celery.Task):
             get.save()
 
             # Set all other related tasks as pending failed
-            result2 = models.QueueItem.objects.filter(queue_status=get.queue_status)
+            result2 = models.QueueItem.objects.filter(
+                queue_status=get.queue_status
+            )
 
             for item in result2:
                 if item.order_id > get.order_id:
@@ -28,7 +32,9 @@ class TaskHandler(celery.Task):
                     item.save()
 
     def on_retry(self, exc, task_id, args, kwargs, einfo):
-        result = models.QueueItem.objects.filter(task_id=task_id)
+        result = models.QueueItem.objects.filter(
+            task_id=task_id
+        )
 
         if result.exists():
             get = result.get()
@@ -38,7 +44,9 @@ class TaskHandler(celery.Task):
             get.save()
 
     def on_success(self, retval, task_id, args, kwargs):
-        result = models.QueueItem.objects.filter(task_id=task_id)
+        result = models.QueueItem.objects.filter(
+            task_id=task_id
+        )
 
         if result.exists():
             get = result.get()

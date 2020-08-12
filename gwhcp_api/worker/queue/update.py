@@ -13,7 +13,9 @@ def update(queue_status, order_id):
     :return: None
     """
 
-    result = models.QueueItem.objects.filter(queue_status=queue_status)
+    result = models.QueueItem.objects.filter(
+        queue_status=queue_status
+    )
 
     statuses = []
 
@@ -22,7 +24,9 @@ def update(queue_status, order_id):
 
     # Last item in queue is active, start the cleanup process
     if result.count() == order_id and all(statuses) is True:
-        result2 = models.QueueStatus.objects.get(pk=queue_status.pk)
+        result2 = models.QueueStatus.objects.get(
+            pk=queue_status.pk
+        )
 
         # Set Queue to False
         if result2.service_id is not None:
@@ -31,7 +35,9 @@ def update(queue_status, order_id):
 
         # Remove from Celery Results
         for item in result:
-            result3 = TaskResult.objects.filter(task_id=str(item.task_id))
+            result3 = TaskResult.objects.filter(
+                task_id=str(item.task_id)
+            )
 
             if result3.exists():
                 result3.delete()
@@ -67,7 +73,10 @@ def set_queue(key, value):
     }
 
     try:
-        result = array.get(key).objects.get(pk=value, in_queue=True)
+        result = array.get(key).objects.get(
+            pk=value,
+            in_queue=True
+        )
     except:
         raise ValueError('Worker: Queue query was not found.')
 

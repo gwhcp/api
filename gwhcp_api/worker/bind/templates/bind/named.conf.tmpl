@@ -1,0 +1,83 @@
+# Options
+options {
+    directory "[BIND-VAR]";
+    pid-file "[BIND-RUN]named.pid";
+
+    listen-on-v6 { any; };
+    listen-on { any; };
+
+    allow-recursion { none; };
+    allow-transfer { none; };
+    allow-update { none; };
+    allow-query { any; };
+
+    version none;
+    hostname none;
+    server-id none;
+};
+
+# RNDC Support
+key "rndc-key" {
+      algorithm hmac-sha512;
+      secret "[RNDC-KEY]";
+};
+
+controls {
+      inet 127.0.0.1 port 953
+              allow { 127.0.0.1; } keys { "rndc-key"; };
+};
+
+
+# Localhost Zone
+zone "localhost" IN {
+    type master;
+    file "localhost.zone";
+};
+
+# Localhost Reverse IP Address Zone - IPv4
+zone "0.0.127.in-addr.arpa" IN {
+    type master;
+    file "127.0.0.zone";
+};
+
+# Localhost Reverse IP Address Zone - IPv6
+zone "1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa" {
+    type master;
+    file "localhost.ip6.zone";
+};
+
+# Netmask Zone
+zone "255.in-addr.arpa" IN {
+    type master;
+    file "empty.zone";
+};
+
+# Empty Zone
+zone "0.in-addr.arpa" IN {
+    type master;
+    file "empty.zone";
+};
+
+# Root Hints
+zone "." IN {
+    type hint;
+    file "root.hint";
+};
+
+# Logging
+logging {
+    channel xfer-log {
+        file "[BIND-LOG]named.log";
+            print-category yes;
+            print-severity yes;
+            severity info;
+        };
+
+        category xfer-in { xfer-log; };
+        category xfer-out { xfer-log; };
+        category notify { xfer-log; };
+};
+
+# Include Domain and Reverse IP Address Zones
+include "domain.zones";
+include "ipaddress.zones";

@@ -40,5 +40,4 @@ class CreateQueue:
             ipaddress=kwargs['ipaddress'],
             name=kwargs['name'],
             args=kwargs.get('args')
-
         )

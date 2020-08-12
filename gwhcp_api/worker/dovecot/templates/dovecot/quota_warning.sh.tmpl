@@ -1,0 +1,9 @@
+#!/bin/sh
+PERCENT=$1
+USER=$2
+cat << EOF | [DOVECOT-USRLIB]dovecot-lda -d $USER -o "plugin/quota=maildir:User quota:noenforcing"
+From: $USER
+Subject: Email Quota Warning
+
+Your mailbox is now $PERCENT% full.
+EOF

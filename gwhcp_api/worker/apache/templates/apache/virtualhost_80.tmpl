@@ -1,0 +1,104 @@
+<VirtualHost [SYSTEM-IPADDRESS]:80>
+    # Start General settings
+    ServerName [WEB-DOMAIN]
+    ServerAlias www.[WEB-DOMAIN] [WEB-DOMAIN]
+    ServerAdmin postmaster@[WEB-DOMAIN]
+
+    # Suexec User & Group
+    <IfModule suexec_module>
+        SuexecUserGroup [SYSTEM-USERNAME] [SYSTEM-GROUP]
+    </IfModule>
+
+    # Document Root
+    DocumentRoot [WEB-VHOST][WEB-DOMAIN]/public
+
+    # Directory
+    <Directory "[WEB-VHOST][WEB-DOMAIN]/public">
+        # Options
+        Options +Indexes +FollowSymLinks +SymLinksIfOwnerMatch +ExecCGI +Includes +MultiViews
+
+        # Override
+        AllowOverride All
+
+        # Require
+        Require all granted
+    </Directory>
+
+    # CGI
+    <IfModule alias_module>
+        ScriptAlias /cgi-bin "[WEB-VHOST][WEB-DOMAIN]/cgi-bin"
+
+        <Directory "[WEB-VHOST][WEB-DOMAIN]/cgi-bin">
+            # Options
+            Options None
+
+            # Override
+            AllowOverride All
+
+            # Require
+            Require all granted
+        </Directory>
+    </IfModule>
+
+    # Indexing options
+    <IfModule autoindex_module>
+        IndexOptions FancyIndexing FoldersFirst VersionSort
+    </IfModule>
+
+    # Logging
+    <IfModule log_config_module>
+        # Error Log
+        ErrorLog "[WEB-VHOST][WEB-DOMAIN]/logs/error.log"
+
+        # Log Level
+        LogLevel warn
+
+        <IfModule logio_module>
+            LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %I %O" combinedio
+
+            LogFormat "%O" bandwidth
+
+            # Access Log
+            CustomLog "[WEB-VHOST][WEB-DOMAIN]/logs/access.log" combinedio
+
+            # Bandwidth Log
+            CustomLog "[WEB-VHOST][WEB-DOMAIN]/logs/bandwidth.log" bandwidth
+        </IfModule>
+    </IfModule>
+
+    # .htaccess
+    <Files ".ht*">
+        Require all denied
+    </Files>
+
+    # PHP-FPM
+    <IfModule proxy_module>
+        <IfModule proxy_fcgi_module>
+            ProxyPassMatch ^/(.*\.php(/.*)?)$ unix:[PHP-RUN][SYSTEM-USERNAME].sock|fcgi://localhost[WEB-VHOST][WEB-DOMAIN]/public/
+        </IfModule>
+    </IfModule>
+
+    # AWStats
+    <IfModule alias_module>
+        Alias /stats "[AWSTATS-SITES][WEB-DOMAIN]"
+
+        <Directory "[AWSTATS-SITES][WEB-DOMAIN]">
+            AuthType Basic
+            AuthName "AW Stats Login"
+            AuthUserFile [AWSTATS-SITES][WEB-DOMAIN]/UserPasswd
+
+            # Options
+            Options None
+
+            # Override
+            AllowOverride All
+
+            # Require
+            Require valid-user
+
+            <IfModule dir_module>
+                DirectoryIndex awstats.[WEB-DOMAIN].html
+            </IfModule>
+        </Directory>
+    </IfModule>
+</VirtualHost>

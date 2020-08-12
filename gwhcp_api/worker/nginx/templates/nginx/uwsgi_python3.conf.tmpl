@@ -1,0 +1,10 @@
+    # Python 3 Support
+    location / {
+        uwsgi_pass unix:[UWSGI-RUN][SYSTEM-USERNAME].sock;
+        include uwsgi_params;
+    }
+
+    # Static
+    location /static/ {
+        root [WEB-VHOST][WEB-DOMAIN]/public;
+    }

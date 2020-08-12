@@ -4,8 +4,11 @@ import sys
 import environ
 
 env = environ.Env(
+    ALLOWED_HOSTS=(list, []),
+    CSRF_COOKIE_SECURE=(bool, True),
     DEBUG=(bool, False),
-    ALLOWED_HOSTS=(list, [])
+    SECURE_SSL_REDIRECT=(bool, True),
+    SESSION_COOKIE_SECURE=(bool, True)
 )
 
 environ.Env.read_env()
@@ -62,7 +65,24 @@ INSTALLED_APPS.extend([
     'store.product',
     'store.product.domain',
     'store.product.price',
+    'worker.apache',
+    'worker.awstats',
+    'worker.bind',
+    'worker.console',
+    'worker.cron',
+    'worker.daemon',
+    'worker.dovecot',
+    'worker.ejabberd',
+    'worker.mail',
+    'worker.mysql',
+    'worker.nginx',
+    'worker.php',
+    'worker.postfix',
+    'worker.postgresql',
     'worker.queue',
+    'worker.rabbitmq',
+    'worker.system',
+    'worker.vsftpd',
     'worker.web'
 ])
 
@@ -117,6 +137,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 5
+        }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -231,9 +254,6 @@ CORS_EXPOSE_HEADERS = (
     'Access-Control-Allow-Origin: *',
 )
 
-SESSION_COOKIE_SAMESITE = None
-SESSION_COOKIE_SECURE = False
-
 """
 Sites
 """
@@ -255,7 +275,7 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.sql.SQLPanel',
     # 'debug_toolbar.panels.staticfiles.StaticFilesPanel',
     # 'debug_toolbar.panels.templates.TemplatesPanel',
-    # 'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.cache.CachePanel',
     # 'debug_toolbar.panels.signals.SignalsPanel',
     # 'debug_toolbar.panels.logging.LoggingPanel',
     # 'debug_toolbar.panels.redirects.RedirectsPanel',
@@ -267,10 +287,57 @@ Celery
 """
 
 CELERY_RESULT_BACKEND = 'django-db'
-CELERY_CACHE_BACKEND = 'django-cache'
+CELERY_CACHE_BACKEND = 'default'
+
+BROKER_USER = env('CELERY_BROKER_USER')
+BROKER_PASSWORD = env('CELERY_BROKER_PASSWORD')
+BROKER_HOST = env('CELERY_BROKER_HOST')
+BROKER_PORT = env('CELERY_BROKER_PORT')
+BROKER_VHOST = env('CELERY_BROKER_VHOST')
+
+CELERY_BROKER_URL = f"amqp://{BROKER_USER}:{BROKER_PASSWORD}@{BROKER_HOST}:{BROKER_PORT}/{BROKER_VHOST}"
 
 """
-OS Type
+Operating System
 """
+
+OS_NIC = env('OS_NIC')
+
+OS_NS_1 = env('OS_NS_1')
+OS_NS_2 = env('OS_NS_2')
 
 OS_TYPE = env('OS_TYPE')
+
+OS_QUEUE_SLEEP_CYCLE = env('OS_QUEUE_SLEEP_CYCLE')
+OS_QUEUE_SLEEP_TASKS = env('OS_QUEUE_SLEEP_TASKS')
+
+"""
+CACHE
+"""
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'django_cache'
+    }
+}
+
+"""
+CSRF
+"""
+
+CSRF_COOKIE_SECURE = env('CSRF_COOKIE_SECURE')
+
+"""
+SSL
+"""
+
+SECURE_HSTS_SECONDS = 0
+SECURE_SSL_REDIRECT = env('SECURE_SSL_REDIRECT')
+
+"""
+Session
+"""
+
+SESSION_COOKIE_SAMESITE = None
+SESSION_COOKIE_SECURE = env('SESSION_COOKIE_SECURE')

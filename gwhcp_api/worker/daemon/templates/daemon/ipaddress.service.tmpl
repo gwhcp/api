@@ -1,0 +1,16 @@
+[Unit]
+Description=IP Address Daemon
+After=network.target
+
+[Service]
+Type=oneshot
+
+EnvironmentFile=-[SYSTEM-CONFD]ipaddress
+
+RemainAfterExit=yes
+
+ExecStart=[SYSTEM-SH] -c '${PYTHON_BIN} ${MANAGE_BIN} daemon_ipaddress start'
+ExecStop=[SYSTEM-SH] -c '${PYTHON_BIN} ${MANAGE_BIN} daemon_ipaddress stop'
+
+[Install]
+WantedBy=multi-user.target

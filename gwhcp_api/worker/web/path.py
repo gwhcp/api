@@ -14,7 +14,7 @@ class WebPath(OsType):
         :return: str
         """
 
-        return cls.validate_path(cls.www_dir(user) + 'ssl/')
+        return cls.validate_path(f"{cls.www_dir(user)}ssl/")
 
     @classmethod
     def www_dir(cls, user):
@@ -25,4 +25,4 @@ class WebPath(OsType):
         :return: str
         """
 
-        return cls.validate_path('/home/' + user + '/')
+        return cls.validate_path(f"/home/{user}/")

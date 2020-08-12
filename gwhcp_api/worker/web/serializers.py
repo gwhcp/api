@@ -5,7 +5,7 @@ try:
     # Only here to avoid errors when developing on a Windows OS
     import grp
     import pwd
-except ImportError:
+except ImportError as e:
     pass
 
 import validators
@@ -46,7 +46,7 @@ class CreateDomainSerializer(serializers.Serializer):
     def validate_domain(self, value):
         if not validators.domain(value):
             raise serializers.ValidationError(
-                "Domain '%s' is invalid." % value,
+                f"Domain '{value}' is invalid.",
                 code='invalid'
             )
 
@@ -57,13 +57,13 @@ class CreateDomainSerializer(serializers.Serializer):
             pwd.getpwnam(value).pw_uid
         except KeyError:
             raise serializers.ValidationError(
-                "System User '%s' does not exist." % value,
+                f"System User '{value}' does not exist.",
                 code='invalid'
             )
 
         if not os.path.exists(WebPath.www_dir(value)):
             raise serializers.ValidationError(
-                "Web User '%s' does not exist." % value,
+                f"Web User '{value}' does not exist.",
                 code='not_found'
             )
 
@@ -74,7 +74,7 @@ class CreateDomainSerializer(serializers.Serializer):
             grp.getgrnam(value).gr_gid
         except KeyError:
             raise serializers.ValidationError(
-                "System Group '%s' does not exist." % value,
+                f"System Group '{value}' does not exist.",
                 code='not_found'
             )
 
@@ -85,9 +85,9 @@ class CreateDomainSerializer(serializers.Serializer):
 
         user = attrs.get('user')
 
-        if os.path.exists(WebPath.www_dir(user) + domain):
+        if os.path.exists(f"{WebPath.www_dir(user)}{domain}"):
             raise serializers.ValidationError(
-                "Web Domain '%s' currently exists." % domain,
+                f"Web Domain '{domain}' currently exists.",
                 code='exists'
             )
 
@@ -100,23 +100,23 @@ class CreateDomainSerializer(serializers.Serializer):
 
         validated_group = validated_data['group']
 
-        domain = WebPath.www_dir(validated_user) + validated_domain
+        domain = f"{WebPath.www_dir(validated_user)}{validated_domain}"
 
         # Domain
         os.makedirs(domain, 0o755)
         shutil.chown(domain, user='root', group='root')
 
         # Domain/public
-        os.makedirs(domain + '/public', 0o755)
-        shutil.chown(domain + '/public', user=validated_user, group=validated_group)
+        os.makedirs(f"{domain}/public", 0o755)
+        shutil.chown(f"{domain}/public", user=validated_user, group=validated_group)
 
         # Domain/logs
-        os.makedirs(domain + '/logs', 0o755)
-        shutil.chown(domain + '/logs', user='root', group='root')
+        os.makedirs(f"{domain}/logs", 0o755)
+        shutil.chown(f"{domain}/logs", user='root', group='root')
 
         # Empty log files
-        os.mknod(domain + '/logs/access.log', 0o644)
-        os.mknod(domain + '/logs/error.log', 0o644)
+        os.mknod(f"{domain}/logs/access.log", 0o644)
+        os.mknod(f"{domain}/logs/error.log", 0o644)
 
         return validated_data
 
@@ -142,7 +142,7 @@ class DeleteDomainSerializer(serializers.Serializer):
     def validate_domain(self, value):
         if not validators.domain(value):
             raise serializers.ValidationError(
-                "Domain '%s' is invalid." % value,
+                f"Domain '{value}' is invalid.",
                 code='invalid'
             )
 
@@ -153,13 +153,13 @@ class DeleteDomainSerializer(serializers.Serializer):
             pwd.getpwnam(value).pw_uid
         except KeyError:
             raise serializers.ValidationError(
-                "System User '%s' does not exist." % value,
+                f"System User '{value}' does not exist.",
                 code='not_found'
             )
 
         if not os.path.exists(WebPath.www_dir(value)):
             raise serializers.ValidationError(
-                "Web User '%s' does not exist." % value,
+                f"Web User '{value}' does not exist.",
                 code='not_found'
             )
 
@@ -170,9 +170,9 @@ class DeleteDomainSerializer(serializers.Serializer):
 
         user = attrs.get('user')
 
-        if not os.path.exists(WebPath.www_dir(user) + domain):
+        if not os.path.exists(f"{WebPath.www_dir(user)}{domain}"):
             raise serializers.ValidationError(
-                "Web Domain '%s' does not exist." % domain,
+                f"Web Domain '{domain}' does not exist.",
                 code='not_found'
             )
 
@@ -183,7 +183,7 @@ class DeleteDomainSerializer(serializers.Serializer):
 
         validated_user = validated_data['user']
 
-        directory = WebPath.www_dir(validated_user) + validated_domain
+        directory = f"{WebPath.www_dir(validated_user)}{validated_domain}"
 
         if os.path.exists(directory):
             shutil.rmtree(directory)
@@ -212,7 +212,7 @@ class SslInstallSerializer(serializers.Serializer):
     def validate_domain(self, value):
         if not validators.domain(value):
             raise serializers.ValidationError(
-                "Domain '%s' is invalid." % value,
+                f"Domain '{value}' is invalid.",
                 code='invalid'
             )
 
@@ -223,13 +223,13 @@ class SslInstallSerializer(serializers.Serializer):
             pwd.getpwnam(value).pw_uid
         except KeyError:
             raise serializers.ValidationError(
-                "System User '%s' does not exist." % value,
+                f"System User '{value}' does not exist.",
                 code='not_found'
             )
 
         if not os.path.exists(WebPath.www_dir(value)):
             raise serializers.ValidationError(
-                "Web User '%s' does not exist." % value,
+                f"Web User '{value}' does not exist.",
                 code='not_found'
             )
 
@@ -240,9 +240,9 @@ class SslInstallSerializer(serializers.Serializer):
 
         user = attrs.get('user')
 
-        if not os.path.exists(WebPath.www_dir(user) + domain):
+        if not os.path.exists(f"{WebPath.www_dir(user)}{domain}"):
             raise serializers.ValidationError(
-                "Web Domain '%s' does not exist." % domain,
+                f"Web Domain '{domain}' does not exist.",
                 code='not_found'
             )
         else:
@@ -270,13 +270,13 @@ class SslInstallSerializer(serializers.Serializer):
         if not os.path.exists(WebPath.ssl_dir(validated_user)):
             os.makedirs(WebPath.ssl_dir(validated_user), 0o755)
 
-        rsa = WebPath.ssl_dir(validated_user) + validated_domain + '.rsa'
+        rsa = f"{WebPath.ssl_dir(validated_user)}{validated_domain}.rsa"
 
         # Remove Private Key
         if os.path.exists(rsa):
             os.remove(rsa)
 
-        crt = WebPath.ssl_dir(validated_user) + validated_domain + '.crt'
+        crt = f"{WebPath.ssl_dir(validated_user)}{validated_domain}.crt"
 
         # Remove Certificate
         if os.path.exists(crt):
@@ -287,12 +287,15 @@ class SslInstallSerializer(serializers.Serializer):
                 domain__name=validated_domain
             )
         except models.DomainSsl.DoesNotExist:
-            raise ValueError("Domain '%s' does not exist." % validated_domain)
+            raise ValueError(f"Domain '{validated_domain}' does not exist.")
 
         ssl = render_to_string('web/ssl.tmpl')
 
         # Dedicated and Self-Signed
-        if result.ssl_type in ['dedicated', 'self']:
+        if result.ssl_type in [
+            'dedicated',
+            'self'
+        ]:
             # Private Key
             handle_rsa = open(rsa, 'w')
             handle_rsa.write(ssl.replace('[SSL]', result.decrypt_rsa()))
@@ -331,7 +334,7 @@ class SslUninstallSerializer(serializers.Serializer):
     def validate_domain(self, value):
         if not validators.domain(value):
             raise serializers.ValidationError(
-                "Domain '%s' is invalid." % value,
+                f"Domain '{value}' is invalid.",
                 code='invalid'
             )
 
@@ -342,13 +345,13 @@ class SslUninstallSerializer(serializers.Serializer):
             pwd.getpwnam(value).pw_uid
         except KeyError:
             raise serializers.ValidationError(
-                "System User '%s' does not exist." % value,
+                f"System User '{value}' does not exist.",
                 code='not_found'
             )
 
         if not os.path.exists(WebPath.www_dir(value)):
             raise serializers.ValidationError(
-                "Web User '%s' does not exist." % value,
+                f"Web User '{value}' does not exist.",
                 code='not_found'
             )
 
@@ -359,8 +362,8 @@ class SslUninstallSerializer(serializers.Serializer):
 
         user = attrs.get('user')
 
-        if not os.path.exists(WebPath.www_dir(user) + domain):
-            raise serializers.ValidationError("Web Domain '%s' does not exist." % domain)
+        if not os.path.exists(f"{WebPath.www_dir(user)}{domain}"):
+            raise serializers.ValidationError(f"Web Domain '{domain}' does not exist.")
 
         return attrs
 
@@ -373,13 +376,13 @@ class SslUninstallSerializer(serializers.Serializer):
         if not os.path.exists(WebPath.ssl_dir(validated_user)):
             os.makedirs(WebPath.ssl_dir(validated_user), 0o755)
 
-        rsa = WebPath.ssl_dir(validated_user) + validated_domain + '.rsa'
+        rsa = f"{WebPath.ssl_dir(validated_user)}{validated_domain}.rsa"
 
         # Remove Private Key
         if os.path.exists(rsa):
             os.remove(rsa)
 
-        crt = WebPath.ssl_dir(validated_user) + validated_domain + '.crt'
+        crt = f"{WebPath.ssl_dir(validated_user)}{validated_domain}.crt"
 
         # Remove Certificate
         if os.path.exists(crt):

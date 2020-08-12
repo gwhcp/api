@@ -34,7 +34,7 @@ class OsType:
             raise ValueError('Operating System value cannot be 0')
 
         elif settings.OS_TYPE not in cls.__options():
-            raise ValueError('Operating System value cannot exceed ' + str(len(cls.__options())))
+            raise ValueError(f'Operating System value cannot exceed {str(len(cls.__options()))}')
 
     @classmethod
     def validate_path(cls, path):
@@ -47,7 +47,7 @@ class OsType:
             raise KeyError('Path cannot return None')
 
         elif not os.path.exists(path):
-            raise FileNotFoundError("Path '%s' was not found" % path)
+            raise FileNotFoundError(f"Path '{path}' was not found")
 
         return path
 

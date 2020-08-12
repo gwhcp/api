@@ -1,0 +1,22 @@
+server {
+    listen      [SYSTEM-IPADDRESS]:80;
+    server_name [WEB-DOMAIN];
+
+    # Block access to .htaccess
+    location ~ \.htaccess {
+        deny all;
+    }
+
+    # Character Set
+    charset utf-8;
+
+    # Document Root
+    root [WEB-VHOST][WEB-DOMAIN]/public;
+
+    # Error Pages
+    error_page 404 /404.html;
+    error_page 500 502 503 504 /50x.html;
+
+    # Configurations
+    include sites-conf/[WEB-DOMAIN]/*.conf;
+}

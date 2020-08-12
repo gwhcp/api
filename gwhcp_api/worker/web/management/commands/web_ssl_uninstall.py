@@ -11,14 +11,14 @@ class Command(base.BaseCommand):
         # Required Arguments
         parser.add_argument(
             'domain',
-            type=str,
-            help='Domain'
+            help='Domain',
+            type=str
         )
 
         parser.add_argument(
             'user',
-            type=str,
-            help='System User Name'
+            help='System User Name',
+            type=str
         )
 
     def handle(self, *args, **options):
