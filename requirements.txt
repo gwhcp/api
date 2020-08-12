@@ -1,5 +1,6 @@
 # Django Modules
 django
+django-celery-results
 django-cors-headers
 django-debug-toolbar
 django-environ
@@ -11,12 +12,14 @@ djangorestframework
 django-rest-auth
 
 # Other Modules
+celery
 coreapi
 cryptography
 money
 requests
 passlib
 psycopg2
+pyopenssl
 pytz
 validators
 wheel
