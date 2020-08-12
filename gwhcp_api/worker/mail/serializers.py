@@ -509,7 +509,7 @@ class CreateMailboxSerializer(serializers.Serializer):
         content = render_to_string('mail/mailbox.tmpl') \
             .replace('[DOVECOT-DOMAIN]', validated_domain) \
             .replace('[DOVECOT-USERNAME]', validated_user) \
-            .replace('[DOVECOT-PASSWORD]', '{SHA512-CRYPT}' + password) \
+            .replace('[DOVECOT-PASSWORD]', f'{{SHA512-CRYPT}}{password}') \
             .replace('[DOVECOT-QUOTA]', str(validated_quota)) \
             .replace('[DOVECOT-VARLIB]', DovecotPath.varlib_dir())
 

@@ -95,7 +95,7 @@ class CreateSerializer(serializers.ModelSerializer):
             models.DnsZone.objects.create(
                 domain=domain,
                 record_type=('A' if ipaddress.ip_address(validated_ip).version == 4 else 'AAAA'),
-                host=domain.name.split('.' + domain.related_to.name)[0],
+                host=domain.name.split(f".{domain.related_to.name}")[0],
                 data=validated_ip
             )
 
