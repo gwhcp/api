@@ -120,7 +120,7 @@ class CeleryInstallSerializer(serializers.Serializer):
             os.remove(path_service)
 
         content_service = render_to_string('daemon/celery.service.tmpl') \
-            .replace('[DAEMON-WORKER]', f"{WebPath.www_dir('gwhcp')}worker/gwhcp_worker") \
+            .replace('[DAEMON-WORKER]', f"{WebPath.www_dir('gwhcp')}{validated_domain}/public/gwhcp_api") \
             .replace('[WEB-DOMAIN]', validated_domain) \
             .replace('[SYSTEM-CONFD]', SystemPath.confd_dir()) \
             .replace('[SYSTEM-SH]', SystemPath.sh_cmd()) \

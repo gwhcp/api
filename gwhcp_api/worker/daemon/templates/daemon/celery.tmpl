@@ -1,8 +1,14 @@
+# App instance to use
+CELERY_APP="application"
+
 # Absolute or relative path to the 'celery' command:
-CELERY_BIN="[DAEMON-WORKER]python3/bin/celery"
+CELERY_BIN="[DAEMON-WORKER][WEB-DOMAIN]/venv/bin/celery"
 
 # Queue IP Addres
 CELERY_QUEUE_IP="[SYSTEM-IPADDRESS]"
+
+# Where to chdir at start.
+CELERYD_CHDIR="[DAEMON-WORKER][WEB-DOMAIN]/gwhcp_api/"
 
 # Name of nodes to start
 CELERYD_NODES="worker"

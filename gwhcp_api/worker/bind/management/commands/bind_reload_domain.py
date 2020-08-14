@@ -1,20 +1,19 @@
 from django.core.management import base
 
-from gwhcp_base.utils import worker
-from gwhcp_worker.bind import serializers
+from utils import worker
+from worker.bind import serializers
 
 
 class Command(base.BaseCommand):
     help = 'Bind: Reload Domain.'
 
-    def get_version(self):
-        import gwhcp_worker
-
-        return gwhcp_worker.__version__
-
     def add_arguments(self, parser):
         # Required Arguments
-        parser.add_argument('domain', type=str, help='Domain')
+        parser.add_argument(
+            'domain',
+            help='Domain',
+            type=str
+        )
 
     def handle(self, *args, **options):
         serializer = serializers.ReloadDomainSerializer(

@@ -41,7 +41,7 @@ class Command(base.BaseCommand):
                 os.system(
                     f"{SystemPath.ip_cmd()}"
                     f" addr add {data['ipaddress']}/{data['subnet']}"
-                    f" dev {settings.NIC}"
+                    f" dev {settings.OS_NIC}"
                 )
 
         # Stop IP Address Daemon
@@ -57,5 +57,5 @@ class Command(base.BaseCommand):
                 os.system(
                     f"{SystemPath.ip_cmd()}"
                     f" addr del {data['ipaddress']}/{data['subnet']}"
-                    f" dev {settings.NIC}"
+                    f" dev {settings.OS_NIC}"
                 )

@@ -1,6 +1,7 @@
 import os
 
 from django.conf import settings
+from rest_framework import serializers
 
 
 class OsType:
@@ -25,16 +26,28 @@ class OsType:
         """
 
         if settings.OS_TYPE is None:
-            raise ValueError('Operating System value cannot return None')
+            raise serializers.ValidationError(
+                'Operating System value cannot return None',
+                code='none'
+            )
 
         elif type(settings.OS_TYPE) is not int:
-            raise ValueError('Operating System value must return an INT')
+            raise serializers.ValidationError(
+                'Operating System value must return an INT',
+                code='not_int'
+            )
 
         elif settings.OS_TYPE == 0:
-            raise ValueError('Operating System value cannot be 0')
+            raise serializers.ValidationError(
+                'Operating System value cannot be 0',
+                code='zero'
+            )
 
         elif settings.OS_TYPE not in cls.__options():
-            raise ValueError(f'Operating System value cannot exceed {str(len(cls.__options()))}')
+            raise serializers.ValidationError(
+                f'Operating System value cannot exceed {str(len(cls.__options()))}',
+                code='not_found'
+            )
 
     @classmethod
     def validate_path(cls, path):
@@ -44,10 +57,16 @@ class OsType:
         """
 
         if path is None:
-            raise KeyError('Path cannot return None')
+            raise serializers.ValidationError(
+                'Path cannot return None',
+                code='none'
+            )
 
         elif not os.path.exists(path):
-            raise FileNotFoundError(f"Path '{path}' was not found")
+            raise serializers.ValidationError(
+                f"Path '{path}' was not found",
+                code='not_found'
+            )
 
         return path
 

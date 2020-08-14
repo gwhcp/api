@@ -4,17 +4,43 @@ import sys
 import environ
 
 env = environ.Env(
+    ADMINS=(tuple, ()),
     ALLOWED_HOSTS=(list, []),
+    CELERY_BROKER_HOST=(str, ''),
+    CELERY_BROKER_PASSWORD=(str, ''),
+    CELERY_BROKER_PORT=(int, 5672),
+    CELERY_BROKER_USER=(str, ''),
+    CELERY_BROKER_VHOST=(str, ''),
     CSRF_COOKIE_SECURE=(bool, True),
     DEBUG=(bool, False),
-    SECURE_SSL_REDIRECT=(bool, True),
-    SESSION_COOKIE_SECURE=(bool, True)
+    DEFAULT_FROM_EMAIL=(str, ''),
+    EMAIL_BACKEND=(str, 'django.core.mail.backends.smtp.EmailBackend'),
+    EMAIL_HOST=(str, ''),
+    EMAIL_HOST_PASSWORD=(str, ''),
+    EMAIL_HOST_USER=(str, ''),
+    EMAIL_PORT=(int, 587),
+    EMAIL_USE_TLS=(bool, False),
+    FERNET_KEY=(str, ''),
+    MANAGERS=(tuple, ()),
+    OS_NIC=(str, ''),
+    OS_NS_1=(int, 0),
+    OS_NS_2=(int, 0),
+    OS_QUEUE_SLEEP_CYCLE=(int, 2),
+    OS_QUEUE_SLEEP_TASKS=(int, 5),
+    OS_TYPE=(int, 1),
+    SECRET_KEY=(str, ''),
+    SESSION_COOKIE_SECURE=(bool, True),
+    SITE_ID=(int, 1),
 )
 
 environ.Env.read_env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+"""
+Security
+"""
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
@@ -26,9 +52,12 @@ FERNET_KEY = env('FERNET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
+# A list of strings representing the host/domain names that this Django site can serve.
 ALLOWED_HOSTS = env('ALLOWED_HOSTS')
 
-# Application definition
+"""
+Application
+"""
 
 # Django Applications
 INSTALLED_APPS = [
@@ -86,6 +115,10 @@ INSTALLED_APPS.extend([
     'worker.web'
 ])
 
+"""
+Middleware
+"""
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
@@ -98,7 +131,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 
+"""
+URLs
+"""
+
 ROOT_URLCONF = 'application.urls'
+
+"""
+Template
+"""
 
 TEMPLATES = [
     {
@@ -116,20 +157,29 @@ TEMPLATES = [
     }
 ]
 
+"""
+ASGI / WSGI Application
+"""
+
 WSGI_APPLICATION = 'application.wsgi.application'
 
-# Database
+"""
+Database
+"""
+
 DATABASES = {
     'default': env.db('DATABASE_DEFAULT'),
     'default_read1': env.db('DATABASE_READ1')
 }
 
-# Database Routers
+# Router
 DATABASE_ROUTERS = [
     'database.router.ReadWrite'
 ]
 
-# Password validation
+"""
+Password Validation
+"""
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -149,7 +199,9 @@ AUTH_PASSWORD_VALIDATORS = [
     }
 ]
 
-# Internationalization
+"""
+Internationalization
+"""
 
 LANGUAGE_CODE = 'en-us'
 
@@ -161,7 +213,9 @@ USE_L10N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+"""
+Static files (CSS, JavaScript, Images)
+"""
 
 STATIC_URL = '/static/'
 
@@ -333,7 +387,6 @@ SSL
 """
 
 SECURE_HSTS_SECONDS = 0
-SECURE_SSL_REDIRECT = env('SECURE_SSL_REDIRECT')
 
 """
 Session

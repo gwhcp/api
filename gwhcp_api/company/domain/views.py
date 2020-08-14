@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from account.login import gacl
 from company.domain import models
 from company.domain import serializers
+from worker.queue.create import CreateQueue
 
 
 class ChoiceCompany(views.APIView):
@@ -52,6 +53,27 @@ class Create(generics.CreateAPIView):
 
     serializer_class = serializers.CreateSerializer
 
+    def perform_create(self, serializer):
+        instance = serializer.save()
+
+        create_queue = CreateQueue(
+            service_id={
+                'domain_id': instance.pk
+            }
+        )
+
+        create_queue.item(
+            {
+                'ipaddress': instance.ipaddress_pool.ipaddress,
+                'name': 'web.tasks.create_domain',
+                'args': {
+                    'domain': instance.name,
+                    'user': 'gwhcp',
+                    'group': 'gwhcp'
+                }
+            }
+        )
+
 
 class Delete(generics.RetrieveDestroyAPIView):
     """
@@ -71,6 +93,22 @@ class Delete(generics.RetrieveDestroyAPIView):
     queryset = models.Domain.objects.all()
 
     serializer_class = serializers.SearchSerializer
+
+    def perform_destroy(self, instance):
+        create_queue = CreateQueue()
+
+        create_queue.item(
+            {
+                'ipaddress': instance.ipaddress_pool.ipaddress,
+                'name': 'web.tasks.delete_domain',
+                'args': {
+                    'domain': instance.name,
+                    'user': 'gwhcp'
+                }
+            }
+        )
+
+        instance.delete()
 
 
 class Profile(generics.RetrieveAPIView):

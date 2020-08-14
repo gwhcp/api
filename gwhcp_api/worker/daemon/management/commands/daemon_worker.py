@@ -54,11 +54,11 @@ class Command(base.BaseCommand):
                 # Nothing to do, sleep
                 if queue_items_count == 0:
                     self.stdout.write(
-                        f'Worker: No pending jobs found, sleeping for {settings.QUEUE_SLEEP_CYCLE} seconds...'
+                        f'Worker: No pending jobs found, sleeping for {settings.OS_QUEUE_SLEEP_CYCLE} seconds...'
                     )
 
                     # Sleep
-                    time.sleep(settings.QUEUE_SLEEP_CYCLE)
+                    time.sleep(settings.OS_QUEUE_SLEEP_CYCLE)
 
                 # We have a job, lets work on that
                 if queue_items_count > 0:
@@ -98,7 +98,7 @@ class Command(base.BaseCommand):
 
                         # Send task to worker
                         celery_app.send_task(
-                            f'gwhcp_worker.{item.name}'
+                            f"worker.{item.name}",
                             [
                                 item.args
                             ],
@@ -108,12 +108,12 @@ class Command(base.BaseCommand):
 
                         # Pause between tasks - Sleep
                         time.sleep(
-                            settings.QUEUE_SLEEP_TASKS
+                            settings.OS_QUEUE_SLEEP_TASKS
                         )
 
                     # Finished loop - Sleep
                     time.sleep(
-                        settings.QUEUE_SLEEP_CYCLE
+                        settings.OS_QUEUE_SLEEP_CYCLE
                     )
 
         # Stop Worker Daemon

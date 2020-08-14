@@ -37,6 +37,18 @@ class Domain(models.Domain):
         if getattr(self, 'created', False):
             # Company related only
             if self.company_id is not None:
+                self.in_queue = True
+
                 self.is_active = True
 
         super(Domain, self).save()
+
+
+class IpaddressPool(models.IpaddressPool):
+    class Meta:
+        default_permissions = ()
+
+        proxy = True
+
+        verbose_name = 'IP Address Pool'
+        verbose_name_plural = 'IP Address Pools'

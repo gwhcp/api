@@ -202,7 +202,7 @@ class CreateIpaddressSerializer(serializers.Serializer):
         os.system(
             f"{SystemPath.ip_cmd()}"
             f" addr add {validated_ip}/{validated_subnet}"
-            f" dev {settings.NIC}"
+            f" dev {settings.OS_NIC}"
         )
 
         return validated_data
@@ -510,7 +510,7 @@ class DeleteIpaddressSerializer(serializers.Serializer):
             f"{SystemPath.ip_cmd()}"
             f" addr del"
             f" {validated_ip}/{validated_subnet}"
-            f" dev {settings.NIC}"
+            f" dev {settings.OS_NIC}"
         )
 
         os.remove(
