@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from account.login import gacl
 from hardware.company import models
 from hardware.company import serializers
+from worker.queue.create import CreateQueue
 
 
 class ChoiceDomain(views.APIView):
@@ -35,7 +36,7 @@ class ChoiceDomain(views.APIView):
 
 class ChoiceTarget(views.APIView):
     """
-    View available target types
+    View available hardware target types
     """
 
     permission_classes = (
@@ -53,7 +54,7 @@ class ChoiceTarget(views.APIView):
 
 class Create(generics.CreateAPIView):
     """
-    Create company domain
+    Create company hardware domain
     """
 
     permission_classes = (
@@ -73,7 +74,7 @@ class Create(generics.CreateAPIView):
 
 class Delete(generics.RetrieveDestroyAPIView):
     """
-    Delete company domain
+    Delete company hardware domain
     """
 
     permission_classes = (
@@ -90,10 +91,24 @@ class Delete(generics.RetrieveDestroyAPIView):
 
     serializer_class = serializers.SearchSerializer
 
+    def perform_destroy(self, instance):
+        if instance.is_bind:
+            create_queue = CreateQueue()
+
+            create_queue.item(
+                {
+                    'ipaddress': instance.ipaddress_pool.ipaddress,
+                    'name': 'bind.tasks.server_uninstall',
+                    'args': {}
+                }
+            )
+
+        instance.delete()
+
 
 class Install(generics.RetrieveUpdateAPIView):
     """
-    Install company domain
+    Install company hardware domain
     """
 
     permission_classes = (
@@ -110,10 +125,29 @@ class Install(generics.RetrieveUpdateAPIView):
 
     serializer_class = serializers.InstallSerializer
 
+    def perform_update(self, serializer):
+        instance = serializer.save()
+
+        if instance.is_bind:
+            create_queue = CreateQueue(
+                service_id={
+                    'server_id': instance.pk
+                }
+            )
+
+            # Installed Bind
+            create_queue.item(
+                {
+                    'ipaddress': instance.ipaddress_pool.ipaddress,
+                    'name': 'bind.tasks.server_install',
+                    'args': {}
+                }
+            )
+
 
 class Profile(generics.RetrieveUpdateAPIView):
     """
-    View company domain
+    View company hardware domain
     """
 
     permission_classes = (
@@ -133,7 +167,7 @@ class Profile(generics.RetrieveUpdateAPIView):
 
 class Search(generics.ListAPIView):
     """
-    Search company domains
+    Search company hardware domains
     """
 
     permission_classes = (
