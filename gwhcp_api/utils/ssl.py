@@ -2,38 +2,42 @@ from OpenSSL import SSL
 from OpenSSL import crypto
 
 
-def validate_cert_with_private_key(cert, private_key):
+def create_csr(country, state, locality, org_name, org_unit_name, common_name, email_address, sign='sha1'):
     """
-    Check if Certificate Matches Private Key
+    Create CSR & RSA Keys
 
-    :param str|bytes cert: Certificate
-    :param str private_key: Private Key
+    :param str country: Country Code
+    :param str state: State Code
+    :param str locality: City
+    :param str org_name: Organization Name
+    :param str org_unit_name: NA
+    :param str common_name: Domain Name
+    :param str email_address: Email Address
+    :param str|bytes sign: Encryption Type
 
-    :raise: crypto.Error
-
-    :return: bool
+    :return: dict
     """
 
-    try:
-        rsa = crypto.load_privatekey(crypto.FILETYPE_PEM, private_key)
-    except crypto.Error:
-        return False
+    # create a key pair
+    rsa = crypto.PKey()
+    rsa.generate_key(crypto.TYPE_RSA, 2048)
 
-    try:
-        crt = crypto.load_certificate(crypto.FILETYPE_PEM, cert)
-    except crypto.Error:
-        return False
+    # create csr
+    csr = crypto.X509Req()
+    csr.get_subject().C = country
+    csr.get_subject().ST = state
+    csr.get_subject().L = locality
+    csr.get_subject().O = org_name
+    csr.get_subject().OU = org_unit_name
+    csr.get_subject().CN = common_name
+    csr.get_subject().emailAddress = email_address
+    csr.set_pubkey(rsa)
+    csr.sign(rsa, sign)
 
-    context = SSL.Context(SSL.TLSv1_METHOD)
-    context.use_privatekey(rsa)
-    context.use_certificate(crt)
-
-    try:
-        context.check_privatekey()
-
-        return True
-    except SSL.Error:
-        return False
+    return {
+        'csr': crypto.dump_certificate_request(crypto.FILETYPE_PEM, csr),
+        'rsa': crypto.dump_privatekey(crypto.FILETYPE_PEM, rsa)
+    }
 
 
 def create_self_signed(country, state, locality, org_name, org_unit_name, common_name, email_address, sign='sha1'):
@@ -79,39 +83,35 @@ def create_self_signed(country, state, locality, org_name, org_unit_name, common
     }
 
 
-def create_csr(country, state, locality, org_name, org_unit_name, common_name, email_address, sign='sha1'):
+def validate_cert_with_private_key(cert, private_key):
     """
-    Create CSR & RSA Keys
+    Check if Certificate Matches Private Key
 
-    :param str country: Country Code
-    :param str state: State Code
-    :param str locality: City
-    :param str org_name: Organization Name
-    :param str org_unit_name: NA
-    :param str common_name: Domain Name
-    :param str email_address: Email Address
-    :param str|bytes sign: Encryption Type
+    :param str|bytes cert: Certificate
+    :param str private_key: Private Key
 
-    :return: dict
+    :raise: crypto.Error
+
+    :return: bool
     """
 
-    # create a key pair
-    rsa = crypto.PKey()
-    rsa.generate_key(crypto.TYPE_RSA, 2048)
+    try:
+        rsa = crypto.load_privatekey(crypto.FILETYPE_PEM, private_key)
+    except crypto.Error:
+        return False
 
-    # create csr
-    csr = crypto.X509Req()
-    csr.get_subject().C = country
-    csr.get_subject().ST = state
-    csr.get_subject().L = locality
-    csr.get_subject().O = org_name
-    csr.get_subject().OU = org_unit_name
-    csr.get_subject().CN = common_name
-    csr.get_subject().emailAddress = email_address
-    csr.set_pubkey(rsa)
-    csr.sign(rsa, sign)
+    try:
+        crt = crypto.load_certificate(crypto.FILETYPE_PEM, cert)
+    except crypto.Error:
+        return False
 
-    return {
-        'csr': crypto.dump_certificate_request(crypto.FILETYPE_PEM, csr),
-        'rsa': crypto.dump_privatekey(crypto.FILETYPE_PEM, rsa)
-    }
+    context = SSL.Context(SSL.TLSv1_METHOD)
+    context.use_privatekey(rsa)
+    context.use_certificate(crt)
+
+    try:
+        context.check_privatekey()
+
+        return True
+    except SSL.Error:
+        return False
