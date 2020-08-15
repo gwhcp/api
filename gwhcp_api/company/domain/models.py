@@ -35,11 +35,7 @@ class Domain(models.Domain):
             self.created = True
 
         if getattr(self, 'created', False):
-            # Company related only
-            if self.company_id is not None:
-                self.in_queue = True
-
-                self.is_active = True
+            self.is_active = True
 
         super(Domain, self).save()
 

@@ -24,7 +24,7 @@ class Domain(models.Model):
     ipaddress_pool = models.ForeignKey(
         'IpaddressPool',
         blank=False,
-        null=False,
+        null=True,
         on_delete=models.CASCADE,
         related_name='domain_ipaddress_pool'
     )
