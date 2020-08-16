@@ -112,18 +112,20 @@ class CreateSerializer(serializers.ModelSerializer):
 
         if domain.related_to.manage_dns:
             models.DnsZone.objects.create(
+                data=validated_ip,
                 domain=domain,
-                record_type=('A' if ipaddress.ip_address(validated_ip).version == 4 else 'AAAA'),
                 host=domain.name.split(f".{domain.related_to.name}")[0],
-                data=validated_ip
+                is_custom=False,
+                record_type=('A' if ipaddress.ip_address(validated_ip).version == 4 else 'AAAA'),
             )
 
             if validated_data.get('is_mail') is not None and validated_data['is_mail']:
                 models.DnsZone.objects.create(
+                    data=domain.related_to.name,
                     domain=domain,
-                    record_type='MX',
                     host='@',
-                    data=domain.related_to.name
+                    is_custom=False,
+                    record_type='MX'
                 )
 
         return instance
