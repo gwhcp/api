@@ -1,3 +1,5 @@
+import ipaddress
+
 from django.db import models
 from model_utils import FieldTracker
 
@@ -57,6 +59,14 @@ class DnsZone(models.Model):
 
     def __str__(self):
         return self.host
+
+    def clean_data(self):
+        try:
+            return str(ipaddress.ip_address(self.data))
+        except ValueError:
+            value = self.data.rstrip('.')
+
+            return value + '.'.lower()
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self.pk:

@@ -3,6 +3,8 @@ import os
 import shutil
 from datetime import datetime
 
+from django.db.models import Q
+
 try:
     # Only here to avoid errors when developing on a Windows OS
     import grp
@@ -153,25 +155,13 @@ class RebuildAllSerializer(serializers.Serializer):
 
         try:
             models.Server.objects.get(
-                pk=settings.OS_NS_1,
+                pk=settings.OS_NS,
                 is_bind=True,
                 is_installed=True
             )
         except models.Server.DoesNotExist:
             raise serializers.ValidationError(
-                'Bind Primary Server was not found.',
-                code='not_found'
-            )
-
-        try:
-            models.Server.objects.get(
-                pk=settings.OS_NS_2,
-                is_bind=True,
-                is_installed=True
-            )
-        except models.Server.DoesNotExist:
-            raise serializers.ValidationError(
-                'Bind Secondary Server was not found.',
+                'Bind Server was not found.',
                 code='not_found'
             )
 
@@ -185,28 +175,26 @@ class RebuildAllSerializer(serializers.Serializer):
             if os.path.isfile(file_path):
                 os.remove(file_path)
 
-        # Find Primary / Secondary Nameservers
+        # Find Nameserver
         result = models.Server.objects.get(
-            pk=settings.OS_NS_1
+            pk=settings.OS_NS
         )
 
-        result2 = models.Server.objects.get(
-            pk=settings.OS_NS_2
-        )
+        result2 = models.Domain.objects.filter(
+            ns__in=[
+                settings.OS_NS
+            ]
+        ).order_by('name')
 
-        result3 = models.Domain.objects.filter(
-            ns1_id=settings.OS_NS_1,
-            ns2_id=settings.OS_NS_2
-        ).order_by('domain')
-
-        for item in result3:
-            result4 = models.DnsZone.objects.filter(
-                domain=item
+        for item in result2:
+            result3 = models.DnsZone.objects.filter(
+                Q(domain=item.pk) |
+                Q(domain__related_to=item.pk)
             ).order_by('record_type')
 
             records = ''
 
-            for zone in result4:
+            for zone in result3:
                 if zone.record_type == 'A':
                     records += f"{zone.host} IN A {zone.clean_data()}\n"
 
@@ -219,18 +207,16 @@ class RebuildAllSerializer(serializers.Serializer):
                 if zone.record_type == 'MX':
                     records += f"{zone.host} IN MX {zone.mx_priority} {zone.clean_data()}\n"
 
-                if zone.record_typed == 'TXT':
+                if zone.record_type == 'TXT':
                     records += f"{zone.host} IN TXT {zone.clean_data()}\n"
 
             content_zone = render_to_string('bind/domain.zone.tmpl') \
-                .replace('[WEB-DOMAIN]', item.domain.name) \
+                .replace('[WEB-DOMAIN]', item.name) \
                 .replace('[BIND-NS-DOMAIN]', result.domain.name) \
-                .replace('[BIND-DATETIME]', item.last_updated.strftime('%Y%m%d')) \
-                .replace('[BIND-NS1-DOMAIN]', result.domain.name) \
-                .replace('[BIND-NS2-DOMAIN]', result2.domain.name) \
+                .replace('[BIND-DATETIME]', datetime.now().strftime('%Y%m%d')) \
                 .replace('[BIND-RECORD]', records)
 
-            handle = open(f"{BindPath.domain_dir()}{item.domain.name}.zone", 'w')
+            handle = open(f"{BindPath.domain_dir()}{item.name}.zone", 'w')
             handle.write(content_zone)
             handle.close()
 
@@ -301,25 +287,13 @@ class RebuildDomainSerializer(serializers.Serializer):
 
         try:
             models.Server.objects.get(
-                pk=settings.OS_NS_1,
+                pk=settings.OS_NS,
                 is_bind=True,
                 is_installed=True
             )
         except models.Server.DoesNotExist:
             raise serializers.ValidationError(
-                'Bind Primary Server was not found.',
-                code='not_found'
-            )
-
-        try:
-            models.Server.objects.get(
-                pk=settings.OS_NS_2,
-                is_bind=True,
-                is_installed=True
-            )
-        except models.Server.DoesNotExist:
-            raise serializers.ValidationError(
-                'Bind Secondary Server was not found.',
+                'Bind Server was not found.',
                 code='not_found'
             )
 
@@ -338,16 +312,14 @@ class RebuildDomainSerializer(serializers.Serializer):
             name=validated_domain
         )
 
-        result2 = models.Server.objects.get(
-            pk=domain.ns1_id
-        )
-
-        result3 = models.Server.objects.get(
-            pk=domain.ns2_id
+        # Find Nameserver
+        result = models.Server.objects.get(
+            pk=settings.OS_NS
         )
 
         zones = models.DnsZone.objects.filter(
-            domain=domain
+            Q(domain=domain) |
+            Q(domain__related_to=domain)
         ).order_by('record_type')
 
         records = ''
@@ -365,15 +337,13 @@ class RebuildDomainSerializer(serializers.Serializer):
             if zone.record_type == 'MX':
                 records += f"{zone.host} IN MX {zone.mx_priority} {zone.clean_data()}\n"
 
-            if zone.record_typed == 'TXT':
+            if zone.record_type == 'TXT':
                 records += f"{zone.host} IN TXT {zone.clean_data()}\n"
 
         content_zone = render_to_string('bind/domain.zone.tmpl') \
             .replace('[WEB-DOMAIN]', domain.name) \
-            .replace('[BIND-NS-DOMAIN]', domain.name) \
-            .replace('[BIND-DATETIME]', domain.last_updated.strftime('%Y%m%d')) \
-            .replace('[BIND-NS1-DOMAIN]', result2.domain.name) \
-            .replace('[BIND-NS2-DOMAIN]', result3.domain.name) \
+            .replace('[BIND-NS-DOMAIN]', result.domain.name) \
+            .replace('[BIND-DATETIME]', datetime.now().strftime('%Y%m%d')) \
             .replace('[BIND-RECORD]', records)
 
         handle = open(f"{BindPath.domain_dir()}{domain.name}.zone", 'w')

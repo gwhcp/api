@@ -1,8 +1,13 @@
 $ORIGIN [WEB-DOMAIN].
 $TTL 2H
-@                    IN      SOA     [BIND-NS-DOMAIN]. hostmaster.[WEB-DOMAIN]. ( [BIND-DATETIME]01 6H 30M 3D 1D )
+@                    IN      SOA     [BIND-NS-DOMAIN]. hostmaster.[WEB-DOMAIN]. (
+    [BIND-DATETIME]01 ; serial
+    6H ; refresh
+    30M ; retry
+    3D ; expire
+    1D ; nxdomain ttl
+)
 
-                     IN      NS      [BIND-NS1-DOMAIN].
-                     IN      NS      [BIND-NS2-DOMAIN].
+                     IN      NS      [BIND-NS-DOMAIN].
 
 [BIND-RECORD]

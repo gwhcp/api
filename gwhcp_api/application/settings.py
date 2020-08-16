@@ -23,8 +23,7 @@ env = environ.Env(
     FERNET_KEY=(str, ''),
     MANAGERS=(tuple, ()),
     OS_NIC=(str, ''),
-    OS_NS_1=(int, 0),
-    OS_NS_2=(int, 0),
+    OS_NS=(int, 0),
     OS_QUEUE_SLEEP_CYCLE=(int, 2),
     OS_QUEUE_SLEEP_TASKS=(int, 5),
     OS_TYPE=(int, 1),
@@ -357,8 +356,7 @@ Operating System
 
 OS_NIC = env('OS_NIC')
 
-OS_NS_1 = env('OS_NS_1')
-OS_NS_2 = env('OS_NS_2')
+OS_NS = env('OS_NS')
 
 OS_TYPE = env('OS_TYPE')
 

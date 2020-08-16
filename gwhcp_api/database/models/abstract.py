@@ -201,6 +201,11 @@ class Server(models.Model):
     mail = models.ForeignKey(
         'Server',
         blank=False,
+        limit_choices_to={
+            'is_active': True,
+            'is_installed': True,
+            'is_mail': True
+        },
         null=True,
         on_delete=models.CASCADE,
         related_name='product_server_mail'
@@ -208,31 +213,35 @@ class Server(models.Model):
 
     mysql = models.ForeignKey(
         'Server',
-        blank=False,
+        blank=False,limit_choices_to={
+            'is_active': True,
+            'is_installed': True,
+            'is_mysql': True
+        },
         null=True,
         on_delete=models.CASCADE,
         related_name='product_server_mysql'
     )
 
-    ns1 = models.ForeignKey(
+    ns = models.ManyToManyField(
         'Server',
         blank=False,
-        null=True,
-        on_delete=models.CASCADE,
-        related_name='product_server_ns1'
-    )
-
-    ns2 = models.ForeignKey(
-        'Server',
-        blank=False,
-        null=True,
-        on_delete=models.CASCADE,
-        related_name='product_server_ns2'
+        limit_choices_to={
+            'is_active': True,
+            'is_bind': True,
+            'is_installed': True
+        },
+        related_name='product_server_ns'
     )
 
     postgresql = models.ForeignKey(
         'Server',
         blank=False,
+        limit_choices_to={
+            'is_active': True,
+            'is_installed': True,
+            'is_postgresql': True
+        },
         null=True,
         on_delete=models.CASCADE,
         related_name='product_server_postgresql'
@@ -241,6 +250,11 @@ class Server(models.Model):
     web = models.ForeignKey(
         'Server',
         blank=False,
+        limit_choices_to={
+            'is_active': True,
+            'is_domain': True,
+            'is_installed': True
+        },
         null=True,
         on_delete=models.CASCADE,
         related_name='product_server_web'

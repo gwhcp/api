@@ -40,32 +40,6 @@ class Domain(models.Model):
         related_name='domain_ns'
     )
 
-    ns1 = models.ForeignKey(
-        'Server',
-        blank=False,
-        limit_choices_to={
-            'is_active': True,
-            'is_bind': True,
-            'is_installed': True
-        },
-        null=True,
-        on_delete=models.CASCADE,
-        related_name='domain_ns1'
-    )
-
-    ns2 = models.ForeignKey(
-        'Server',
-        blank=False,
-        limit_choices_to={
-            'is_active': True,
-            'is_bind': True,
-            'is_installed': True
-        },
-        null=True,
-        on_delete=models.CASCADE,
-        related_name='domain_ns2'
-    )
-
     related_to = models.ForeignKey(
         'self',
         blank=False,
