@@ -62,7 +62,16 @@ class ProfileSerializer(serializers.ModelSerializer):
             'company_name',
             'id',
             'manage_dns',
-            'name'
+            'name',
+            'ns'
+        ]
+
+        read_only_fields = [
+            'company',
+            'company_name',
+            'id',
+            'name',
+            'ns'
         ]
 
 
