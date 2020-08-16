@@ -31,6 +31,10 @@ class DnsZone(models.Model):
         null=True
     )
 
+    is_custom = models.BooleanField(
+        default=True
+    )
+
     last_updated = models.DateTimeField(
         auto_now=True
     )
