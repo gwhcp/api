@@ -29,6 +29,17 @@ class Domain(models.Model):
         related_name='domain_ipaddress_pool'
     )
 
+    ns = models.ManyToManyField(
+        'Server',
+        blank=True,
+        limit_choices_to={
+            'is_active': True,
+            'is_bind': True,
+            'is_installed': True
+        },
+        related_name='domain_ns'
+    )
+
     ns1 = models.ForeignKey(
         'Server',
         blank=False,

@@ -27,7 +27,6 @@ controls {
               allow { 127.0.0.1; } keys { "rndc-key"; };
 };
 
-
 # Localhost Zone
 zone "localhost" IN {
     type master;
@@ -47,16 +46,16 @@ zone "1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa" 
 };
 
 # Netmask Zone
-zone "255.in-addr.arpa" IN {
-    type master;
-    file "empty.zone";
-};
+#zone "255.in-addr.arpa" IN {
+#    type master;
+#    file "empty.zone";
+#};
 
 # Empty Zone
-zone "0.in-addr.arpa" IN {
-    type master;
-    file "empty.zone";
-};
+#zone "0.in-addr.arpa" IN {
+#    type master;
+#    file "empty.zone";
+#};
 
 # Root Hints
 zone "." IN {

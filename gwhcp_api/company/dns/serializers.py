@@ -31,6 +31,23 @@ class DeleteSerializer(serializers.ModelSerializer):
         ]
 
 
+class NsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Domain
+
+        fields = [
+            'id',
+            'manage_dns',
+            'name',
+            'ns'
+        ]
+
+        read_only_fields = [
+            'id',
+            'name'
+        ]
+
+
 class ProfileSerializer(serializers.ModelSerializer):
     company_name = serializers.StringRelatedField(
         read_only=True,

@@ -17,6 +17,7 @@ from rest_framework import serializers
 
 from worker.bind import models
 from worker.bind.path import BindPath
+from worker.system.path import SystemPath
 
 
 class CreateDomainSerializer(serializers.Serializer):
@@ -152,9 +153,9 @@ class RebuildAllSerializer(serializers.Serializer):
 
         try:
             models.Server.objects.get(
-                pk=settings.NS_1,
-                is_installed=True,
-                target_type='bind'
+                pk=settings.OS_NS_1,
+                is_bind=True,
+                is_installed=True
             )
         except models.Server.DoesNotExist:
             raise serializers.ValidationError(
@@ -164,9 +165,9 @@ class RebuildAllSerializer(serializers.Serializer):
 
         try:
             models.Server.objects.get(
-                pk=settings.NS_2,
-                is_installed=True,
-                target_type='bind'
+                pk=settings.OS_NS_2,
+                is_bind=True,
+                is_installed=True
             )
         except models.Server.DoesNotExist:
             raise serializers.ValidationError(
@@ -186,16 +187,16 @@ class RebuildAllSerializer(serializers.Serializer):
 
         # Find Primary / Secondary Nameservers
         result = models.Server.objects.get(
-            pk=settings.NS_1
+            pk=settings.OS_NS_1
         )
 
         result2 = models.Server.objects.get(
-            pk=settings.NS_2
+            pk=settings.OS_NS_2
         )
 
         result3 = models.Domain.objects.filter(
-            ns1_id=settings.NS_1,
-            ns2_id=settings.NS_2
+            ns1_id=settings.OS_NS_1,
+            ns2_id=settings.OS_NS_2
         ).order_by('domain')
 
         for item in result3:
@@ -300,9 +301,9 @@ class RebuildDomainSerializer(serializers.Serializer):
 
         try:
             models.Server.objects.get(
-                pk=settings.NS_1,
-                is_installed=True,
-                target_type='bind'
+                pk=settings.OS_NS_1,
+                is_bind=True,
+                is_installed=True
             )
         except models.Server.DoesNotExist:
             raise serializers.ValidationError(
@@ -312,9 +313,9 @@ class RebuildDomainSerializer(serializers.Serializer):
 
         try:
             models.Server.objects.get(
-                pk=settings.NS_2,
-                is_installed=True,
-                target_type='bind'
+                pk=settings.OS_NS_2,
+                is_bind=True,
+                is_installed=True
             )
         except models.Server.DoesNotExist:
             raise serializers.ValidationError(
@@ -513,6 +514,23 @@ class ServerInstallSerializer(serializers.Serializer):
 
         shutil.chown(path_log_named, user='named', group='named')
 
+        # zones
+        zones = [
+            '127.0.0.zone',
+            'localhost.ip6.zone',
+            'localhost.zone',
+            'root.hint'
+        ]
+
+        for item in zones:
+            content_zone = render_to_string(f'bind/{item}.tmpl')
+
+            handle3 = open(f"{BindPath.var_dir()}{item}", 'w')
+            handle3.write(content_zone)
+            handle3.close()
+
+            shutil.chown(f"{BindPath.var_dir()}{item}", user='named', group='named')
+
         # domain.zones
         path_domain_zones = f"{BindPath.var_dir()}domain.zones"
 
@@ -530,6 +548,16 @@ class ServerInstallSerializer(serializers.Serializer):
         shutil.chown(path_ipaddress_zones, user='named', group='named')
 
         os.mknod(f"{BindPath.conf_dir()}.isInstalled", 0o644)
+
+        os.system(
+            f"{SystemPath.systemctl_cmd()}"
+            f" enable named"
+        )
+
+        os.system(
+            f"{SystemPath.systemctl_cmd()}"
+            f" start named"
+        )
 
         return validated_data
 
@@ -567,5 +595,15 @@ class ServerUninstallSerializer(serializers.Serializer):
             os.remove(path_named)
 
         os.remove(f"{BindPath.conf_dir()}.isInstalled")
+
+        os.system(
+            f"{SystemPath.systemctl_cmd()}"
+            f" stop named"
+        )
+
+        os.system(
+            f"{SystemPath.systemctl_cmd()}"
+            f" disable named"
+        )
 
         return validated_data

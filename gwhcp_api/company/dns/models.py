@@ -38,3 +38,13 @@ class Domain(models.Domain):
 
         verbose_name = 'Domain'
         verbose_name_plural = 'Domains'
+
+
+class Server(models.Server):
+    class Meta:
+        default_permissions = ()
+
+        proxy = True
+
+        verbose_name = 'Server'
+        verbose_name_plural = 'Servers'
