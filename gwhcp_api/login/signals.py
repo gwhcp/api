@@ -2,7 +2,7 @@ import socket
 
 from ipware.ip import get_client_ip
 
-from account.login import models
+from login import models
 
 
 def handle_login(sender, request, user, **kwargs):  # noqa

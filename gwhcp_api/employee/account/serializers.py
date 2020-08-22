@@ -1,41 +1,19 @@
-from django.contrib.auth import models as auth_models
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
-from account.login import models
+from employee.account import models
 
 
-class BasePermissionSerializer(serializers.ModelSerializer):
+class AccessLogSerializer(serializers.ModelSerializer):
     class Meta:
-        model = auth_models.Permission
+        model = models.AccessLog
 
         fields = [
-            'id',
-            'name'
+            'account',
+            'date_from',
+            'ipaddress',
+            'reverse_ipaddress'
         ]
-
-
-class CreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.Account
-
-        exclude = [
-            'last_login',
-            'is_active',
-            'is_superuser'
-        ]
-
-    def create(self, validated_data):
-        user = super(CreateSerializer, self).create(validated_data)
-        user.set_password(validated_data['password'])
-        user.save()
-
-        return user
-
-    def validate_password(self, value):
-        validate_password(value)
-
-        return value
 
 
 class PasswordSerializer(serializers.ModelSerializer):
@@ -64,7 +42,7 @@ class PasswordSerializer(serializers.ModelSerializer):
 
         extra_kwargs = {
             'password': {
-                'style': {'input_type': 'password'},
+                'style': {'input_type': 'password'}
             }
         }
 
@@ -75,13 +53,13 @@ class PasswordSerializer(serializers.ModelSerializer):
         return instance
 
     def validate(self, attrs):
-        error = {}
-
         if attrs.get('password') != attrs.get('confirmed_password'):
-            error['confirmed_password'] = 'Confirmed password does not match password.'
-
-        if error:
-            raise serializers.ValidationError(error, code='invalid')
+            raise serializers.ValidationError(
+                {
+                    'confirmed_password': 'Confirmed password does not match password.'
+                },
+                code='invalid'
+            )
 
         return attrs
 
@@ -100,30 +78,13 @@ class PasswordSerializer(serializers.ModelSerializer):
         return value
 
 
-class PermissionSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Account
 
-        fields = [
+        exclude = [
             'groups',
-            'user_permissions',
-            'id'
+            'is_superuser',
+            'password',
+            'user_permissions'
         ]
-
-
-class UserPermissionsSerializer(serializers.ModelSerializer):
-    perm = serializers.SerializerMethodField()
-
-    class Meta:
-        model = auth_models.Permission
-
-        fields = [
-            'id',
-            'perm'
-        ]
-
-    def get_perm(self, obj):
-        return '{}.{}'.format(
-            obj.content_type.app_label,
-            obj.codename
-        )

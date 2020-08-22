@@ -1,9 +1,9 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAdminUser
 
-from account.login import gacl
 from company.company import models
 from company.company import serializers
+from login import gacl
 
 
 class Create(generics.CreateAPIView):

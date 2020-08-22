@@ -1,6 +1,6 @@
 from django.urls import path
 
-from store.fraud import views
+from company.mail import views
 
 urlpatterns = [
     path(
@@ -19,6 +19,12 @@ urlpatterns = [
         'delete/<int:pk>',
         views.Delete.as_view(),
         name='delete'
+    ),
+
+    path(
+        'password/<int:pk>',
+        views.Password.as_view(),
+        name='password'
     ),
 
     path(

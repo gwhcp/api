@@ -3,24 +3,19 @@ from rest_framework import views
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
-from account.login import gacl
+from login import gacl
 from store.fraud import models
 from store.fraud import serializers
 
 
-class ChoiceType(views.APIView):
+class Choices(views.APIView):
     """
-    View available fraud string types
+    Choices
     """
 
     permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
+        IsAdminUser,
     )
-
-    gacl = {
-        'view': ['store.fraud.view_fraudstring']
-    }
 
     def get(self, request):
         return Response(dict(models.FraudString.Type.choices))

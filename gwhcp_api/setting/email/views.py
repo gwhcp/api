@@ -3,24 +3,19 @@ from rest_framework import views
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
-from account.login import gacl
+from login import gacl
 from setting.email import models
 from setting.email import serializers
 
 
-class ChoiceTemplate(views.APIView):
+class Choices(views.APIView):
     """
-    View available email templates
+    Choices
     """
 
     permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
+        IsAdminUser,
     )
-
-    gacl = {
-        'view': ['setting.email.view_emailtemplate']
-    }
 
     def get(self, request):
         return Response(dict(models.EmailTemplate.Template.choices))

@@ -1,8 +1,14 @@
 from django.urls import path
 
-from account.login import views
+from employee.manage import views
 
 urlpatterns = [
+    path(
+        'accesslog/<int:pk>',
+        views.AccessLog.as_view(),
+        name='accesslog'
+    ),
+
     path(
         'create',
         views.Create.as_view(),
@@ -16,12 +22,6 @@ urlpatterns = [
     ),
 
     path(
-        'password',
-        views.Password.as_view(),
-        name='password'
-    ),
-
-    path(
         'permission/<int:pk>',
         views.Permission.as_view(),
         name='permission'
@@ -29,13 +29,25 @@ urlpatterns = [
 
     path(
         'permission/base',
-        views.BasePermissions.as_view(),
+        views.PermissionBase.as_view(),
         name='permission-base'
     ),
 
     path(
         'permission/user',
-        views.UserPermission.as_view(),
+        views.PermissionUser.as_view(),
         name='permission-user'
+    ),
+
+    path(
+        'profile/<int:pk>',
+        views.Profile.as_view(),
+        name='profile'
+    ),
+
+    path(
+        'search',
+        views.Search.as_view(),
+        name='search'
     )
 ]

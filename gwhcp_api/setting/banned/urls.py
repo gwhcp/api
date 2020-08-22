@@ -4,9 +4,9 @@ from setting.banned import views
 
 urlpatterns = [
     path(
-        'choice/type',
-        views.ChoiceTypes.as_view(),
-        name='choice-types'
+        'choices',
+        views.Choices.as_view(),
+        name='choices'
     ),
 
     path(

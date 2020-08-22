@@ -3,14 +3,14 @@ from rest_framework import views
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
-from account.login import gacl
+from login import gacl
 from network.pool import models
 from network.pool import serializers
 
 
-class ChoiceAssigned(views.APIView):
+class Choices(views.APIView):
     """
-    View assigned options
+    Choices
     """
 
     permission_classes = (

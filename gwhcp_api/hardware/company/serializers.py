@@ -114,7 +114,7 @@ class CreateSerializer(serializers.ModelSerializer):
     def validate_ip(self, value):
         if not ip.ip_in_network('reserved', value):
             raise serializers.ValidationError(
-                '%s was not found in any reserved IP Address Networks.' % value,
+                f'{value} was not found in any reserved IP Address Networks.',
                 code='not_found'
             )
 
@@ -122,11 +122,29 @@ class CreateSerializer(serializers.ModelSerializer):
                 ipaddress=value
         ).exists():
             raise serializers.ValidationError(
-                '%s is currently in use.' % value,
+                f'{value} is currently in use.',
                 code='found'
             )
 
         return value
+
+    def validate(self, attrs):
+        if attrs['target_type'] != 'bind':
+            result = models.Server.objects.filter(
+                is_active=True,
+                is_bind=True,
+                is_installed=True
+            )
+
+            if not result.count() >= 2:
+                raise serializers.ValidationError(
+                    {
+                        'target_type': 'At least 2 Bind servers must be installed and active.'
+                    },
+                    code='missing_bind'
+                )
+
+        return attrs
 
 
 class InstallSerializer(serializers.ModelSerializer):

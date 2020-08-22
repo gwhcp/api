@@ -1,3 +1,5 @@
+from django.db import models as django_models
+
 from database import models
 
 
@@ -13,17 +15,21 @@ class AccessLog(models.AccessLog):
         verbose_name_plural = 'Account Access Logs'
 
 
+class AccountManager(django_models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(
+            is_staff=True
+        )
+
+
 class Account(models.Account):
+    objects = AccountManager()
+
     class Meta:
         default_permissions = (
             'change',
             'view'
         )
-
-        permissions = [
-            ('change_manage', 'Can change Manage Account'),
-            ('view_manage', 'Can view Manage Account')
-        ]
 
         proxy = True
 

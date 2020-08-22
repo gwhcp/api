@@ -16,21 +16,9 @@ urlpatterns = [
     ),
 
     path(
-        'choice/company',
-        views.ChoiceCompany.as_view(),
-        name='choice-company'
-    ),
-
-    path(
-        'choice/merchant',
-        views.ChoiceMerchant.as_view(),
-        name='choice-merchants'
-    ),
-
-    path(
-        'choice/method/<str:merchant>',
-        views.ChoiceMethod.as_view(),
-        name='choice-method'
+        'choices',
+        views.Choices.as_view(),
+        name='choices'
     ),
 
     path(

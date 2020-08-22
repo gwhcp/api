@@ -1,7 +1,7 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAdminUser
 
-from account.login import gacl
+from login import gacl
 from store.product.domain import models
 from store.product.domain import serializers
 

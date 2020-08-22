@@ -20,7 +20,7 @@ env = environ.Env(
     EMAIL_HOST_USER=(str, ''),
     EMAIL_PORT=(int, 587),
     EMAIL_USE_TLS=(bool, False),
-    FERNET_KEY=(str, ''),
+    FERNET_KEY=(str, b''),
     MANAGERS=(tuple, ()),
     OS_NIC=(str, ''),
     OS_NS=(int, 0),
@@ -46,7 +46,7 @@ SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # Used to encrypt/decrypt certain features in the database
-FERNET_KEY = env('FERNET_KEY')
+FERNET_KEY = env.bytes('FERNET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
@@ -76,23 +76,32 @@ INSTALLED_APPS = [
 
 # Project Applications
 INSTALLED_APPS.extend([
-    'account.account',
-    'account.login',
     'billing.payment',
     'billing.reason',
     'company.company',
     'company.dns',
     'company.domain',
+    'company.mail',
+    # 'company.xmpp',
     'database',
+    'employee.account',
+    # 'employee.mail',
+    'employee.manage',
+    # 'employee.xmpp',
     'hardware.client',
     'hardware.company',
+    'login',
     'network.pool',
     'setting.banned',
     'setting.email',
     'store.fraud',
     'store.product',
     'store.product.domain',
+    # 'store.product.mail',
+    # 'store.product.mysql',
+    # 'store.product.postgresql',
     'store.product.price',
+    # 'store.product.server',
     'worker.apache',
     'worker.awstats',
     'worker.bind',

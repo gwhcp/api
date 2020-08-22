@@ -10,18 +10,16 @@ class CreateSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate(self, attrs):
-        errors = {}
-
         obj = models.StoreProductPrice.objects.filter(
             store_product=attrs['store_product'],
             billing_cycle=attrs['billing_cycle']
         )
 
         if obj.exists():
-            errors['billing_cycle'] = 'Billing Cycle already exists.'
-
             raise serializers.ValidationError(
-                errors,
+                {
+                    'billing_cycle': 'Billing Cycle already exists.'
+                },
                 code='exists'
             )
 

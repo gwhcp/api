@@ -3,53 +3,37 @@ from rest_framework import views
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
-from account.login import gacl
 from hardware.company import models
 from hardware.company import serializers
+from login import gacl
 from worker.queue.create import CreateQueue
 
 
-class ChoiceDomain(views.APIView):
+class Choices(views.APIView):
     """
-    Domain choices
+    Choices
     """
 
     permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
+        IsAdminUser,
     )
 
-    gacl = {
-        'view': ['hardware.company.view_server']
-    }
-
     def get(self, request):
-        result = {}
+        result = {
+            'domain': {},
+            'hardware_target': {}
+        }
 
+        # Domain
         for domain in models.Domain.objects.all():
-            result.update({
+            result['domain'].update({
                 domain.pk: domain.name
             })
 
+        # Haradware Target
+        result['hardware_target'].update(dict(models.Server.HardwareTarget.choices))
+
         return Response(result)
-
-
-class ChoiceTarget(views.APIView):
-    """
-    View available hardware target types
-    """
-
-    permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
-    )
-
-    gacl = {
-        'view': ['hardware.company.view_server']
-    }
-
-    def get(self, request):
-        return Response(dict(models.Server.HardwareTarget.choices))
 
 
 class Create(generics.CreateAPIView):
@@ -70,6 +54,23 @@ class Create(generics.CreateAPIView):
     queryset = models.Server.objects.all()
 
     serializer_class = serializers.CreateSerializer
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+
+        create_queue = CreateQueue()
+
+        # Update Bind
+        for item in instance.domain.related_to.ns.all():
+            create_queue.item(
+                {
+                    'ipaddress': item.ipaddress_pool.ipaddress,
+                    'name': 'bind.tasks.rebuild_domain',
+                    'args': {
+                        'domain': instance.domain.related_to.name
+                    }
+                }
+            )
 
 
 class Delete(generics.RetrieveDestroyAPIView):
@@ -92,9 +93,23 @@ class Delete(generics.RetrieveDestroyAPIView):
     serializer_class = serializers.SearchSerializer
 
     def perform_destroy(self, instance):
-        if instance.is_bind:
-            create_queue = CreateQueue()
+        create_queue = CreateQueue()
 
+        # Update Bind
+        for item in instance.domain.related_to.ns.all():
+            create_queue.item(
+                {
+                    'ipaddress': item.ipaddress_pool.ipaddress,
+                    'name': 'bind.tasks.rebuild_domain',
+                    'args': {
+                        'domain': instance.domain.related_to.name
+                    }
+                }
+            )
+
+        # Bind
+        if instance.is_bind:
+            # Uninstall Bind
             create_queue.item(
                 {
                     'ipaddress': instance.ipaddress_pool.ipaddress,
@@ -102,6 +117,10 @@ class Delete(generics.RetrieveDestroyAPIView):
                     'args': {}
                 }
             )
+
+        # Mail
+        if instance.is_mail:
+            pass
 
         instance.delete()
 
@@ -128,6 +147,7 @@ class Install(generics.RetrieveUpdateAPIView):
     def perform_update(self, serializer):
         instance = serializer.save()
 
+        # Bind
         if instance.is_bind:
             create_queue = CreateQueue(
                 service_id={
@@ -135,12 +155,51 @@ class Install(generics.RetrieveUpdateAPIView):
                 }
             )
 
-            # Installed Bind
+            # Install Bind
             create_queue.item(
                 {
                     'ipaddress': instance.ipaddress_pool.ipaddress,
                     'name': 'bind.tasks.server_install',
                     'args': {}
+                }
+            )
+
+        # Mail
+        elif instance.is_mail:
+            create_queue = CreateQueue(
+                service_id={
+                    'server_id': instance.pk
+                }
+            )
+
+            # Install Dovecot
+            create_queue.item(
+                {
+                    'ipaddress': instance.ipaddress_pool.ipaddress,
+                    'name': 'dovecot.tasks.server_install',
+                    'args': {}
+                }
+            )
+
+            # Install Postfix
+            create_queue.item(
+                {
+                    'ipaddress': instance.ipaddress_pool.ipaddress,
+                    'name': 'postfix.tasks.server_install',
+                    'args': {
+                        'service': 'server'
+                    }
+                }
+            )
+
+            # Create Domain
+            create_queue.item(
+                {
+                    'ipaddress': instance.ipaddress_pool.ipaddress,
+                    'name': 'mail.tasks.create_domain',
+                    'args': {
+                        'domain': instance.domain.name
+                    }
                 }
             )
 

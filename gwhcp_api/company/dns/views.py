@@ -4,60 +4,42 @@ from rest_framework import views
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
-from account.login import gacl
 from company.dns import models
 from company.dns import serializers
+from login import gacl
 from worker.queue.create import CreateQueue
 
 
-class ChoiceNs(views.APIView):
+class Choices(views.APIView):
     """
-    View available nameserver options
+    Choices
     """
 
     permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
+        IsAdminUser,
     )
 
-    gacl = {
-        'view': ['company.dns.view_dnszone']
-    }
-
     def get(self, request):
-        ns = []
+        result = {
+            'ns': {},
+            'zone': {}
+        }
 
-        result = models.Server.objects.filter(
+        server = models.Server.objects.filter(
             is_active=True,
             is_bind=True,
             is_installed=True
         )
 
-        for item in result:
-            ns.append({
-                'id': item.pk,
-                'name': item.domain.name
+        for item in server:
+            result['ns'].update({
+                item.pk: item.domain.name
             })
 
-        return Response(ns)
+        # Merchant
+        result['zone'].update(dict(models.DnsZone.Type.choices))
 
-
-class ChoiceRecordType(views.APIView):
-    """
-    View available record type options
-    """
-
-    permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
-    )
-
-    gacl = {
-        'view': ['company.dns.view_dnszone']
-    }
-
-    def get(self, request):
-        return Response(dict(models.DnsZone.Type.choices))
+        return Response(result)
 
 
 class Create(generics.CreateAPIView):

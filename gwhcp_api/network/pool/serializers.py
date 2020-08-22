@@ -14,19 +14,16 @@ class CreateSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, attrs):
-        error = {}
-
         try:
             ipaddress.ip_network('%s/%s' % (
                 attrs['network'],
                 attrs['subnet']
             ))
         except ValueError:
-            error['subnet'] = 'Invalid network subnet.'
-
-        if error:
             raise serializers.ValidationError(
-                error,
+                {
+                    'subnet': 'Invalid network subnet.'
+                },
                 code='invalid'
             )
 

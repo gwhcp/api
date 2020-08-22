@@ -4,9 +4,9 @@ from network.pool import views
 
 urlpatterns = [
     path(
-        'choice/assigned',
-        views.ChoiceAssigned.as_view(),
-        name='choice-assigned'
+        'choices',
+        views.Choices.as_view(),
+        name='choices'
     ),
 
     path(

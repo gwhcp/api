@@ -113,6 +113,12 @@ class Account(auth_models.AbstractBaseUser, auth_models.PermissionsMixin, abstra
             self.last_name
         )
 
+    def get_full_name(self):
+        return '%s %s' % (
+            self.first_name,
+            self.last_name
+        )
+
     @staticmethod
     def get_time_zones():
         return dict(TIME_ZONE_CHOICES)

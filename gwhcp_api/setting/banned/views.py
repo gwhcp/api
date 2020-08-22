@@ -3,24 +3,19 @@ from rest_framework import views
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
-from account.login import gacl
+from login import gacl
 from setting.banned import models
 from setting.banned import serializers
 
 
-class ChoiceTypes(views.APIView):
+class Choices(views.APIView):
     """
-    View available banned types
+    Choices
     """
 
     permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
+        IsAdminUser,
     )
-
-    gacl = {
-        'view': ['setting.banned.view_banned']
-    }
 
     def get(self, request):
         return Response(dict(models.Banned.Type.choices))

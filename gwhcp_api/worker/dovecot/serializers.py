@@ -3,6 +3,8 @@ import os
 import re
 import shutil
 
+from worker.system.path import SystemPath
+
 try:
     # Only here to avoid errors when developing on a Windows OS
     import grp
@@ -151,17 +153,14 @@ class ServerInstallSerializer(serializers.Serializer):
         try:
             pwd.getpwnam('vmail').pw_uid
         except KeyError:
-            raise serializers.ValidationError(
-                "System User 'vmail' does not exist.",
-                code='not_found'
-            )
-
-        try:
-            grp.getgrnam('vmail').gr_gid
-        except KeyError:
-            raise serializers.ValidationError(
-                "System Group 'vmail' does not exist.",
-                code='not_found'
+            os.system(
+                f"{SystemPath.user_add_cmd()}"
+                f" --system"
+                f" -c vmail"
+                f" --no-create-home"
+                f" -d {DovecotPath.varlib_dir()}"
+                f" -s /bin/nologin"
+                f" --user-group vmail"
             )
 
         return attrs

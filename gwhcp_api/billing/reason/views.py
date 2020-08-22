@@ -3,24 +3,19 @@ from rest_framework import views
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
-from account.login import gacl
 from billing.reason import models
 from billing.reason import serializers
+from login import gacl
 
 
-class ChoiceType(views.APIView):
+class Choices(views.APIView):
     """
     View available billing reason types
     """
 
     permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
+        IsAdminUser,
     )
-
-    gacl = {
-        'view': ['billing.reason.view_reason']
-    }
 
     def get(self, request):
         return Response(dict(models.Reason.Type.choices))

@@ -5,13 +5,17 @@ from rest_framework.documentation import include_docs_urls
 
 urlpatterns = [
     # GWHCP URLs
-    path('account/account/', include('account.account.urls')),
-    path('account/login/', include('account.login.urls')),
     path('billing/reason/', include('billing.reason.urls')),
     path('billing/payment/', include('billing.payment.urls')),
     path('company/company/', include('company.company.urls')),
     path('company/dns/', include('company.dns.urls')),
     path('company/domain/', include('company.domain.urls')),
+    path('company/mail/', include('company.mail.urls')),
+    # path('company/xmpp/', include('company.xmpp.urls')),
+    path('employee/account/', include('employee.account.urls')),
+    # path('employee/mail/', include('employee.mail.urls')),
+    path('employee/manage/', include('employee.manage.urls')),
+    # path('employee/xmpp/', include('employee.xmpp.urls')),
     path('hardware/client/', include('hardware.client.urls')),
     path('hardware/company/', include('hardware.company.urls')),
     path('network/pool/', include('network.pool.urls')),

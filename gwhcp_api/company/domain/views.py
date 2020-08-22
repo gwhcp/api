@@ -3,24 +3,19 @@ from rest_framework import views
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
-from account.login import gacl
 from company.domain import models
 from company.domain import serializers
+from login import gacl
 
 
-class ChoiceCompany(views.APIView):
+class Choices(views.APIView):
     """
-    Company choices
+    Choices
     """
 
     permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
+        IsAdminUser,
     )
-
-    gacl = {
-        'view': ['company.domain.view_domain']
-    }
 
     def get(self, request):
         result = {}

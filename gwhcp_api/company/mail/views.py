@@ -3,8 +3,8 @@ from rest_framework import views
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
-from hardware.client import models
-from hardware.client import serializers
+from company.mail import models
+from company.mail import serializers
 from login import gacl
 
 
@@ -19,11 +19,23 @@ class Choices(views.APIView):
 
     def get(self, request):
         result = {
+            'account': {},
+            'company': {},
             'domain': {},
-            'hardware_type': {},
-            'hardware_target': {},
-            'web': {}
+            'type': {}
         }
+
+        # Account
+        for account in models.Account.objects.all():
+            result['account'].update({
+                account.pk: account.get_full_name()
+            })
+
+        # Company
+        for company in models.Company.objects.all():
+            result['company'].update({
+                company.pk: company.name
+            })
 
         # Domain
         for domain in models.Domain.objects.all():
@@ -31,21 +43,15 @@ class Choices(views.APIView):
                 domain.pk: domain.name
             })
 
-        # Hardware Type
-        result['hardware_type'].update(dict(models.Server.HardwareType.choices))
-
-        # Haradware Target
-        result['hardware_target'].update(dict(models.Server.HardwareTarget.choices))
-
-        # Web Type
-        result['web'].update(dict(models.Server.WebType.choices))
+        # Mail Type
+        result['type'].update(dict(models.Mail.Type.choices))
 
         return Response(result)
 
 
 class Create(generics.CreateAPIView):
     """
-    Create client domain
+    Create company mail account
     """
 
     permission_classes = (
@@ -54,18 +60,18 @@ class Create(generics.CreateAPIView):
     )
 
     gacl = {
-        'view': ['hardware.client.view_server'],
-        'add': ['hardware.client.add_server']
+        'view': ['company.mail.view_mail'],
+        'add': ['company.mail.add_mail']
     }
 
-    queryset = models.Server.objects.all()
+    queryset = models.Mail.objects.all()
 
     serializer_class = serializers.CreateSerializer
 
 
 class Delete(generics.RetrieveDestroyAPIView):
     """
-    Delete client domain
+    Delete company mail account
     """
 
     permission_classes = (
@@ -74,18 +80,18 @@ class Delete(generics.RetrieveDestroyAPIView):
     )
 
     gacl = {
-        'view': ['hardware.client.view_server'],
-        'delete': ['hardware.client.delete_server']
+        'view': ['company.mail.view_mail'],
+        'delete': ['company.mail.delete_mail']
     }
 
-    queryset = models.Server.objects.all()
+    queryset = models.Mail.objects.all()
 
     serializer_class = serializers.SearchSerializer
 
 
-class Install(generics.RetrieveUpdateAPIView):
+class Password(generics.RetrieveUpdateAPIView):
     """
-    Install client domain
+    View and edit company mail account password
     """
 
     permission_classes = (
@@ -94,18 +100,18 @@ class Install(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['hardware.client.view_server'],
-        'change': ['hardware.client.change_server']
+        'view': ['company.mail.view_mail'],
+        'change': ['company.mail.change_mail']
     }
 
-    queryset = models.Server.objects.all()
+    queryset = models.Mail.objects.all()
 
-    serializer_class = serializers.InstallSerializer
+    serializer_class = serializers.PasswordSerializer
 
 
 class Profile(generics.RetrieveUpdateAPIView):
     """
-    View client domain
+    View and edit company mail account
     """
 
     permission_classes = (
@@ -114,18 +120,18 @@ class Profile(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['hardware.client.view_server'],
-        'change': ['hardware.client.change_server']
+        'view': ['company.mail.view_mail'],
+        'change': ['company.mail.change_mail']
     }
 
-    queryset = models.Server.objects.all()
+    queryset = models.Mail.objects.all()
 
     serializer_class = serializers.ProfileSerializer
 
 
 class Search(generics.ListAPIView):
     """
-    Search client domains
+    Search company mail accounts
     """
 
     permission_classes = (
@@ -134,9 +140,9 @@ class Search(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['hardware.client.view_server']
+        'view': ['company.mail.view_mail']
     }
 
-    queryset = models.Server.objects.all()
+    queryset = models.Mail.objects.all()
 
     serializer_class = serializers.SearchSerializer

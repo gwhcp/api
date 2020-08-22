@@ -1,3 +1,8 @@
+import os
+import shutil
+
+from rest_framework import serializers
+
 from worker.queue.os_type import OsType
 
 
@@ -107,4 +112,11 @@ class PostfixPath(OsType):
             1: '/etc/postfix/ssl/'
         }
 
-        return cls.validate_path(paths.get(cls.value()))
+        try:
+            cls.validate_path(paths.get(cls.value()))
+        except serializers.ValidationError:
+            os.makedirs(paths.get(cls.value()), 0o755)
+
+            shutil.chown(paths.get(cls.value()), user='root', group='root')
+
+        return paths[cls.value()]

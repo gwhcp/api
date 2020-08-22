@@ -2,66 +2,35 @@ from rest_framework import views
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
-from account.login import gacl
 from store.product import models
 
 
-class ChoiceCompany(views.APIView):
+class Choices(views.APIView):
     """
-    View company choices
+    Choices
     """
 
     permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
+        IsAdminUser,
     )
 
-    gacl = {
-        'view': ['store.product.view_storeproduct']
-    }
-
     def get(self, request):
-        result = {}
+        result = {
+            'company': {},
+            'ip_type': {},
+            'web': {}
+        }
 
+        # Company
         for company in models.Company.objects.all():
-            result.update({
+            result['company'].update({
                 company.pk: company.name
             })
 
+        # IP Address Type
+        result['ip_type'].update(dict(models.StoreProduct.IpaddressType.choices))
+
+        # Web Type
+        result['web'].update(dict(models.StoreProduct.WebType.choices))
+
         return Response(result)
-
-
-class ChoiceIpType(views.APIView):
-    """
-    View available IP Address choices
-    """
-
-    permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
-    )
-
-    gacl = {
-        'view': ['store.product.view_storeproduct']
-    }
-
-    def get(self, request):
-        return Response(dict(models.StoreProduct.IpaddressType.choices))
-
-
-class ChoiceWeb(views.APIView):
-    """
-    View available web types
-    """
-
-    permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
-    )
-
-    gacl = {
-        'view': ['store.product.view_storeproduct']
-    }
-
-    def get(self, request):
-        return Response(dict(models.StoreProduct.WebType.choices))

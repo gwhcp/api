@@ -90,3 +90,6 @@ class Server(abstract.ServerResource):
 
         verbose_name = 'Server'
         verbose_name_plural = 'Servers'
+
+    def __str__(self):
+        return self.domain.name

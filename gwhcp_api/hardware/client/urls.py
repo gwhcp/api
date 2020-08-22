@@ -4,27 +4,9 @@ from hardware.client import views
 
 urlpatterns = [
     path(
-        'choice/domain',
-        views.ChoiceDomain.as_view(),
-        name='choice-domain'
-    ),
-
-    path(
-        'choice/hardware',
-        views.ChoiceHardware.as_view(),
-        name='choice-hardware'
-    ),
-
-    path(
-        'choice/target',
-        views.ChoiceTarget.as_view(),
-        name='choice-target'
-    ),
-
-    path(
-        'choice/web',
-        views.ChoiceWeb.as_view(),
-        name='choice-web'
+        'choices',
+        views.Choices.as_view(),
+        name='choices'
     ),
 
     path(

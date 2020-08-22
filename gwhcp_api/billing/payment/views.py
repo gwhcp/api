@@ -3,10 +3,10 @@ from rest_framework import views
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
-from account.login import gacl
 from billing.payment import models
 from billing.payment import serializers
 from billing.payment import settings
+from login import gacl
 
 
 class AuthorizeAuthentication(generics.RetrieveUpdateAPIView):
@@ -49,65 +49,37 @@ class AuthorizeMethod(generics.RetrieveUpdateAPIView):
     serializer_class = serializers.AuthorizeMethodSerializer
 
 
-class ChoiceCompany(views.APIView):
+class Choices(views.APIView):
     """
-    Company choices
+    Choices
     """
 
     permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
+        IsAdminUser,
     )
 
-    gacl = {
-        'view': ['billing.payment.view_paymentgateway']
-    }
-
     def get(self, request):
-        result = {}
+        result = {
+            'company': {},
+            'merchant': {},
+            'method': {}
+        }
 
+        # Company
         for company in models.Company.objects.all():
-            result.update({
+            result['company'].update({
                 company.pk: company.name
             })
 
+        # Merchant
+        result['merchant'].update(settings.merchants())
+
+        # Method
+        result['method'].update({
+            'authorize': settings.merchant_methods('authorize')
+        })
+
         return Response(result)
-
-
-class ChoiceMerchant(views.APIView):
-    """
-    View available payment gateways
-    """
-
-    permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
-    )
-
-    gacl = {
-        'view': ['billing.payment.view_paymentgateway']
-    }
-
-    def get(self, request):
-        return Response(settings.merchants())
-
-
-class ChoiceMethod(views.APIView):
-    """
-    View available payment methods based on merchant
-    """
-
-    permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
-    )
-
-    gacl = {
-        'view': ['billing.payment.view_paymentgateway']
-    }
-
-    def get(self, request, merchant):
-        return Response(settings.merchant_methods(merchant))
 
 
 class Create(generics.CreateAPIView):

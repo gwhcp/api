@@ -1,3 +1,8 @@
+import os
+import shutil
+
+from rest_framework import serializers
+
 from worker.queue.os_type import OsType
 
 
@@ -16,7 +21,14 @@ class DovecotPath(OsType):
             1: '/etc/dovecot/conf.d/'
         }
 
-        return cls.validate_path(paths.get(cls.value()))
+        try:
+            cls.validate_path(paths.get(cls.value()))
+        except serializers.ValidationError:
+            os.makedirs(paths.get(cls.value()), 0o755)
+
+            shutil.chown(paths.get(cls.value()), user='root', group='root')
+
+        return paths[cls.value()]
 
     @classmethod
     def etc_dir(cls):
@@ -29,7 +41,14 @@ class DovecotPath(OsType):
             1: '/etc/dovecot/'
         }
 
-        return cls.validate_path(paths.get(cls.value()))
+        try:
+            cls.validate_path(paths.get(cls.value()))
+        except serializers.ValidationError:
+            os.makedirs(paths.get(cls.value()), 0o755)
+
+            shutil.chown(paths.get(cls.value()), user='root', group='root')
+
+        return paths[cls.value()]
 
     @classmethod
     def log_dir(cls):
@@ -42,7 +61,14 @@ class DovecotPath(OsType):
             1: '/var/log/'
         }
 
-        return cls.validate_path(paths.get(cls.value()))
+        try:
+            cls.validate_path(paths.get(cls.value()))
+        except serializers.ValidationError:
+            os.makedirs(paths.get(cls.value()), 0o755)
+
+            shutil.chown(paths.get(cls.value()), user='root', group='root')
+
+        return paths[cls.value()]
 
     @classmethod
     def quota_warning_cmd(cls):
@@ -55,7 +81,7 @@ class DovecotPath(OsType):
             1: '/usr/bin/quota-warning.sh'
         }
 
-        return cls.validate_path(paths.get(cls.value()))
+        return paths[cls.value()]
 
     @classmethod
     def run_dir(cls):
@@ -68,7 +94,14 @@ class DovecotPath(OsType):
             1: '/run/dovecot/'
         }
 
-        return cls.validate_path(paths.get(cls.value()))
+        try:
+            cls.validate_path(paths.get(cls.value()))
+        except serializers.ValidationError:
+            os.makedirs(paths.get(cls.value()), 0o755)
+
+            shutil.chown(paths.get(cls.value()), user='root', group='root')
+
+        return paths[cls.value()]
 
     @classmethod
     def sieve_cmd(cls):
@@ -94,7 +127,14 @@ class DovecotPath(OsType):
             1: '/etc/dovecot/ssl/'
         }
 
-        return cls.validate_path(paths.get(cls.value()))
+        try:
+            cls.validate_path(paths.get(cls.value()))
+        except serializers.ValidationError:
+            os.makedirs(paths.get(cls.value()), 0o755)
+
+            shutil.chown(paths.get(cls.value()), user='root', group='root')
+
+        return paths[cls.value()]
 
     @classmethod
     def tmp_dir(cls):
@@ -107,7 +147,14 @@ class DovecotPath(OsType):
             1: '/tmp/'
         }
 
-        return cls.validate_path(paths.get(cls.value()))
+        try:
+            cls.validate_path(paths.get(cls.value()))
+        except serializers.ValidationError:
+            os.makedirs(paths.get(cls.value()), 0o755)
+
+            shutil.chown(paths.get(cls.value()), user='root', group='root')
+
+        return paths[cls.value()]
 
     @classmethod
     def usrlib_dir(cls):
@@ -133,4 +180,11 @@ class DovecotPath(OsType):
             1: '/var/lib/dovecot/'
         }
 
-        return cls.validate_path(paths.get(cls.value()))
+        try:
+            cls.validate_path(paths.get(cls.value()))
+        except serializers.ValidationError:
+            os.makedirs(paths.get(cls.value()), 0o755)
+
+            shutil.chown(paths.get(cls.value()), user='root', group='root')
+
+        return paths[cls.value()]

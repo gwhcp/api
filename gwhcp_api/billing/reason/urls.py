@@ -4,9 +4,9 @@ from billing.reason import views
 
 urlpatterns = [
     path(
-        'choice/type',
-        views.ChoiceType.as_view(),
-        name='choice-type'
+        'choices',
+        views.Choices.as_view(),
+        name='choices'
     ),
 
     path(

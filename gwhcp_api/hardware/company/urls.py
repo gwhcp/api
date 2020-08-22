@@ -4,15 +4,9 @@ from hardware.company import views
 
 urlpatterns = [
     path(
-        'choice/domain',
-        views.ChoiceDomain.as_view(),
-        name='choice-domain'
-    ),
-
-    path(
-        'choice/target',
-        views.ChoiceTarget.as_view(),
-        name='choice-target'
+        'choices',
+        views.Choices.as_view(),
+        name='choices'
     ),
 
     path(

@@ -4,9 +4,9 @@ from company.domain import views
 
 urlpatterns = [
     path(
-        'choice/company',
-        views.ChoiceCompany.as_view(),
-        name='choice-company'
+        'choices',
+        views.Choices.as_view(),
+        name='choices'
     ),
 
     path(

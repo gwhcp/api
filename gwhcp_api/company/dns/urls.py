@@ -4,15 +4,9 @@ from company.dns import views
 
 urlpatterns = [
     path(
-        'choice/ns',
-        views.ChoiceNs.as_view(),
-        name='choice-ns'
-    ),
-
-    path(
-        'choice/recordtype',
-        views.ChoiceRecordType.as_view(),
-        name='choice-record-type'
+        'choices',
+        views.Choices.as_view(),
+        name='choices'
     ),
 
     path(

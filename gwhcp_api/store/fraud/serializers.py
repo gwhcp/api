@@ -16,8 +16,6 @@ class CreateSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, attrs):
-        error = {}
-
         if attrs['fraud_type'] in [
             'address',
             'company',
@@ -27,52 +25,94 @@ class CreateSerializer(serializers.ModelSerializer):
                     name__iexact=attrs['name'],
                     fraud_type=attrs['fraud_type']
             ).exists():
-                error['name'] = '%s already exists.' % attrs['fraud_type'].capitalize()
+                raise serializers.ValidationError(
+                    {
+                        'name': f"{attrs['fraud_type'].capitalize()} already exists."
+                    },
+                    code='exists'
+                )
 
         if attrs['fraud_type'] == 'domain':
             if not python_validators.domain(attrs['name']):
-                error['name'] = 'Domain is not a valid format.'
+                raise serializers.ValidationError(
+                    {
+                        'name': 'Domain is not a valid format.'
+                    },
+                    code='exists'
+                )
 
             elif models.FraudString.objects.filter(
                     name__iexact=attrs['name'],
                     fraud_type='domain'
             ).exists():
-                error['name'] = 'Domain already exists.'
+                raise serializers.ValidationError(
+                    {
+                        'name': 'Domain already exists.'
+                    },
+                    code='exists'
+                )
 
         if attrs['fraud_type'] == 'email':
             if not python_validators.email(attrs['name']):
-                error['name'] = 'Email address is not a valid format.'
+                raise serializers.ValidationError(
+                    {
+                        'name': 'Email address is not a valid format.'
+                    },
+                    code='exists'
+                )
 
             elif models.FraudString.objects.filter(
                     name__iexact=attrs['name'],
                     fraud_type='email'
             ).exists():
-                error['name'] = 'Email address already exists.'
+                raise serializers.ValidationError(
+                    {
+                        'name': 'Email address already exists.'
+                    },
+                    code='exists'
+                )
 
         if attrs['fraud_type'] == 'ipaddress':
             try:
                 ipaddress.ip_address(attrs['name'])
             except ValueError:
-                error['name'] = 'IP Address is not a valid format.'
+                raise serializers.ValidationError(
+                    {
+                        'name': 'IP Address is not a valid format.'
+                    },
+                    code='exists'
+                )
 
             if models.FraudString.objects.filter(
                     name__iexact=attrs['name'],
                     fraud_type='ipaddress'
             ).exists():
-                error['name'] = 'IP Address already exists.'
+                raise serializers.ValidationError(
+                    {
+                        'name': 'IP Address already exists.'
+                    },
+                    code='exists'
+                )
 
         if attrs['fraud_type'] == 'phone':
             if not re.match('^[0-9]+$', attrs['name']):
-                error['name'] = 'Phone number is not a valid format. Must only contain numbers.'
+                raise serializers.ValidationError(
+                    {
+                        'name': 'Phone number is not a valid format. Must only contain numbers.'
+                    },
+                    code='exists'
+                )
 
             elif models.FraudString.objects.filter(
                     name__iexact=attrs['name'],
                     fraud_type='phone'
             ).exists():
-                error['name'] = 'Phone number already exists.'
-
-        if error:
-            raise serializers.ValidationError(error)
+                raise serializers.ValidationError(
+                    {
+                        'name': 'Phone number already exists.'
+                    },
+                    code='exists'
+                )
 
         return attrs
 

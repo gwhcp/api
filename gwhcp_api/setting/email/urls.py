@@ -4,9 +4,9 @@ from setting.email import views
 
 urlpatterns = [
     path(
-        'choice/template',
-        views.ChoiceTemplate.as_view(),
-        name='choice-template'
+        'choices',
+        views.Choices.as_view(),
+        name='choices'
     ),
 
     path(
