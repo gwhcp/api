@@ -92,6 +92,7 @@ INSTALLED_APPS.extend([
     'hardware.company',
     'login',
     'network.pool',
+    'network.queue',
     'setting.banned',
     'setting.email',
     'store.fraud',
@@ -399,5 +400,6 @@ SECURE_HSTS_SECONDS = 0
 Session
 """
 
+SESSION_COOKIE_AGE = 86400
 SESSION_COOKIE_SAMESITE = None
 SESSION_COOKIE_SECURE = env('SESSION_COOKIE_SECURE')

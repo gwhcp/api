@@ -19,6 +19,7 @@ urlpatterns = [
     path('hardware/client/', include('hardware.client.urls')),
     path('hardware/company/', include('hardware.company.urls')),
     path('network/pool/', include('network.pool.urls')),
+    path('network/queue/', include('network.queue.urls')),
     path('setting/banned/', include('setting.banned.urls')),
     path('setting/email/', include('setting.email.urls')),
     path('store/fraud/', include('store.fraud.urls')),
