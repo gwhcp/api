@@ -22,4 +22,3 @@ psycopg2
 pyopenssl
 pytz
 validators
-wheel
