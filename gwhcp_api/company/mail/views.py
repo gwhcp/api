@@ -130,6 +130,39 @@ class Delete(generics.RetrieveDestroyAPIView):
 
     serializer_class = serializers.SearchSerializer
 
+    def perform_destroy(self, instance):
+        server = models.Server.objects.get(allowed=instance.domain)
+
+        create_queue = CreateQueue()
+
+        # Forward
+        if instance.mail_type == 'forward':
+            create_queue.item(
+                {
+                    'ipaddress': server.ipaddress_pool.ipaddress,
+                    'name': 'mail.tasks.delete_forward',
+                    'args': {
+                        'domain': instance.domain.name,
+                        'user': instance.name
+                    }
+                }
+            )
+
+        # Mailbox
+        if instance.mail_type == 'mailbox':
+            create_queue.item(
+                {
+                    'ipaddress': server.ipaddress_pool.ipaddress,
+                    'name': 'mail.tasks.delete_mailbox',
+                    'args': {
+                        'domain': instance.domain.name,
+                        'user': instance.name
+                    }
+                }
+            )
+
+        instance.delete()
+
 
 class Password(generics.RetrieveUpdateAPIView):
     """
@@ -150,6 +183,32 @@ class Password(generics.RetrieveUpdateAPIView):
 
     serializer_class = serializers.PasswordSerializer
 
+    def perform_update(self, serializer):
+        instance = serializer.save()
+
+        # Mailbox
+        if instance.mail_type == 'mailbox':
+            server = models.Server.objects.get(allowed=instance.domain)
+
+            create_queue = CreateQueue(
+                service_id={
+                    'mail_id': instance.pk
+                }
+            )
+
+            create_queue.item(
+                {
+                    'ipaddress': server.ipaddress_pool.ipaddress,
+                    'name': 'mail.tasks.update_mailbox',
+                    'args': {
+                        'domain': instance.domain.name,
+                        'password': security.decrypt_string(instance.password),
+                        'user': instance.name,
+                        'quota': instance.quota
+                    }
+                }
+            )
+
 
 class Profile(generics.RetrieveUpdateAPIView):
     """
@@ -169,6 +228,46 @@ class Profile(generics.RetrieveUpdateAPIView):
     queryset = models.Mail.objects.all()
 
     serializer_class = serializers.ProfileSerializer
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+
+        server = models.Server.objects.get(allowed=instance.domain)
+
+        create_queue = CreateQueue(
+            service_id={
+                'mail_id': instance.pk
+            }
+        )
+
+        # Forward
+        if instance.mail_type == 'forward':
+            create_queue.item(
+                {
+                    'ipaddress': server.ipaddress_pool.ipaddress,
+                    'name': 'mail.tasks.update_forward',
+                    'args': {
+                        'domain': instance.domain.name,
+                        'email': instance.forward_to,
+                        'user': instance.name
+                    }
+                }
+            )
+
+        # Mailbox
+        if instance.mail_type == 'mailbox':
+            create_queue.item(
+                {
+                    'ipaddress': server.ipaddress_pool.ipaddress,
+                    'name': 'mail.tasks.update_mailbox',
+                    'args': {
+                        'domain': instance.domain.name,
+                        'password': security.decrypt_string(instance.password),
+                        'user': instance.name,
+                        'quota': instance.quota
+                    }
+                }
+            )
 
 
 class Search(generics.ListAPIView):
