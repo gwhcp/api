@@ -22,6 +22,16 @@ class Server(abstract.ServerResource):
         related_name='server_account'
     )
 
+    allowed = models.ManyToManyField(
+        'Domain',
+        blank=True,
+        limit_choices_to={
+            'is_active': True,
+            'manage_dns': True
+        },
+        related_name='server_allowed'
+    )
+
     company = models.ForeignKey(
         'Company',
         blank=False,

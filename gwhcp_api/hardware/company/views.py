@@ -125,6 +125,26 @@ class Delete(generics.RetrieveDestroyAPIView):
         instance.delete()
 
 
+class Domain(generics.RetrieveUpdateAPIView):
+    """
+    View and edit domains
+    """
+
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
+
+    gacl = {
+        'view': ['hardware.company.view_server'],
+        'change': ['hardware.company.change_server']
+    }
+
+    queryset = models.Server.objects.all()
+
+    serializer_class = serializers.DomainSerializer
+
+
 class Install(generics.RetrieveUpdateAPIView):
     """
     Install company hardware domain

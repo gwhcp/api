@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from company.mail import models
 from company.mail import serializers
 from login import gacl
+from utils import security
+from worker.queue.create import CreateQueue
 
 
 class Choices(views.APIView):
@@ -67,6 +69,46 @@ class Create(generics.CreateAPIView):
     queryset = models.Mail.objects.all()
 
     serializer_class = serializers.CreateSerializer
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+
+        server = models.Server.objects.get(allowed=instance.domain)
+
+        create_queue = CreateQueue(
+            service_id={
+                'mail_id': instance.pk
+            }
+        )
+
+        # Forward
+        if instance.mail_type == 'forward':
+            create_queue.item(
+                {
+                    'ipaddress': server.ipaddress_pool.ipaddress,
+                    'name': 'mail.tasks.create_forward',
+                    'args': {
+                        'domain': instance.domain.name,
+                        'email': instance.forward_to,
+                        'user': instance.name
+                    }
+                }
+            )
+
+        # Mailbox
+        if instance.mail_type == 'mailbox':
+            create_queue.item(
+                {
+                    'ipaddress': server.ipaddress_pool.ipaddress,
+                    'name': 'mail.tasks.create_mailbox',
+                    'args': {
+                        'domain': instance.domain.name,
+                        'password': security.decrypt_string(instance.password),
+                        'user': instance.name,
+                        'quota': instance.quota
+                    }
+                }
+            )
 
 
 class Delete(generics.RetrieveDestroyAPIView):

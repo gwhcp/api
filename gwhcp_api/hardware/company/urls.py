@@ -22,6 +22,12 @@ urlpatterns = [
     ),
 
     path(
+        'domain/<int:pk>',
+        views.Domain.as_view(),
+        name='domain'
+    ),
+
+    path(
         'install/<int:pk>',
         views.Install.as_view(),
         name='install'

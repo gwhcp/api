@@ -43,6 +43,16 @@ class IpaddressPool(models.IpaddressPool):
         verbose_name_plural = 'IP Address Pools'
 
 
+class Mail(models.Mail):
+    class Meta:
+        default_permissions = ()
+
+        proxy = True
+
+        verbose_name = 'Mail Account'
+        verbose_name_plural = 'Mail Accounts'
+
+
 class ServerManager(django_models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(

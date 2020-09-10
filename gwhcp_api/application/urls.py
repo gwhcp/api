@@ -13,7 +13,7 @@ urlpatterns = [
     path('company/mail/', include('company.mail.urls')),
     # path('company/xmpp/', include('company.xmpp.urls')),
     path('employee/account/', include('employee.account.urls')),
-    # path('employee/mail/', include('employee.mail.urls')),
+    path('employee/mail/', include('employee.mail.urls')),
     path('employee/manage/', include('employee.manage.urls')),
     # path('employee/xmpp/', include('employee.xmpp.urls')),
     path('hardware/client/', include('hardware.client.urls')),

@@ -85,7 +85,7 @@ INSTALLED_APPS.extend([
     # 'company.xmpp',
     'database',
     'employee.account',
-    # 'employee.mail',
+    'employee.mail',
     'employee.manage',
     # 'employee.xmpp',
     'hardware.client',

@@ -147,6 +147,42 @@ class CreateSerializer(serializers.ModelSerializer):
         return attrs
 
 
+class DomainSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Server
+
+        fields = [
+            'allowed'
+        ]
+
+    def validate(self, attrs):
+        if not self.instance.is_mail:
+            raise serializers.ValidationError(
+                'Not a mail server.',
+                code='not_mail'
+            )
+
+        return attrs
+
+    def validate_allowed(self, value):
+        domains = []
+
+        for item in value:
+            domains.append(item.id)
+
+        mail = models.Mail.objects.filter(product_profile__isnull=True)
+
+        # Check if we have any mail accounts using this server before we remove it
+        for item in mail:
+            if item.domain.pk not in domains:
+                raise serializers.ValidationError(
+                    'Mail server is currently in use. You must remove the accounts before continuing.',
+                    code='in_use'
+                )
+
+        return value
+
+
 class InstallSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Server
