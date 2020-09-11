@@ -1,7 +1,7 @@
 from django.contrib.auth import models as auth_models
 from django.db import models as django_models
 
-from database import models
+from database.gwhcp import models
 
 
 class AccessLog(models.AccessLog):

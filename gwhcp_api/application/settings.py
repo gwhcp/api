@@ -83,7 +83,8 @@ INSTALLED_APPS.extend([
     'company.domain',
     'company.mail',
     # 'company.xmpp',
-    'database',
+    'database.gwhcp',
+    'database.xmpp',
     'employee.account',
     'employee.mail',
     'employee.manage',
@@ -178,7 +179,9 @@ Database
 
 DATABASES = {
     'default': env.db('DATABASE_DEFAULT'),
-    'default_read1': env.db('DATABASE_READ1')
+    'default_read1': env.db('DATABASE_READ1'),
+    'xmpp': env.db('XMPP_DEFAULT'),
+    'xmpp_read1': env.db('XMPP_READ1')
 }
 
 # Router
@@ -258,7 +261,7 @@ LOGOUT_URL = '/api-auth/logout/'
 LOGOUT_REDIRECT_URL = LOGIN_URL
 
 # Authentication Model
-AUTH_USER_MODEL = 'database.Account'
+AUTH_USER_MODEL = 'gwhcp.Account'
 
 """
 Email Settings

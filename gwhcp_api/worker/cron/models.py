@@ -1,4 +1,4 @@
-from database import models
+from database.gwhcp import models
 
 
 class CronTab(models.CronTab):

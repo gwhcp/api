@@ -4,8 +4,8 @@ from django.core import validators
 from django.db import models
 from model_utils import FieldTracker
 
-from database.models import abstract
-from database.models import manager
+from database.gwhcp.models import abstract
+from database.gwhcp.models import manager
 
 TIME_ZONE_CHOICES = (
     sorted([(x, x) for x in pytz.all_timezones_set])

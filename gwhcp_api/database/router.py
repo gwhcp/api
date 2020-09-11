@@ -8,20 +8,24 @@ class ReadWrite:
     Handles all models associated with the respected database.
     """
 
-    __jabber_tables = (
+    __xmpp_tables = (
         'archive',
         'archive_prefs',
         'bosh',
         'caps_features',
-        'carboncopy',
-        'groups',
-        'irc_custom',
         'last',
+        'mix_channel',
+        'mix_pam',
+        'mix_participant',
+        'mix_subscription',
         'motd',
+        'mqtt_pub',
         'muc_online_room',
         'muc_online_users',
         'muc_registered',
         'muc_room',
+        'muc_room_subscribers',
+        'oauth_client',
         'oauth_token',
         'privacy_default_list',
         'privacy_list',
@@ -34,6 +38,7 @@ class ReadWrite:
         'pubsub_node_owner',
         'pubsub_state',
         'pubsub_subscription_opt',
+        'push_session',
         'roster_version',
         'rostergroups',
         'rosterusers',
@@ -49,14 +54,14 @@ class ReadWrite:
 
     def db_for_read(self, model, **hints):
         """
-        Attempts to read models go to 'default_read' or 'jabber_read' database.
+        Attempts to read models go to 'default_read' or 'xmpp_read' database.
         """
 
         db_choice = []
 
-        if model._meta.db_table in self.__jabber_tables:
+        if model._meta.db_table in self.__xmpp_tables:
             for item in settings.DATABASES:
-                if item.startswith('jabber_read'):
+                if item.startswith('xmpp_read'):
                     db_choice.append(item)
         else:
             for item in settings.DATABASES:
@@ -70,11 +75,11 @@ class ReadWrite:
 
     def db_for_write(self, model, **hints):
         """
-        Attempts to write models go to 'default' or 'jabber' database.
+        Attempts to write models go to 'default' or 'xmpp' database.
         """
 
-        if model._meta.db_table in self.__jabber_tables:
-            return 'jabber'
+        if model._meta.db_table in self.__xmpp_tables:
+            return 'xmpp'
         else:
             return 'default'
 
@@ -90,7 +95,7 @@ class ReadWrite:
         Allow migrations.
         """
 
-        if app_label == 'jabber':
-            return db == 'jabber'
+        if app_label == 'xmpp':
+            return db == 'xmpp'
 
         return db == 'default'

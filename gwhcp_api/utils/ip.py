@@ -1,6 +1,6 @@
 import ipaddress
 
-from database import models
+from database.gwhcp import models
 
 
 def available(assigned):

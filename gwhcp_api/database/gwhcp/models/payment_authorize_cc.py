@@ -1,7 +1,7 @@
 from django.db import models
 from model_utils import FieldTracker
 
-from database.models import abstract
+from database.gwhcp.models import abstract
 from utils import security
 
 

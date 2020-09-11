@@ -1,6 +1,6 @@
 from django.db import models as django_models
 
-from database import models
+from database.gwhcp import models
 
 
 class DomainManager(django_models.Manager):

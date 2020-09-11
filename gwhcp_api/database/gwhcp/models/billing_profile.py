@@ -3,7 +3,7 @@ from django.core import validators
 from django.db import models
 from model_utils import FieldTracker
 
-from database.models import abstract
+from database.gwhcp.models import abstract
 
 
 class BillingProfile(abstract.Contact):

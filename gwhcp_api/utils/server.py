@@ -3,7 +3,7 @@ import re
 
 from django.db.models import Q
 
-from database import models
+from database.gwhcp import models
 
 
 class Server:
