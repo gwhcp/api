@@ -1,5 +1,10 @@
+import hmac
+import uuid
+from hashlib import sha1
+
 from cryptography.fernet import Fernet
 from django.conf import settings
+from passlib.hash import scram
 from passlib.hash import sha512_crypt
 
 
@@ -51,22 +56,29 @@ def dovecot_password(password):
 
 def xmpp_password(password):
     """
-    Create eJabberD Compatible Password
+    Create Compatible Password
 
     :param str password: Password
 
     :return str
     """
 
-    """import hashlib
+    uuid_salt = str(uuid.uuid4())
 
-    m = hashlib.new('md5')
-    m.update(password.encode('UTF-8'))
+    sscram = scram.using(
+        algs='SHA1',
+        rounds=4096,
+        salt=uuid_salt.encode('UTF-8')
+    ).hash(password)
 
-    return m.hexdigest()"""
+    salted_password = scram.extract_digest_info(sscram, "sha1")[2]
 
-    """from passlib.hash import scram
+    stored_key = sha1(hmac.new(salted_password, "Client Key".encode('UTF-8'), sha1).digest()).hexdigest()
 
-    return scram.using(rounds=1, algs='sha-1').hash(password)"""
+    server_key = hmac.new(salted_password, "Server Key".encode('UTF-8'), sha1).hexdigest()
 
-    return password
+    return {
+        'salt': uuid_salt,
+        'stored_key': stored_key,
+        'server_key': server_key
+    }

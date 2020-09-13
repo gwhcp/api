@@ -35,27 +35,12 @@ class Prosody(xmpp_models.Prosody):
 
 class ProsodyAccount(xmpp_models.ProsodyAccount):
     class Meta:
-        proxy = True
-
-        verbose_name = 'Company XMPP Account'
-        verbose_name_plural = 'Company XMPP Accounts'
-
-
-class ProsodyArchive(xmpp_models.ProsodyArchive):
-    class Meta:
-        default_permissions = ()
+        default_permissions = (
+            'view',
+            'change'
+        )
 
         proxy = True
 
-        verbose_name = 'Prosody XMPP Archive'
-        verbose_name_plural = 'Prosody XMPP Archives'
-
-
-class ProsodyGroup(xmpp_models.ProsodyGroup):
-    class Meta:
-        default_permissions = ()
-
-        proxy = True
-
-        verbose_name = 'Company XMPP Group'
-        verbose_name_plural = 'Company XMPP Groups'
+        verbose_name = 'Employee XMPP Account'
+        verbose_name_plural = 'Employee XMPP Accounts'

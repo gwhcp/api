@@ -1,134 +1,19 @@
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-from rest_framework.exceptions import APIException
 
-from company.mail import models
+from company.xmpp import models
 from utils import security
 
 
-class CreateSerializer(serializers.ModelSerializer):
-    account = serializers.PrimaryKeyRelatedField(
+class CreateAccountSerializer(serializers.ModelSerializer):
+    account_id = serializers.PrimaryKeyRelatedField(
         queryset=models.Account.objects.all()
     )
 
-    domain = serializers.PrimaryKeyRelatedField(
-        queryset=models.Domain.objects.all()
-    )
-
     class Meta:
-        model = models.Mail
+        model = models.ProsodyAccount
 
-        fields = [
-            'account',
-            'company',
-            'domain',
-            'forward_to',
-            'mail_type',
-            'name',
-            'password',
-            'quota'
-        ]
-
-    def validate(self, attrs):
-        # Available server?
-        server = models.Server.objects.filter(
-            company=attrs['company'],
-            hardware_type='private',
-            is_active=True,
-            is_installed=True,
-            is_mail=True,
-            server_type='company'
-        )
-
-        if not server.exists():
-            raise serializers.ValidationError(
-                {
-                    'company': 'There are no available mail servers..'
-                },
-                code='not_found'
-            )
-
-        # Name exists
-        if models.Mail.objects.filter(
-                company=attrs['company'],
-                domain=attrs['domain'],
-                name__iexact=attrs['name']
-        ).exists():
-            raise serializers.ValidationError(
-                {
-                    'name': 'Name already exists.'
-                },
-                code='exists'
-            )
-
-        # Loop
-        if attrs['mail_type'] == 'forward':
-            result = models.Domain.objects.get(
-                pk=attrs['domain'].pk
-            )
-
-            if f"{attrs['name'].lower()}@{result.name}" == attrs['forward_to'].lower():
-                raise serializers.ValidationError(
-                    {
-                        'forward_to': 'Loop detected.'
-                    },
-                    code='loop'
-                )
-
-        return attrs
-
-    def validate_domain(self, value):
-        server = models.Server.objects.filter(allowed=value)
-
-        if not server.exists():
-            raise serializers.ValidationError(
-                'Domain not authorized to create mail account.',
-                code='not_allowed'
-            )
-
-        return value
-
-    def validate_password(self, value):
-        if self.initial_data['mail_type'] == 'mailbox':
-            validate_password(value)
-
-        return security.encrypt_string(value)
-
-
-class PasswordSerializer(serializers.ModelSerializer):
-    confirmed_password = serializers.CharField(
-        max_length=30,
-        required=True,
-        style={'input_type': 'password'},
-        write_only=True
-    )
-
-    domain_name = serializers.StringRelatedField(
-        read_only=True,
-        source='domain'
-    )
-
-    class Meta:
-        model = models.Mail
-
-        fields = [
-            'id',
-            'confirmed_password',
-            'domain',
-            'domain_name',
-            'in_queue',
-            'mail_type',
-            'name',
-            'password'
-        ]
-
-        read_only_fields = [
-            'domain',
-            'domain_name',
-            'in_queue',
-            'mail_type',
-            'name'
-        ]
+        fields = '__all__'
 
         extra_kwargs = {
             'password': {
@@ -136,99 +21,109 @@ class PasswordSerializer(serializers.ModelSerializer):
             }
         }
 
-    def validate(self, attrs):
-        if self.instance.mail_type == 'mailbox':
-            if attrs.get('password') != attrs.get('confirmed_password'):
-                raise serializers.ValidationError(
-                    {
-                        'confirmed_password': 'Confirmed password does not match password.'
-                    },
-                    code='invalid'
-                )
+    def validate_account_id(self, value):
+        try:
+            models.Account.objects.get(
+                pk=value.pk
+            )
+        except models.Account.DoesNotExist:
+            raise serializers.ValidationError(
+                'Account ID does not exist.',
+                code='not_found'
+            )
 
-            return attrs
-        else:
-            raise APIException('Not a mailbox.')
+        return value.pk
 
     def validate_password(self, value):
         validate_password(value)
 
+        return security.encrypt_string(value)
+
+
+class CreateGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ProsodyGroup
+
+        fields = '__all__'
+
+    def validate_name(self, value):
+        group = models.ProsodyGroup.objects.filter(
+            name__iexact=value
+        )
+
+        if group.exists():
+            raise serializers.ValidationError(
+                'Prosody XMPP Group with this name already exists.',
+                code='exists'
+            )
+
         return value
-
-    def update(self, instance, validated_data):
-        instance.password = security.encrypt_string(validated_data['password'])
-        instance.save()
-
-        return instance
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    account_name = serializers.StringRelatedField(
-        read_only=True,
-        source='account'
-    )
+    account_name = serializers.SerializerMethodField()
 
-    company_name = serializers.StringRelatedField(
+    group_name = serializers.StringRelatedField(
         read_only=True,
-        source='company'
-    )
-
-    domain_name = serializers.StringRelatedField(
-        read_only=True,
-        source='domain'
-    )
-
-    mail_type_name = serializers.StringRelatedField(
-        read_only=True,
-        source='get_mail_type_display'
+        source='group'
     )
 
     class Meta:
-        model = models.Mail
+        model = models.ProsodyAccount
 
         exclude = [
-            'password',
-            'product_profile'
+            'password'
         ]
 
         read_only_fields = [
-            'account_name',
-            'company',
-            'company_name',
-            'domain',
-            'domain_name',
-            'in_queue',
-            'mail_type',
-            'mail_type_name',
-            'name'
+            'account_id'
         ]
+
+    def get_account_name(self, obj):
+        account = models.Account.objects.get(
+            pk=obj.account_id
+        )
+
+        return account.get_full_name()
+
+
+class RebuildSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ProsodyAccount
+
+        fields = '__all__'
 
 
 class SearchSerializer(serializers.ModelSerializer):
-    account_name = serializers.StringRelatedField(
+    account_name = serializers.SerializerMethodField()
+
+    group_name = serializers.StringRelatedField(
         read_only=True,
-        source='account'
+        source='group'
     )
 
-    company_name = serializers.StringRelatedField(
-        read_only=True,
-        source='company'
-    )
-
-    domain_name = serializers.StringRelatedField(
-        read_only=True,
-        source='domain'
-    )
-
-    mail_type_name = serializers.StringRelatedField(
-        read_only=True,
-        source='get_mail_type_display'
-    )
+    password = serializers.SerializerMethodField()
 
     class Meta:
-        model = models.Mail
+        model = models.ProsodyAccount
 
-        exclude = [
-            'password',
-            'product_profile'
-        ]
+        fields = '__all__'
+
+    def get_account_name(self, obj):
+        account = models.Account.objects.get(
+            pk=obj.account_id
+        )
+
+        return account.get_full_name()
+
+    def get_password(self, obj):
+        return security.xmpp_password(
+            security.decrypt_string(obj.password)
+        )
+
+
+class SearchGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ProsodyGroup
+
+        fields = '__all__'

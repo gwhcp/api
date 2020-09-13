@@ -1,6 +1,6 @@
 from django.urls import path
 
-from company.mail import views
+from company.xmpp import views
 
 urlpatterns = [
     path(
@@ -11,8 +11,14 @@ urlpatterns = [
 
     path(
         'create',
-        views.Create.as_view(),
+        views.CreateAccount.as_view(),
         name='create'
+    ),
+
+    path(
+        'create/group',
+        views.CreateGroup.as_view(),
+        name='create-group'
     ),
 
     path(
@@ -22,9 +28,9 @@ urlpatterns = [
     ),
 
     path(
-        'password/<int:pk>',
-        views.Password.as_view(),
-        name='password'
+        'delete/group/<int:pk>',
+        views.DeleteGroup.as_view(),
+        name='delete-group'
     ),
 
     path(
@@ -34,8 +40,20 @@ urlpatterns = [
     ),
 
     path(
+        'rebuild',
+        views.Rebuild.as_view(),
+        name='rebuild'
+    ),
+
+    path(
         'search',
         views.Search.as_view(),
         name='search'
+    ),
+
+    path(
+        'search/group',
+        views.SearchGroup.as_view(),
+        name='search-group'
     )
 ]
