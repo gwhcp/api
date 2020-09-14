@@ -75,6 +75,11 @@ class ProsodyAccount(models.Model):
         null=False
     )
 
+    server_id = models.BigIntegerField(
+        blank=False,
+        null=False
+    )
+
     class Meta:
         db_table = 'prosody_account'
 

@@ -20,6 +20,8 @@ class ProfileSerializer(serializers.ModelSerializer):
         source='group'
     )
 
+    server_name = serializers.SerializerMethodField()
+
     class Meta:
         model = models.ProsodyAccount
 
@@ -42,6 +44,13 @@ class ProfileSerializer(serializers.ModelSerializer):
         )
 
         return account.get_full_name()
+
+    def get_server_name(self, obj):
+        server = models.Server.objects.get(
+            pk=obj.server_id
+        )
+
+        return server.domain.name
 
     def validate(self, attrs):
         print(attrs)

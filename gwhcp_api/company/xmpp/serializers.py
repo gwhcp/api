@@ -10,6 +10,10 @@ class CreateAccountSerializer(serializers.ModelSerializer):
         queryset=models.Account.objects.all()
     )
 
+    server_id = serializers.PrimaryKeyRelatedField(
+        queryset=models.Server.objects.all()
+    )
+
     class Meta:
         model = models.ProsodyAccount
 
@@ -68,6 +72,8 @@ class ProfileSerializer(serializers.ModelSerializer):
         source='group'
     )
 
+    server_name = serializers.SerializerMethodField()
+
     class Meta:
         model = models.ProsodyAccount
 
@@ -85,6 +91,13 @@ class ProfileSerializer(serializers.ModelSerializer):
         )
 
         return account.get_full_name()
+
+    def get_server_name(self, obj):
+        server = models.Server.objects.get(
+            pk=obj.server_id
+        )
+
+        return server.domain.name
 
 
 class RebuildSerializer(serializers.ModelSerializer):
@@ -104,6 +117,8 @@ class SearchSerializer(serializers.ModelSerializer):
 
     password = serializers.SerializerMethodField()
 
+    server_name = serializers.SerializerMethodField()
+
     class Meta:
         model = models.ProsodyAccount
 
@@ -120,6 +135,13 @@ class SearchSerializer(serializers.ModelSerializer):
         return security.xmpp_password(
             security.decrypt_string(obj.password)
         )
+
+    def get_server_name(self, obj):
+        server = models.Server.objects.get(
+            pk=obj.server_id
+        )
+
+        return server.domain.name
 
 
 class SearchGroupSerializer(serializers.ModelSerializer):

@@ -59,3 +59,24 @@ class ProsodyGroup(xmpp_models.ProsodyGroup):
 
         verbose_name = 'Company XMPP Group'
         verbose_name_plural = 'Company XMPP Groups'
+
+
+class ServerManager(django_models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(
+            is_active=True,
+            is_installed=True,
+            is_xmpp=True
+        )
+
+
+class Server(models.Server):
+    objects = ServerManager()
+
+    class Meta:
+        default_permissions = ()
+
+        proxy = True
+
+        verbose_name = 'Server'
+        verbose_name_plural = 'Servers'

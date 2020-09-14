@@ -44,3 +44,24 @@ class ProsodyAccount(xmpp_models.ProsodyAccount):
 
         verbose_name = 'Employee XMPP Account'
         verbose_name_plural = 'Employee XMPP Accounts'
+
+
+class ServerManager(django_models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(
+            is_active=True,
+            is_installed=True,
+            is_xmpp=True
+        )
+
+
+class Server(models.Server):
+    objects = ServerManager()
+
+    class Meta:
+        default_permissions = ()
+
+        proxy = True
+
+        verbose_name = 'Server'
+        verbose_name_plural = 'Servers'
