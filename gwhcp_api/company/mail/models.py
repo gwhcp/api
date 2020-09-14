@@ -48,8 +48,8 @@ class Domain(models.Domain):
 
         proxy = True
 
-        verbose_name = 'Company Domain'
-        verbose_name_plural = 'Company Domains'
+        verbose_name = 'Company Mail Domain'
+        verbose_name_plural = 'Company Mail Domains'
 
 
 class MailManager(django_models.Manager):
