@@ -7,7 +7,7 @@ from django.core.management import base
 
 from application.celery_app import app as celery_app
 from worker.daemon import models
-
+from utils.worker import check_celery_consumer
 
 class Command(base.BaseCommand):
     help = 'Worker Daemon.'
@@ -27,7 +27,9 @@ class Command(base.BaseCommand):
         # Start Worker Daemon
         if options.get('command') == 'start':
             try:
-                celery_app.connection().ensure_connection(max_retries=2)
+                celery_app.connection().ensure_connection(
+                    max_retries=2
+                )
             except exceptions.OperationalError:
                 self.stdout.write('Stopping Worker Daemon - Cannot connect to RabbitMQ.')
 
@@ -71,45 +73,47 @@ class Command(base.BaseCommand):
                         # Make sure the data is fresh
                         item.refresh_from_db()
 
-                        # Check if previous job has completed successfully
-                        if item.order_id > 1:
-                            try:
-                                models.QueueItem.objects.get(
-                                    order_id=item.order_id - 1,
-                                    queue_status=item.queue_status,
-                                    status='active'
-                                )
-                            except models.QueueItem.DoesNotExist:
-                                error_response = {
-                                    'queue': [
-                                        'Previous job has not yet been processed.'
-                                    ]
-                                }
+                        # Check if we have available celery consumers to process the job
+                        if check_celery_consumer(item.ipaddress) > 0:
+                            # Check if previous job has completed successfully
+                            if item.order_id > 1:
+                                try:
+                                    models.QueueItem.objects.get(
+                                        order_id=item.order_id - 1,
+                                        queue_status=item.queue_status,
+                                        status='active'
+                                    )
+                                except models.QueueItem.DoesNotExist:
+                                    error_response = {
+                                        'queue': [
+                                            'Previous job has not yet been processed.'
+                                        ]
+                                    }
 
-                                self.stdout.write(str(error_response))
+                                    self.stdout.write(str(error_response))
 
-                                # Restart Queue
-                                break
+                                    # Restart Queue
+                                    break
 
-                        # Job pickup
-                        item.status_type = 'working'
-                        item.comments = None
-                        item.save()
+                            # Job pickup
+                            item.status_type = 'working'
+                            item.comments = None
+                            item.save()
 
-                        # Send task to worker
-                        celery_app.send_task(
-                            f"worker.{item.name}",
-                            [
-                                item.args
-                            ],
-                            queue=str(item.ipaddress),
-                            task_id=str(item.task_id)
-                        )
+                            # Send task to worker
+                            celery_app.send_task(
+                                f"worker.{item.name}",
+                                [
+                                    item.args
+                                ],
+                                queue=str(item.ipaddress),
+                                task_id=str(item.task_id)
+                            )
 
-                        # Pause between tasks - Sleep
-                        time.sleep(
-                            settings.OS_QUEUE_SLEEP_TASKS
-                        )
+                            # Pause between tasks - Sleep
+                            time.sleep(
+                                settings.OS_QUEUE_SLEEP_TASKS
+                            )
 
                     # Finished loop - Sleep
                     time.sleep(
