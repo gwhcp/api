@@ -167,8 +167,13 @@ class Install(generics.RetrieveUpdateAPIView):
     def perform_update(self, serializer):
         instance = serializer.save()
 
+        # Admin
+        if instance.is_admin:
+            # TODO Create installation
+            pass
+
         # Bind
-        if instance.is_bind:
+        elif instance.is_bind:
             create_queue = CreateQueue(
                 service_id={
                     'server_id': instance.pk
@@ -183,6 +188,11 @@ class Install(generics.RetrieveUpdateAPIView):
                     'args': {}
                 }
             )
+
+        # Control Panel
+        elif instance.is_cp:
+            # TODO Create installation
+            pass
 
         # Mail
         elif instance.is_mail:
@@ -222,6 +232,16 @@ class Install(generics.RetrieveUpdateAPIView):
                     }
                 }
             )
+
+        # Store
+        elif instance.is_store:
+            # TODO Create installation
+            pass
+
+        # XMPP
+        elif instance.is_xmpp:
+            # TODO Create installation
+            pass
 
 
 class Profile(generics.RetrieveUpdateAPIView):
