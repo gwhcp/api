@@ -1,6 +1,13 @@
 from django.contrib.auth import models as auth_models
 
 
+class AbstractBaseUser(auth_models.AbstractBaseUser, auth_models.PermissionsMixin):
+    is_active = False
+
+    class Meta:
+        abstract = True
+
+
 class UserManager(auth_models.BaseUserManager):
     use_in_migrations = True
 

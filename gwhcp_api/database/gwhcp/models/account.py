@@ -1,5 +1,4 @@
 import pytz
-from django.contrib.auth import models as auth_models
 from django.core import validators
 from django.db import models
 from model_utils import FieldTracker
@@ -12,7 +11,7 @@ TIME_ZONE_CHOICES = (
 )
 
 
-class Account(auth_models.AbstractBaseUser, auth_models.PermissionsMixin, abstract.Contact):
+class Account(manager.AbstractBaseUser, abstract.Contact):
     class Comment(models.TextChoices):
         NORMAL = 'old', 'Old to New'
         REVERSE = 'new', 'New to Old'
