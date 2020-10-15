@@ -15,6 +15,7 @@ django-rest-auth
 celery==4.4.6
 coreapi
 cryptography
+gunicorn
 money
 requests
 passlib
