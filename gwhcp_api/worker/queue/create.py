@@ -21,6 +21,20 @@ class CreateQueue:
 
         self.order_id = 0
 
+    def clean(self):
+        """
+        Clean
+
+        Remove QueueStatus if there are no items
+        """
+
+        queue_item = models.QueueItem.objects.filter(
+            queue_status=self.queue_status
+        )
+
+        if not queue_item.exists():
+            self.queue_status.delete()
+
     def item(self, kwargs=None):
         """
         Queue Items
