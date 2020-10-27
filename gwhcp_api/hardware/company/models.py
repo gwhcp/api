@@ -72,6 +72,10 @@ class Server(models.Server):
     objects = ServerManager()
 
     class Meta:
+        ordering = [
+            'domain__name'
+        ]
+
         proxy = True
 
         verbose_name = 'Hardware Company Server'
