@@ -24,7 +24,9 @@ class AccessLog(generics.ListAPIView):
     serializer_class = serializers.AccessLogSerializer
 
     def get_queryset(self):
-        return models.AccessLog.objects.filter(account_id=self.request.user.pk)
+        return models.AccessLog.objects.filter(
+            account_id=self.request.user.pk
+        )
 
 
 class Choices(views.APIView):
@@ -97,4 +99,6 @@ class Profile(generics.RetrieveUpdateAPIView):
     serializer_class = serializers.ProfileSerializer
 
     def get_object(self):
-        return models.Account.objects.get(pk=self.request.user.pk)
+        return models.Account.objects.get(
+            pk=self.request.user.pk
+        )
