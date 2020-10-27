@@ -72,6 +72,8 @@ class Create(generics.CreateAPIView):
                 }
             )
 
+        create_queue.clean()
+
 
 class Delete(generics.RetrieveDestroyAPIView):
     """
@@ -108,7 +110,7 @@ class Delete(generics.RetrieveDestroyAPIView):
             )
 
         # Bind
-        if instance.is_bind:
+        if instance.is_bind and instance.is_installed:
             # Uninstall Bind
             create_queue.item(
                 {
@@ -119,8 +121,10 @@ class Delete(generics.RetrieveDestroyAPIView):
             )
 
         # Mail
-        if instance.is_mail:
+        if instance.is_mail and instance.is_installed:
             pass
+
+        create_queue.clean()
 
         instance.delete()
 
@@ -167,6 +171,12 @@ class Install(generics.RetrieveUpdateAPIView):
     def perform_update(self, serializer):
         instance = serializer.save()
 
+        create_queue = CreateQueue(
+            service_id={
+                'server_id': instance.pk
+            }
+        )
+
         # Admin
         if instance.is_admin:
             # TODO Create installation
@@ -174,12 +184,6 @@ class Install(generics.RetrieveUpdateAPIView):
 
         # Bind
         elif instance.is_bind:
-            create_queue = CreateQueue(
-                service_id={
-                    'server_id': instance.pk
-                }
-            )
-
             # Install Bind
             create_queue.item(
                 {
@@ -196,12 +200,6 @@ class Install(generics.RetrieveUpdateAPIView):
 
         # Mail
         elif instance.is_mail:
-            create_queue = CreateQueue(
-                service_id={
-                    'server_id': instance.pk
-                }
-            )
-
             # Install Dovecot
             create_queue.item(
                 {
@@ -242,6 +240,8 @@ class Install(generics.RetrieveUpdateAPIView):
         elif instance.is_xmpp:
             # TODO Create installation
             pass
+
+        create_queue.clean()
 
 
 class Profile(generics.RetrieveUpdateAPIView):
