@@ -3,6 +3,10 @@ from database.gwhcp import models
 
 class FraudString(models.FraudString):
     class Meta:
+        ordering = [
+            'name'
+        ]
+
         proxy = True
 
         verbose_name = 'Store Fraud String'

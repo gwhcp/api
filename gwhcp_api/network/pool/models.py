@@ -13,6 +13,11 @@ class IpaddressPool(models.IpaddressPool):
 
 class IpaddressSetup(models.IpaddressSetup):
     class Meta:
+        ordering = [
+            'network',
+            'name'
+        ]
+
         proxy = True
 
         verbose_name = 'Network IP Address Setup'

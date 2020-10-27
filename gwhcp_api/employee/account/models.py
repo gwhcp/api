@@ -9,6 +9,10 @@ class AccessLog(models.AccessLog):
             'view',
         )
 
+        ordering = [
+            'date_from'
+        ]
+
         proxy = True
 
         verbose_name = 'Account Access Log'

@@ -17,6 +17,10 @@ class Domain(models.Domain):
     class Meta:
         default_permissions = ()
 
+        ordering = [
+            'name'
+        ]
+
         proxy = True
 
         verbose_name = 'Domain'
@@ -62,6 +66,10 @@ class Server(models.Server):
     objects = ServerManager()
 
     class Meta:
+        ordering = [
+            'domain__name'
+        ]
+
         proxy = True
 
         verbose_name = 'Hardware Client Server'

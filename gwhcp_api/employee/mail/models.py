@@ -8,6 +8,10 @@ class Mail(models.Mail):
             'change'
         )
 
+        ordering = [
+            'name'
+        ]
+
         proxy = True
 
         verbose_name = 'Employee Mail Account'

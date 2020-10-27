@@ -17,6 +17,11 @@ class Account(models.Account):
     class Meta:
         default_permissions = ()
 
+        ordering = [
+            'first_name',
+            'last_name'
+        ]
+
         proxy = True
 
         verbose_name = 'Account'
@@ -54,6 +59,10 @@ class ProsodyArchive(xmpp_models.ProsodyArchive):
 class ProsodyGroup(xmpp_models.ProsodyGroup):
     class Meta:
         default_permissions = ()
+
+        ordering = [
+            'name'
+        ]
 
         proxy = True
 

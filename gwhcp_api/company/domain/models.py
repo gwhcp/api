@@ -7,6 +7,10 @@ class Company(models.Company):
     class Meta:
         default_permissions = ()
 
+        ordering = [
+            'name'
+        ]
+
         proxy = True
 
         verbose_name = 'Company'
@@ -25,6 +29,10 @@ class Domain(models.Domain):
     objects = DomainManager()
 
     class Meta:
+        ordering = [
+            'name'
+        ]
+
         proxy = True
 
         verbose_name = 'Company Domain'

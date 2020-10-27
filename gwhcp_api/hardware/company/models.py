@@ -17,6 +17,10 @@ class Domain(models.Domain):
     class Meta:
         default_permissions = ()
 
+        ordering = [
+            'name'
+        ]
+
         proxy = True
 
         verbose_name = 'Domain'

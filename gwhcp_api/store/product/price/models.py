@@ -3,6 +3,10 @@ from database.gwhcp import models
 
 class StoreProductPrice(models.StoreProductPrice):
     class Meta:
+        ordering = [
+            'billing_cycle'
+        ]
+
         proxy = True
 
         verbose_name = 'Store Product Price'

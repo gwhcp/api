@@ -25,6 +25,10 @@ class Company(models.Company):
     class Meta:
         default_permissions = ()
 
+        ordering = [
+            'name'
+        ]
+
         proxy = True
 
         verbose_name = 'Company'
@@ -33,6 +37,10 @@ class Company(models.Company):
 
 class PaymentGateway(models.PaymentGateway):
     class Meta:
+        ordering = [
+            'merchant'
+        ]
+
         proxy = True
 
         verbose_name = 'Billing Payment Gateway'
@@ -47,6 +55,7 @@ class PaymentGateway(models.PaymentGateway):
         if getattr(self, 'created', False):
             # Credit Card
             if self.payment_method == 'cc':
+                # Authorize.net
                 if self.merchant == 'authorize':
                     PaymentAuthorizeCc.objects.create(
                         payment_gateway_authorize_cc=self,

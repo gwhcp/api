@@ -16,6 +16,11 @@ class Account(models.Account):
     class Meta:
         default_permissions = ()
 
+        ordering = [
+            'first_name',
+            'last_name'
+        ]
+
         proxy = True
 
         verbose_name = 'Account'
@@ -25,6 +30,10 @@ class Account(models.Account):
 class Company(models.Company):
     class Meta:
         default_permissions = ()
+
+        ordering = [
+            'name'
+        ]
 
         proxy = True
 
@@ -46,6 +55,10 @@ class Domain(models.Domain):
     class Meta:
         default_permissions = ()
 
+        ordering = [
+            'name'
+        ]
+
         proxy = True
 
         verbose_name = 'Company Mail Domain'
@@ -64,6 +77,10 @@ class Mail(models.Mail):
     objects = MailManager()
 
     class Meta:
+        ordering = [
+            'name'
+        ]
+
         proxy = True
 
         verbose_name = 'Company Mail Account'

@@ -14,6 +14,11 @@ class DnsZone(models.DnsZone):
     objects = DnsZoneManager()
 
     class Meta:
+        ordering = [
+            'host',
+            'record_type'
+        ]
+
         proxy = True
 
         verbose_name = 'Company DNS Record'
@@ -33,6 +38,10 @@ class Domain(models.Domain):
 
     class Meta:
         default_permissions = ()
+
+        ordering = [
+            'name'
+        ]
 
         proxy = True
 

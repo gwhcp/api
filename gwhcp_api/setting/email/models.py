@@ -3,6 +3,10 @@ from database.gwhcp import models
 
 class EmailTemplate(models.EmailTemplate):
     class Meta:
+        ordering = [
+            'template'
+        ]
+
         proxy = True
 
         verbose_name = 'Settings Email Template'

@@ -10,6 +10,10 @@ class AccessLog(models.AccessLog):
             'view',
         )
 
+        ordering = [
+            'date_from'
+        ]
+
         proxy = True
 
         verbose_name = 'Manage Access Log'
@@ -27,6 +31,11 @@ class Account(models.Account):
     objects = AccountManager()
 
     class Meta:
+        ordering = [
+            'first_name',
+            'last_name'
+        ]
+
         proxy = True
 
         verbose_name = 'Manage Account'
