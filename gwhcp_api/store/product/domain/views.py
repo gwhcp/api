@@ -1,3 +1,4 @@
+from rest_framework import exceptions
 from rest_framework import generics
 from rest_framework.permissions import IsAdminUser
 
@@ -44,6 +45,15 @@ class Delete(generics.RetrieveDestroyAPIView):
     queryset = models.StoreProduct.objects.all()
 
     serializer_class = serializers.SearchSerializer
+
+    def perform_destroy(self, instance):
+        if not instance.can_delete():
+            raise exceptions.ValidationError(
+                'Store Domain Product is currently in use and cannot be removed.',
+                code='can_delete'
+            )
+
+        instance.delete()
 
 
 class Profile(generics.RetrieveUpdateAPIView):

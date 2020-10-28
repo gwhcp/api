@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, exceptions
 from rest_framework import views
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
@@ -95,6 +95,12 @@ class Delete(generics.RetrieveDestroyAPIView):
     serializer_class = serializers.SearchSerializer
 
     def perform_destroy(self, instance):
+        if not instance.can_delete():
+            raise exceptions.ValidationError(
+                'Server is currently in use and cannot be removed.',
+                code='can_delete'
+            )
+
         create_queue = CreateQueue()
 
         # Update Bind

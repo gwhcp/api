@@ -1,3 +1,4 @@
+from rest_framework import exceptions
 from rest_framework import generics
 from rest_framework.permissions import IsAdminUser
 
@@ -48,6 +49,15 @@ class Delete(generics.RetrieveDestroyAPIView):
             pk=self.kwargs['pk'],
             store_product=self.kwargs['store_product_id']
         )
+
+    def perform_destroy(self, instance):
+        if not instance.can_delete():
+            raise exceptions.ValidationError(
+                'Store Price is currently in use and cannot be removed.',
+                code='can_delete'
+            )
+
+        instance.delete()
 
 
 class Profile(generics.RetrieveUpdateAPIView):
