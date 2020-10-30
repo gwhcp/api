@@ -112,6 +112,7 @@ INSTALLED_APPS.extend([
     'worker.daemon',
     'worker.dovecot',
     'worker.ejabberd',
+    'worker.gunicorn',
     'worker.mail',
     'worker.mysql',
     'worker.nginx',

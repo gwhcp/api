@@ -1,0 +1,9 @@
+[Unit]
+Description=[WEB-DOMAIN] gunicorn daemon
+
+[Service]
+Type=simple
+ExecStart=/etc/gunicorn/[WEB-DOMAIN].sh
+
+[Install]
+WantedBy=multi-user.target
