@@ -115,8 +115,35 @@ class Delete(generics.RetrieveDestroyAPIView):
                 }
             )
 
+        # Admin
+        if instance.is_admin and instance.is_installed:
+            # TODO Delete installation
+            pass
+
         # Bind
-        if instance.is_bind and instance.is_installed:
+        elif instance.is_bind and instance.is_installed:
+            create_queue.item(
+                {
+                    'ipaddress': instance.ipaddress_pool.ipaddress,
+                    'name': 'console.tasks.ders',
+                    'args': {
+                        'action': 'stop',
+                        'service': 'named'
+                    }
+                }
+            )
+
+            create_queue.item(
+                {
+                    'ipaddress': instance.ipaddress_pool.ipaddress,
+                    'name': 'console.tasks.ders',
+                    'args': {
+                        'action': 'disable',
+                        'service': 'named'
+                    }
+                }
+            )
+
             # Uninstall Bind
             create_queue.item(
                 {
@@ -126,9 +153,53 @@ class Delete(generics.RetrieveDestroyAPIView):
                 }
             )
 
-        # Mail
-        if instance.is_mail and instance.is_installed:
+        # Control Panel
+        elif instance.is_cp and instance.is_installed:
+            # TODO Delete installation
             pass
+
+        # Mail
+        elif instance.is_mail and instance.is_installed:
+            # TODO Delete installation
+            pass
+
+        # Store
+        elif instance.is_store and instance.is_installed:
+            # TODO Delete installation
+            pass
+
+        # XMPP
+        elif instance.is_xmpp and instance.is_installed:
+            create_queue.item(
+                {
+                    'ipaddress': instance.ipaddress_pool.ipaddress,
+                    'name': 'console.tasks.ders',
+                    'args': {
+                        'action': 'stop',
+                        'service': 'prosody'
+                    }
+                }
+            )
+
+            create_queue.item(
+                {
+                    'ipaddress': instance.ipaddress_pool.ipaddress,
+                    'name': 'console.tasks.ders',
+                    'args': {
+                        'action': 'disable',
+                        'service': 'prosody'
+                    }
+                }
+            )
+
+            # Uninstall Prosody
+            create_queue.item(
+                {
+                    'ipaddress': instance.ipaddress_pool.ipaddress,
+                    'name': 'prosody.tasks.server_uninstall',
+                    'args': {}
+                }
+            )
 
         create_queue.clean()
 
@@ -199,6 +270,28 @@ class Install(generics.RetrieveUpdateAPIView):
                 }
             )
 
+            create_queue.item(
+                {
+                    'ipaddress': instance.ipaddress_pool.ipaddress,
+                    'name': 'console.tasks.ders',
+                    'args': {
+                        'action': 'enable',
+                        'service': 'named'
+                    }
+                }
+            )
+
+            create_queue.item(
+                {
+                    'ipaddress': instance.ipaddress_pool.ipaddress,
+                    'name': 'console.tasks.ders',
+                    'args': {
+                        'action': 'start',
+                        'service': 'named'
+                    }
+                }
+            )
+
         # Control Panel
         elif instance.is_cp:
             # TODO Create installation
@@ -237,6 +330,50 @@ class Install(generics.RetrieveUpdateAPIView):
                 }
             )
 
+            create_queue.item(
+                {
+                    'ipaddress': instance.ipaddress_pool.ipaddress,
+                    'name': 'console.tasks.ders',
+                    'args': {
+                        'action': 'enable',
+                        'service': 'dovecot'
+                    }
+                }
+            )
+
+            create_queue.item(
+                {
+                    'ipaddress': instance.ipaddress_pool.ipaddress,
+                    'name': 'console.tasks.ders',
+                    'args': {
+                        'action': 'start',
+                        'service': 'dovecot'
+                    }
+                }
+            )
+
+            create_queue.item(
+                {
+                    'ipaddress': instance.ipaddress_pool.ipaddress,
+                    'name': 'console.tasks.ders',
+                    'args': {
+                        'action': 'enable',
+                        'service': 'postfix'
+                    }
+                }
+            )
+
+            create_queue.item(
+                {
+                    'ipaddress': instance.ipaddress_pool.ipaddress,
+                    'name': 'console.tasks.ders',
+                    'args': {
+                        'action': 'start',
+                        'service': 'postfix'
+                    }
+                }
+            )
+
         # Store
         elif instance.is_store:
             # TODO Create installation
@@ -244,8 +381,36 @@ class Install(generics.RetrieveUpdateAPIView):
 
         # XMPP
         elif instance.is_xmpp:
-            # TODO Create installation
-            pass
+            # Install Prosody
+            create_queue.item(
+                {
+                    'ipaddress': instance.ipaddress_pool.ipaddress,
+                    'name': 'prosody.tasks.server_install',
+                    'args': {}
+                }
+            )
+
+            create_queue.item(
+                {
+                    'ipaddress': instance.ipaddress_pool.ipaddress,
+                    'name': 'console.tasks.ders',
+                    'args': {
+                        'action': 'enable',
+                        'service': 'prosody'
+                    }
+                }
+            )
+
+            create_queue.item(
+                {
+                    'ipaddress': instance.ipaddress_pool.ipaddress,
+                    'name': 'console.tasks.ders',
+                    'args': {
+                        'action': 'start',
+                        'service': 'prosody'
+                    }
+                }
+            )
 
         create_queue.clean()
 
