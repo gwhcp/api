@@ -45,6 +45,7 @@ urlpatterns = [
     path('worker/php/', include('worker.php.urls')),
     path('worker/postfix/', include('worker.postfix.urls')),
     path('worker/postgresql/', include('worker.postgresql.urls')),
+    path('worker/prosody/', include('worker.prosody.urls')),
     path('worker/rabbitmq/', include('worker.rabbitmq.urls')),
     path('worker/system/', include('worker.system.urls')),
     path('worker/vsftpd/', include('worker.vsftpd.urls')),

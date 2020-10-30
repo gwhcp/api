@@ -31,6 +31,7 @@ class DERSSerializer(serializers.Serializer):
             ('php-fpm', 'PHP-FPM'),
             ('postfix', 'Postfix'),
             ('postgresql', 'PostgreSQL'),
+            ('prosody', 'Prosody'),
             ('rabbitmq', 'Rabbit MQ'),
             ('uwsgi', 'uWsgi'),
             ('vsftpd', 'VsFTPd')

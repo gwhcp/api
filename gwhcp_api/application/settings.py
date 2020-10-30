@@ -119,6 +119,7 @@ INSTALLED_APPS.extend([
     'worker.php',
     'worker.postfix',
     'worker.postgresql',
+    'worker.prosody',
     'worker.queue',
     'worker.rabbitmq',
     'worker.system',

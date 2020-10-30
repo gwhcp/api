@@ -35,6 +35,7 @@ class Command(base.BaseCommand):
                 'php-fpm',
                 'postfix',
                 'postgresql',
+                'prosody',
                 'rabbitmq',
                 'vsftpd'
             ],
