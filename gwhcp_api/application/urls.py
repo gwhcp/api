@@ -37,7 +37,6 @@ urlpatterns = [
     path('worker/cron/', include('worker.cron.urls')),
     path('worker/daemon/', include('worker.daemon.urls')),
     path('worker/dovecot/', include('worker.dovecot.urls')),
-    path('worker/ejabberd/', include('worker.ejabberd.urls')),
     path('worker/gunicorn/', include('worker.gunicorn.urls')),
     path('worker/mail/', include('worker.mail.urls')),
     path('worker/mysql/', include('worker.mysql.urls')),

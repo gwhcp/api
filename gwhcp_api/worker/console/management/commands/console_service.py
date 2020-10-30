@@ -27,7 +27,6 @@ class Command(base.BaseCommand):
             choices=[
                 'cronie',
                 'dovecot',
-                'ejabberd',
                 'httpd',
                 'mariadb',
                 'named',

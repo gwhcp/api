@@ -8,7 +8,7 @@
 
 * console_service
     * action (disable / enable / restart / start / stop)
-    * service (cronie / dovecot / ejabberd / httpd / mariadb / named / nginx / php-fpm / postfix / postgresql / prosody / rabbitmq / uwsgi / vsftpd)
+    * service (cronie / dovecot / httpd / mariadb / named / nginx / php-fpm / postfix / postgresql / prosody / rabbitmq / uwsgi / vsftpd)
 
     `python manage.py console_service enable nginx`
 

@@ -23,7 +23,6 @@ class DERSSerializer(serializers.Serializer):
         choices=[
             ('cronie', 'Cron'),
             ('dovecot', 'Dovecot'),
-            ('ejabberd', 'eJabberD'),
             ('httpd', 'HTTPd'),
             ('mariadb', 'Maria DB'),
             ('named', 'Bind'),

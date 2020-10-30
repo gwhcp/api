@@ -111,7 +111,6 @@ INSTALLED_APPS.extend([
     'worker.cron',
     'worker.daemon',
     'worker.dovecot',
-    'worker.ejabberd',
     'worker.gunicorn',
     'worker.mail',
     'worker.mysql',
