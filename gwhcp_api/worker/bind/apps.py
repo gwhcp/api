@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'worker.bind'
+    label = 'worker_bind'
 
-    name = label
+    name = 'worker.bind'
 
     verbose_name = 'Worker Bind'

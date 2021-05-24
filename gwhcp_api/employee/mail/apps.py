@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'employee.mail'
+    label = 'employee_mail'
 
-    name = label
+    name = 'employee.mail'
 
     verbose_name = 'Employee Mail'

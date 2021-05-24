@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'worker.mysql'
+    label = 'worker_mysql'
 
-    name = label
+    name = 'worker.mysql'
 
     verbose_name = 'Worker MySQL'

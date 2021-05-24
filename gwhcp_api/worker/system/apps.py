@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'worker.system'
+    label = 'worker_system'
 
-    name = label
+    name = 'worker.system'
 
     verbose_name = 'Worker System'

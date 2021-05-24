@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'company.xmpp'
+    label = 'company_xmpp'
 
-    name = label
+    name = 'company.xmpp'
 
     verbose_name = 'Company XMPP'

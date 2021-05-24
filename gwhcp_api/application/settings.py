@@ -175,6 +175,8 @@ ASGI / WSGI Application
 
 WSGI_APPLICATION = 'application.wsgi.application'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 """
 Database
 """

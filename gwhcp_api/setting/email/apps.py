@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'setting.email'
+    label = 'setting_email'
 
-    name = label
+    name = 'setting.email'
 
     verbose_name = 'Setting Email Template'

@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'billing.payment'
+    label = 'billing_payment'
 
-    name = label
+    name = 'billing.payment'
 
     verbose_name = 'Billing Payment'

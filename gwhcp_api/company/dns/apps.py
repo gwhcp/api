@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'company.dns'
+    label = 'company_dns'
 
-    name = label
+    name = 'company.dns'
 
     verbose_name = 'DNS'

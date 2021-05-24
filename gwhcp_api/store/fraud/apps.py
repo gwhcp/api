@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'store.fraud'
+    label = 'store_fraud'
 
-    name = label
+    name = 'store.fraud'
 
     verbose_name = 'Store Fraud'

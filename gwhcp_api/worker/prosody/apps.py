@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'worker.prosody'
+    label = 'worker_prosody'
 
-    name = label
+    name = 'worker.prosody'
 
     verbose_name = 'Worker Prosody'

@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'network.pool'
+    label = 'network_pool'
 
-    name = label
+    name = 'network.pool'
 
     verbose_name = 'Network Pool'

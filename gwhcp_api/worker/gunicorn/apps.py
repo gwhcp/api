@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'worker.gunicorn'
+    label = 'worker_gunicorn'
 
-    name = label
+    name = 'worker.gunicorn'
 
     verbose_name = 'Worker Gunicorn'

@@ -5,7 +5,7 @@ from django.contrib.auth.signals import user_logged_in
 class Config(AppConfig):
     label = 'login'
 
-    name = label
+    name = 'login'
 
     verbose_name = 'Login'
 

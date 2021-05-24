@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'worker.vsftpd'
+    label = 'worker_vsftpd'
 
-    name = label
+    name = 'worker.vsftpd'
 
     verbose_name = 'Worker vsFTPd'

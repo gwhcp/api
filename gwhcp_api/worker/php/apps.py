@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'worker.php'
+    label = 'worker_php'
 
-    name = label
+    name = 'worker.php'
 
     verbose_name = 'Worker PHP'

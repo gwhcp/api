@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'worker.postfix'
+    label = 'worker_postfix'
 
-    name = label
+    name = 'worker.postfix'
 
     verbose_name = 'Worker Postfix'

@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'worker.daemon'
+    label = 'worker_daemon'
 
-    name = label
+    name = 'worker.daemon'
 
     verbose_name = 'Worker Daemon'

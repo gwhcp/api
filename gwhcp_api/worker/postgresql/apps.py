@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'worker.postgresql'
+    label = 'worker_postgresql'
 
-    name = label
+    name = 'worker.postgresql'
 
     verbose_name = 'Worker PostgreSQL'

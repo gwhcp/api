@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'worker.queue'
+    label = 'worker_queue'
 
-    name = label
+    name = 'worker.queue'
 
     verbose_name = 'Worker Queue'

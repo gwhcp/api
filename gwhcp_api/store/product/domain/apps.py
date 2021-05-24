@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'store.product.domain'
+    label = 'store_product_domain'
 
-    name = label
+    name = 'store.product.domain'
 
     verbose_name = 'Store Domain Product'

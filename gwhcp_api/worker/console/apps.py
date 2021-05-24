@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'worker.console'
+    label = 'worker_console'
 
-    name = label
+    name = 'worker.console'
 
     verbose_name = 'Worker Console'

@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'worker.nginx'
+    label = 'worker_nginx'
 
-    name = label
+    name = 'worker.nginx'
 
     verbose_name = 'Worker Nginx'

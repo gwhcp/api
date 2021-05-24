@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'worker.dovecot'
+    label = 'worker_dovecot'
 
-    name = label
+    name = 'worker.dovecot'
 
     verbose_name = 'Worker Dovecot'

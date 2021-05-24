@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'worker.cron'
+    label = 'worker_cron'
 
-    name = label
+    name = 'worker.cron'
 
     verbose_name = 'Worker Cron'

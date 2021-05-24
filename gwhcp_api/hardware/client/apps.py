@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'hardware.client'
+    label = 'hardware_client'
 
-    name = label
+    name = 'hardware.client'
 
     verbose_name = 'Hardware Client'

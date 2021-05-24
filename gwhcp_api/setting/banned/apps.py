@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'setting.banned'
+    label = 'setting_banned'
 
-    name = label
+    name = 'setting.banned'
 
     verbose_name = 'Setting Banned'

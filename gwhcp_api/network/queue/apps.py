@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'network.queue'
+    label = 'network_queue'
 
-    name = label
+    name = 'network.queue'
 
     verbose_name = 'Network Queue'
