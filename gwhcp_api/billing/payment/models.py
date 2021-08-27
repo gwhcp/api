@@ -48,7 +48,9 @@ class PaymentGateway(models.PaymentGateway):
 
     def can_delete(self):
         # List of models that should not be checked.
-        defer = []
+        defer = [
+            models.PaymentAuthorizeCc
+        ]
 
         for rel in self._meta.get_fields():
             if rel.related_model not in defer:
