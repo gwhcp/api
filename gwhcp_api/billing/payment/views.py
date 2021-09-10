@@ -21,8 +21,8 @@ class AuthorizeAuthentication(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['billing.payment.view_paymentgateway'],
-        'change': ['billing.payment.change_paymentgateway']
+        'view': ['billing_payment.view_paymentgateway'],
+        'change': ['billing_payment.change_paymentgateway']
     }
 
     queryset = models.PaymentAuthorizeCc.objects.all()
@@ -41,8 +41,8 @@ class AuthorizeMethod(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['billing.payment.view_paymentgateway'],
-        'change': ['billing.payment.change_paymentgateway']
+        'view': ['billing_payment.view_paymentgateway'],
+        'change': ['billing_payment.change_paymentgateway']
     }
 
     queryset = models.PaymentAuthorizeCc.objects.all()
@@ -94,8 +94,8 @@ class Create(generics.CreateAPIView):
     )
 
     gacl = {
-        'view': ['billing.payment.view_paymentgateway'],
-        'add': ['billing.payment.add_paymentgateway']
+        'view': ['billing_payment.view_paymentgateway'],
+        'add': ['billing_payment.add_paymentgateway']
     }
 
     queryset = models.PaymentGateway.objects.all()
@@ -114,8 +114,8 @@ class Delete(generics.RetrieveDestroyAPIView):
     )
 
     gacl = {
-        'view': ['billing.payment.view_paymentgateway'],
-        'delete': ['billing.payment.delete_paymentgateway']
+        'view': ['billing_payment.view_paymentgateway'],
+        'delete': ['billing_payment.delete_paymentgateway']
     }
 
     queryset = models.PaymentGateway.objects.all()
@@ -143,7 +143,7 @@ class Profile(generics.RetrieveAPIView):
     )
 
     gacl = {
-        'view': ['billing.payment.view_paymentgateway']
+        'view': ['billing_payment.view_paymentgateway']
     }
 
     queryset = models.PaymentGateway.objects.all()
@@ -162,7 +162,7 @@ class Search(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['billing.payment.view_paymentgateway']
+        'view': ['billing_payment.view_paymentgateway']
     }
 
     queryset = models.PaymentGateway.objects.all()

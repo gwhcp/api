@@ -32,8 +32,8 @@ class Create(generics.CreateAPIView):
     )
 
     gacl = {
-        'view': ['setting.email.view_emailtemplate'],
-        'add': ['setting.email.add_emailtemplate']
+        'view': ['setting_email.view_emailtemplate'],
+        'add': ['setting_email.add_emailtemplate']
     }
 
     queryset = models.EmailTemplate.objects.all()
@@ -52,8 +52,8 @@ class Delete(generics.RetrieveDestroyAPIView):
     )
 
     gacl = {
-        'view': ['setting.email.view_emailtemplate'],
-        'delete': ['setting.email.delete_emailtemplate']
+        'view': ['setting_email.view_emailtemplate'],
+        'delete': ['setting_email.delete_emailtemplate']
     }
 
     queryset = models.EmailTemplate.objects.all()
@@ -72,7 +72,7 @@ class Profile(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['setting.email.view_emailtemplate']
+        'view': ['setting_email.view_emailtemplate']
     }
 
     queryset = models.EmailTemplate.objects.all()
@@ -91,7 +91,7 @@ class Search(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['setting.email.view_emailtemplate']
+        'view': ['setting_email.view_emailtemplate']
     }
 
     queryset = models.EmailTemplate.objects.all()

@@ -53,8 +53,8 @@ class Create(generics.CreateAPIView):
     )
 
     gacl = {
-        'view': ['company.dns.view_dnszone'],
-        'add': ['company.dns.add_dnszone']
+        'view': ['company_dns.view_dnszone'],
+        'add': ['company_dns.add_dnszone']
     }
 
     queryset = models.DnsZone.objects.all()
@@ -90,8 +90,8 @@ class Delete(generics.RetrieveDestroyAPIView):
     )
 
     gacl = {
-        'view': ['company.dns.view_dnszone'],
-        'delete': ['company.dns.delete_dnszone']
+        'view': ['company_dns.view_dnszone'],
+        'delete': ['company_dns.delete_dnszone']
     }
 
     queryset = models.DnsZone.objects.all()
@@ -127,8 +127,8 @@ class Ns(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['company.dns.view_dnszone'],
-        'change': ['company.dns.change_dnszone']
+        'view': ['company_dns.view_dnszone'],
+        'change': ['company_dns.change_dnszone']
     }
 
     queryset = models.Domain.objects.all()
@@ -149,8 +149,8 @@ class Profile(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['company.dns.view_dnszone'],
-        'change': ['company.dns.change_dnszone']
+        'view': ['company_dns.view_dnszone'],
+        'change': ['company_dns.change_dnszone']
     }
 
     queryset = models.Domain.objects.all()
@@ -214,7 +214,7 @@ class Search(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['company.dns.view_dnszone']
+        'view': ['company_dns.view_dnszone']
     }
 
     queryset = models.Domain.objects.all()
@@ -233,7 +233,7 @@ class SearchRecord(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['company.dns.view_dnszone']
+        'view': ['company_dns.view_dnszone']
     }
 
     queryset = models.DnsZone.objects.all()

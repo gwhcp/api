@@ -52,8 +52,8 @@ class CreateAccount(generics.CreateAPIView):
     )
 
     gacl = {
-        'view': ['company.xmpp.view_prosodyaccount'],
-        'add': ['company.xmpp.add_prosodyaccount']
+        'view': ['company_xmpp.view_prosodyaccount'],
+        'add': ['company_xmpp.add_prosodyaccount']
     }
 
     queryset = models.ProsodyAccount.objects.all()
@@ -72,8 +72,8 @@ class CreateGroup(generics.CreateAPIView):
     )
 
     gacl = {
-        'view': ['company.xmpp.view_prosodyaccount'],
-        'add': ['company.xmpp.add_prosodyaccount']
+        'view': ['company_xmpp.view_prosodyaccount'],
+        'add': ['company_xmpp.add_prosodyaccount']
     }
 
     queryset = models.ProsodyGroup.objects.all()
@@ -92,8 +92,8 @@ class Delete(generics.RetrieveDestroyAPIView):
     )
 
     gacl = {
-        'view': ['company.xmpp.view_prosodyaccount'],
-        'delete': ['company.xmpp.delete_prosodyaccount']
+        'view': ['company_xmpp.view_prosodyaccount'],
+        'delete': ['company_xmpp.delete_prosodyaccount']
     }
 
     queryset = models.ProsodyAccount.objects.all()
@@ -112,8 +112,8 @@ class DeleteGroup(generics.RetrieveDestroyAPIView):
     )
 
     gacl = {
-        'view': ['company.xmpp.view_prosodyaccount'],
-        'delete': ['company.xmpp.delete_prosodyaccount']
+        'view': ['company_xmpp.view_prosodyaccount'],
+        'delete': ['company_xmpp.delete_prosodyaccount']
     }
 
     queryset = models.ProsodyGroup.objects.all()
@@ -151,8 +151,8 @@ class Profile(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['company.xmpp.view_prosodyaccount'],
-        'change': ['company.xmpp.change_prosodyaccount']
+        'view': ['company_xmpp.view_prosodyaccount'],
+        'change': ['company_xmpp.change_prosodyaccount']
     }
 
     queryset = models.ProsodyAccount.objects.all()
@@ -171,7 +171,7 @@ class Rebuild(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['company.xmpp.view_prosodyaccount']
+        'view': ['company_xmpp.view_prosodyaccount']
     }
 
     queryset = models.ProsodyAccount.objects.all()
@@ -272,7 +272,7 @@ class Search(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['company.xmpp.view_prosodyaccount']
+        'view': ['company_xmpp.view_prosodyaccount']
     }
 
     queryset = models.ProsodyAccount.objects.all()
@@ -291,7 +291,7 @@ class SearchGroup(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['company.xmpp.view_prosodyaccount']
+        'view': ['company_xmpp.view_prosodyaccount']
     }
 
     queryset = models.ProsodyGroup.objects.all()

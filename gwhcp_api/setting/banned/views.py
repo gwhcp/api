@@ -33,8 +33,8 @@ class Create(generics.CreateAPIView):
     )
 
     gacl = {
-        'view': ['setting.banned.view_banned'],
-        'add': ['setting.banned.add_banned']
+        'view': ['setting_banned.view_banned'],
+        'add': ['setting_banned.add_banned']
     }
 
     queryset = models.Banned.objects.all()
@@ -53,8 +53,8 @@ class Delete(generics.RetrieveDestroyAPIView):
     )
 
     gacl = {
-        'view': ['setting.banned.view_banned'],
-        'delete': ['setting.banned.delete_banned']
+        'view': ['setting_banned.view_banned'],
+        'delete': ['setting_banned.delete_banned']
     }
 
     queryset = models.Banned.objects.all()
@@ -82,7 +82,7 @@ class Profile(generics.RetrieveAPIView):
     )
 
     gacl = {
-        'view': ['setting.banned.view_banned']
+        'view': ['setting_banned.view_banned']
     }
 
     queryset = models.Banned.objects.all()
@@ -101,7 +101,7 @@ class Search(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['setting.banned.view_banned']
+        'view': ['setting_banned.view_banned']
     }
 
     queryset = models.Banned.objects.all()

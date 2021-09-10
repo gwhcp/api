@@ -54,8 +54,8 @@ class Create(generics.CreateAPIView):
     )
 
     gacl = {
-        'view': ['hardware.client.view_server'],
-        'add': ['hardware.client.add_server']
+        'view': ['hardware_client.view_server'],
+        'add': ['hardware_client.add_server']
     }
 
     queryset = models.Server.objects.all()
@@ -74,8 +74,8 @@ class Delete(generics.RetrieveDestroyAPIView):
     )
 
     gacl = {
-        'view': ['hardware.client.view_server'],
-        'delete': ['hardware.client.delete_server']
+        'view': ['hardware_client.view_server'],
+        'delete': ['hardware_client.delete_server']
     }
 
     queryset = models.Server.objects.all()
@@ -94,8 +94,8 @@ class Install(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['hardware.client.view_server'],
-        'change': ['hardware.client.change_server']
+        'view': ['hardware_client.view_server'],
+        'change': ['hardware_client.change_server']
     }
 
     queryset = models.Server.objects.all()
@@ -114,8 +114,8 @@ class Profile(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['hardware.client.view_server'],
-        'change': ['hardware.client.change_server']
+        'view': ['hardware_client.view_server'],
+        'change': ['hardware_client.change_server']
     }
 
     queryset = models.Server.objects.all()
@@ -134,7 +134,7 @@ class Search(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['hardware.client.view_server']
+        'view': ['hardware_client.view_server']
     }
 
     queryset = models.Server.objects.all()

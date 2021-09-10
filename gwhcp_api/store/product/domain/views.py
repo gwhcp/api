@@ -18,8 +18,8 @@ class Create(generics.CreateAPIView):
     )
 
     gacl = {
-        'view': ['store.product.view_storeproduct'],
-        'add': ['store.product.add_storeproduct']
+        'view': ['store_product.view_storeproduct'],
+        'add': ['store_product.add_storeproduct']
     }
 
     queryset = models.StoreProduct.objects.all()
@@ -38,8 +38,8 @@ class Delete(generics.RetrieveDestroyAPIView):
     )
 
     gacl = {
-        'view': ['store.product.view_storeproduct'],
-        'delete': ['store.product.delete_storeproduct']
+        'view': ['store_product.view_storeproduct'],
+        'delete': ['store_product.delete_storeproduct']
     }
 
     queryset = models.StoreProduct.objects.all()
@@ -67,7 +67,7 @@ class Profile(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['store.product.view_storeproduct']
+        'view': ['store_product.view_storeproduct']
     }
 
     queryset = models.StoreProduct.objects.all()
@@ -86,7 +86,7 @@ class Resource(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['store.product.view_storeproduct']
+        'view': ['store_product.view_storeproduct']
     }
 
     queryset = models.StoreProduct.objects.all()
@@ -105,7 +105,7 @@ class Search(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['store.product.view_storeproduct']
+        'view': ['store_product.view_storeproduct']
     }
 
     queryset = models.StoreProduct.objects.all()

@@ -20,7 +20,7 @@ class Choices(views.APIView):
     )
 
     gacl = {
-        'view': ['network.pool.view_ipaddresssetup']
+        'view': ['network_pool.view_ipaddresssetup']
     }
 
     def get(self, request):
@@ -38,8 +38,8 @@ class Create(generics.CreateAPIView):
     )
 
     gacl = {
-        'view': ['network.pool.view_ipaddresssetup'],
-        'add': ['network.pool.add_ipaddresssetup']
+        'view': ['network_pool.view_ipaddresssetup'],
+        'add': ['network_pool.add_ipaddresssetup']
     }
 
     queryset = models.IpaddressSetup.objects.all()
@@ -58,8 +58,8 @@ class Delete(generics.RetrieveDestroyAPIView):
     )
 
     gacl = {
-        'view': ['network.pool.view_ipaddresssetup'],
-        'delete': ['network.pool.delete_ipaddresssetup']
+        'view': ['network_pool.view_ipaddresssetup'],
+        'delete': ['network_pool.delete_ipaddresssetup']
     }
 
     queryset = models.IpaddressSetup.objects.all()
@@ -87,7 +87,7 @@ class Profile(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['network.pool.view_ipaddresssetup']
+        'view': ['network_pool.view_ipaddresssetup']
     }
 
     queryset = models.IpaddressSetup.objects.all()
@@ -106,7 +106,7 @@ class Search(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['network.pool.view_ipaddresssetup']
+        'view': ['network_pool.view_ipaddresssetup']
     }
 
     queryset = models.IpaddressSetup.objects.all()

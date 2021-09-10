@@ -62,8 +62,8 @@ class Create(generics.CreateAPIView):
     )
 
     gacl = {
-        'view': ['company.mail.view_mail'],
-        'add': ['company.mail.add_mail']
+        'view': ['company_mail.view_mail'],
+        'add': ['company_mail.add_mail']
     }
 
     queryset = models.Mail.objects.all()
@@ -122,8 +122,8 @@ class Delete(generics.RetrieveDestroyAPIView):
     )
 
     gacl = {
-        'view': ['company.mail.view_mail'],
-        'delete': ['company.mail.delete_mail']
+        'view': ['company_mail.view_mail'],
+        'delete': ['company_mail.delete_mail']
     }
 
     queryset = models.Mail.objects.all()
@@ -175,8 +175,8 @@ class Password(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['company.mail.view_mail'],
-        'change': ['company.mail.change_mail']
+        'view': ['company_mail.view_mail'],
+        'change': ['company_mail.change_mail']
     }
 
     queryset = models.Mail.objects.all()
@@ -221,8 +221,8 @@ class Profile(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['company.mail.view_mail'],
-        'change': ['company.mail.change_mail']
+        'view': ['company_mail.view_mail'],
+        'change': ['company_mail.change_mail']
     }
 
     queryset = models.Mail.objects.all()
@@ -281,7 +281,7 @@ class Search(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['company.mail.view_mail']
+        'view': ['company_mail.view_mail']
     }
 
     queryset = models.Mail.objects.all()

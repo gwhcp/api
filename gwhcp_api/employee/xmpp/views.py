@@ -17,8 +17,8 @@ class Profile(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['employee.xmpp.view_prosodyaccount'],
-        'change': ['employee.xmpp.change_prosodyaccount']
+        'view': ['employee_xmpp.view_prosodyaccount'],
+        'change': ['employee_xmpp.change_prosodyaccount']
     }
 
     serializer_class = serializers.ProfileSerializer

@@ -19,8 +19,8 @@ class Password(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['employee.mail.view_mail'],
-        'change': ['employee.mail.change_mail']
+        'view': ['employee_mail.view_mail'],
+        'change': ['employee_mail.change_mail']
     }
 
     serializer_class = serializers.PasswordSerializer
@@ -69,7 +69,7 @@ class Profile(generics.RetrieveAPIView):
     )
 
     gacl = {
-        'view': ['employee.mail.view_mail']
+        'view': ['employee_mail.view_mail']
     }
 
     serializer_class = serializers.ProfileSerializer
@@ -92,7 +92,7 @@ class Search(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['employee.mail.view_mail']
+        'view': ['employee_mail.view_mail']
     }
 
     serializer_class = serializers.SearchSerializer

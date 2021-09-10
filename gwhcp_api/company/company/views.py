@@ -18,8 +18,8 @@ class Create(generics.CreateAPIView):
     )
 
     gacl = {
-        'view': ['company.company.view_company'],
-        'add': ['company.company.add_company']
+        'view': ['company_company.view_company'],
+        'add': ['company_company.add_company']
     }
 
     queryset = models.Company.objects.all()
@@ -38,8 +38,8 @@ class Delete(generics.RetrieveDestroyAPIView):
     )
 
     gacl = {
-        'view': ['company.company.view_company'],
-        'delete': ['company.company.delete_company']
+        'view': ['company_company.view_company'],
+        'delete': ['company_company.delete_company']
     }
 
     queryset = models.Company.objects.all()
@@ -67,8 +67,8 @@ class Profile(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['company.company.view_company'],
-        'change': ['company.company.change_company']
+        'view': ['company_company.view_company'],
+        'change': ['company_company.change_company']
     }
 
     queryset = models.Company.objects.all()
@@ -87,7 +87,7 @@ class Search(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['company.company.view_company']
+        'view': ['company_company.view_company']
     }
 
     queryset = models.Company.objects.all()

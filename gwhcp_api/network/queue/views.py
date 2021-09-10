@@ -1,5 +1,6 @@
 from rest_framework import filters
 from rest_framework import generics
+from rest_framework import serializers as validator
 from rest_framework import views
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
@@ -7,7 +8,7 @@ from rest_framework.response import Response
 from login import gacl
 from network.queue import models
 from network.queue import serializers
-from rest_framework import serializers as validator
+
 
 class Profile(views.APIView):
     """
@@ -20,7 +21,7 @@ class Profile(views.APIView):
     )
 
     gacl = {
-        'view': ['network.queue.view_queuestatus']
+        'view': ['network_queue.view_queuestatus']
     }
 
     def get(self, request, pk):
@@ -51,8 +52,8 @@ class Retry(generics.UpdateAPIView):
     )
 
     gacl = {
-        'view': ['network.queue.view_queuestatus'],
-        'change': ['network.queue.change_queuestatus']
+        'view': ['network_queue.view_queuestatus'],
+        'change': ['network_queue.change_queuestatus']
     }
 
     queryset = models.QueueItem.objects.all()
@@ -101,7 +102,7 @@ class Search(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['network.queue.view_queuestatus']
+        'view': ['network_queue.view_queuestatus']
     }
 
     queryset = models.QueueItem.objects.all()

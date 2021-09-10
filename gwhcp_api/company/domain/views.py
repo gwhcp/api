@@ -40,8 +40,8 @@ class Create(generics.CreateAPIView):
     )
 
     gacl = {
-        'view': ['company.domain.view_domain'],
-        'add': ['company.domain.add_domain']
+        'view': ['company_domain.view_domain'],
+        'add': ['company_domain.add_domain']
     }
 
     queryset = models.Domain.objects.all()
@@ -60,8 +60,8 @@ class Delete(generics.RetrieveDestroyAPIView):
     )
 
     gacl = {
-        'view': ['company.domain.view_domain'],
-        'delete': ['company.domain.delete_domain']
+        'view': ['company_domain.view_domain'],
+        'delete': ['company_domain.delete_domain']
     }
 
     queryset = models.Domain.objects.all()
@@ -89,7 +89,7 @@ class Profile(generics.RetrieveAPIView):
     )
 
     gacl = {
-        'view': ['company.domain.view_domain']
+        'view': ['company_domain.view_domain']
     }
 
     queryset = models.Domain.objects.all()
@@ -108,7 +108,7 @@ class Search(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['company.domain.view_domain']
+        'view': ['company_domain.view_domain']
     }
 
     queryset = models.Domain.objects.all()

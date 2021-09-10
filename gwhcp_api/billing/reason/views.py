@@ -33,8 +33,8 @@ class Create(generics.CreateAPIView):
     )
 
     gacl = {
-        'view': ['billing.reason.view_reason'],
-        'add': ['billing.reason.add_reason']
+        'view': ['billing_reason.view_reason'],
+        'add': ['billing_reason.add_reason']
     }
 
     queryset = models.Reason.objects.all()
@@ -53,8 +53,8 @@ class Delete(generics.RetrieveDestroyAPIView):
     )
 
     gacl = {
-        'view': ['billing.reason.view_reason'],
-        'delete': ['billing.reason.delete_reason']
+        'view': ['billing_reason.view_reason'],
+        'delete': ['billing_reason.delete_reason']
     }
 
     queryset = models.Reason.objects.all()
@@ -82,7 +82,7 @@ class Profile(generics.RetrieveAPIView):
     )
 
     gacl = {
-        'view': ['billing.reason.view_reason']
+        'view': ['billing_reason.view_reason']
     }
 
     queryset = models.Reason.objects.all()
@@ -101,7 +101,7 @@ class Search(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['billing.reason.view_reason']
+        'view': ['billing_reason.view_reason']
     }
 
     queryset = models.Reason.objects.all()

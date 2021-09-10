@@ -18,7 +18,7 @@ class AccessLog(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['employee.account.view_accesslog']
+        'view': ['employee_account.view_accesslog']
     }
 
     serializer_class = serializers.AccessLogSerializer
@@ -67,7 +67,7 @@ class Password(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['employee.account.view_account']
+        'view': ['employee_account.view_account']
     }
 
     queryset = models.Account.objects.all()
@@ -90,8 +90,8 @@ class Profile(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['employee.account.view_account'],
-        'change': ['employee.account.change_account']
+        'view': ['employee_account.view_account'],
+        'change': ['employee_account.change_account']
     }
 
     queryset = models.Account.objects.all()

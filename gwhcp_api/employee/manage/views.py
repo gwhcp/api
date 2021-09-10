@@ -17,7 +17,7 @@ class AccessLog(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['employee.manage.view_accesslog']
+        'view': ['employee_manage.view_accesslog']
     }
 
     serializer_class = serializers.AccessLogSerializer
@@ -37,8 +37,8 @@ class Create(generics.CreateAPIView):
     )
 
     gacl = {
-        'view': ['employee.manage.view_account'],
-        'add': ['employee.manage.add_account']
+        'view': ['employee_manage.view_account'],
+        'add': ['employee_manage.add_account']
     }
 
     queryset = models.Account.objects.all()
@@ -57,8 +57,8 @@ class Delete(generics.DestroyAPIView):
     )
 
     gacl = {
-        'view': ['employee.manage.view_account'],
-        'delete': ['employee.manage.delete_account']
+        'view': ['employee_manage.view_account'],
+        'delete': ['employee_manage.delete_account']
     }
 
     queryset = models.Account.objects.all()
@@ -136,8 +136,8 @@ class Profile(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['employee.manage.view_account'],
-        'change': ['employee.manage.change_account']
+        'view': ['employee_manage.view_account'],
+        'change': ['employee_manage.change_account']
     }
 
     queryset = models.Account.objects.all()
@@ -156,7 +156,7 @@ class Search(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['employee.manage.view_account']
+        'view': ['employee_manage.view_account']
     }
 
     queryset = models.Account.objects.all()

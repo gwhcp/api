@@ -33,8 +33,8 @@ class Create(generics.CreateAPIView):
     )
 
     gacl = {
-        'view': ['store.fraud.view_fraudstring'],
-        'add': ['store.fraud.add_fraudstring']
+        'view': ['store_fraud.view_fraudstring'],
+        'add': ['store_fraud.add_fraudstring']
     }
 
     queryset = models.FraudString.objects.all()
@@ -53,8 +53,8 @@ class Delete(generics.RetrieveDestroyAPIView):
     )
 
     gacl = {
-        'view': ['store.fraud.view_fraudstring'],
-        'delete': ['store.fraud.delete_fraudstring']
+        'view': ['store_fraud.view_fraudstring'],
+        'delete': ['store_fraud.delete_fraudstring']
     }
 
     queryset = models.FraudString.objects.all()
@@ -82,7 +82,7 @@ class Profile(generics.RetrieveAPIView):
     )
 
     gacl = {
-        'view': ['store.fraud.view_fraudstring']
+        'view': ['store_fraud.view_fraudstring']
     }
 
     queryset = models.FraudString.objects.all()
@@ -101,7 +101,7 @@ class Search(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['store.fraud.view_fraudstring']
+        'view': ['store_fraud.view_fraudstring']
     }
 
     queryset = models.FraudString.objects.all()

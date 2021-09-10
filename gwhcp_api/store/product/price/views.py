@@ -18,8 +18,8 @@ class Create(generics.CreateAPIView):
     )
 
     gacl = {
-        'view': ['store.product.price.view_storeproductprice'],
-        'add': ['store.product.price.add_storeproductprice']
+        'view': ['store_product_price.view_storeproductprice'],
+        'add': ['store_product_price.add_storeproductprice']
     }
 
     queryset = models.StoreProductPrice.objects.all()
@@ -38,8 +38,8 @@ class Delete(generics.RetrieveDestroyAPIView):
     )
 
     gacl = {
-        'view': ['store.product.price.view_storeproductprice'],
-        'delete': ['store.product.price.delete_storeproductprice']
+        'view': ['store_product_price.view_storeproductprice'],
+        'delete': ['store_product_price.delete_storeproductprice']
     }
 
     serializer_class = serializers.SearchSerializer
@@ -71,7 +71,7 @@ class Profile(generics.RetrieveUpdateAPIView):
     )
 
     gacl = {
-        'view': ['store.product.price.view_storeproductprice']
+        'view': ['store_product_price.view_storeproductprice']
     }
 
     serializer_class = serializers.ProfileSerializer
@@ -94,7 +94,7 @@ class Search(generics.ListAPIView):
     )
 
     gacl = {
-        'view': ['store.product.price.view_storeproductprice']
+        'view': ['store_product_price.view_storeproductprice']
     }
 
     serializer_class = serializers.SearchSerializer
