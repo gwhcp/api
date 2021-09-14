@@ -68,15 +68,7 @@ class CreditCard(models.Model):
         default=False
     )
 
-    has_diner = models.BooleanField(
-        default=False
-    )
-
     has_discover = models.BooleanField(
-        default=False
-    )
-
-    has_jcb = models.BooleanField(
         default=False
     )
 
