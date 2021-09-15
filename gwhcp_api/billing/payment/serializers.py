@@ -36,9 +36,7 @@ class AuthorizeAuthenticationSerializer(serializers.ModelSerializer):
     def validate_is_active(self, value):
         payment_list = [
             self.instance.has_amex,
-            self.instance.has_diner,
             self.instance.has_discover,
-            self.instance.has_jcb,
             self.instance.has_mastercard,
             self.instance.has_visa
         ]
@@ -81,9 +79,7 @@ class AuthorizeMethodSerializer(serializers.ModelSerializer):
 
         fields = [
             'has_amex',
-            'has_diner',
             'has_discover',
-            'has_jcb',
             'has_mastercard',
             'has_visa',
             'merchant',
@@ -93,9 +89,7 @@ class AuthorizeMethodSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         payment_list = [
             attrs['has_amex'],
-            attrs['has_diner'],
             attrs['has_discover'],
-            attrs['has_jcb'],
             attrs['has_mastercard'],
             attrs['has_visa']
         ]

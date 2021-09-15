@@ -94,16 +94,6 @@ class PaymentAuthorizeCc(models.PaymentAuthorizeCc):
         verbose_name_plural = 'Authorize Credit Cards'
 
 
-class PaymentAuthorizeCim(models.PaymentAuthorizeCim):
-    class Meta:
-        default_permissions = ()
-
-        proxy = True
-
-        verbose_name = 'Payment Authorize Cim'
-        verbose_name_plural = 'Payment Authorize Cims'
-
-
 class StoreProduct(models.StoreProduct):
     class Meta:
         default_permissions = ()
