@@ -78,6 +78,8 @@ INSTALLED_APPS = [
 INSTALLED_APPS.extend([
     'billing.payment',
     'billing.reason',
+    'client.account',
+    'client.billing',
     'company.company',
     'company.dns',
     'company.domain',
@@ -104,6 +106,7 @@ INSTALLED_APPS.extend([
     # 'store.product.postgresql',
     'store.product.price',
     # 'store.product.server',
+    'utils',
     'worker.apache',
     'worker.awstats',
     'worker.bind',

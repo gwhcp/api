@@ -5,8 +5,10 @@ from rest_framework.documentation import include_docs_urls
 
 urlpatterns = [
     # GWHCP URLs
-    path('billing/reason/', include('billing.reason.urls')),
     path('billing/payment/', include('billing.payment.urls')),
+    path('billing/reason/', include('billing.reason.urls')),
+    path('client/account/', include('client.account.urls')),
+    path('client/billing/', include('client.billing.urls')),
     path('company/company/', include('company.company.urls')),
     path('company/dns/', include('company.dns.urls')),
     path('company/domain/', include('company.domain.urls')),
