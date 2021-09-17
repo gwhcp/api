@@ -6,7 +6,6 @@ from rest_framework.response import Response
 
 from billing.payment import models
 from billing.payment import serializers
-from billing.payment import settings
 from login import gacl
 
 
@@ -73,12 +72,16 @@ class Choices(views.APIView):
             })
 
         # Merchant
-        result['merchant'].update(settings.merchants())
+        for key, value in models.PaymentGateway.Merchant.choices:
+            result['merchant'].update({
+                key: value
+            })
 
         # Method
-        result['method'].update({
-            'authorize': settings.merchant_methods('authorize')
-        })
+        for key, value in models.PaymentGateway.Method.choices:
+            result['method'].update({
+                key: value
+            })
 
         return Response(result)
 

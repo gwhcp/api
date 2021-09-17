@@ -1,26 +1,6 @@
 from database.gwhcp import models
 
 
-class BillingProfile(models.BillingProfile):
-    class Meta:
-        default_permissions = ()
-
-        proxy = True
-
-        verbose_name = 'Billing Profile'
-        verbose_name_plural = 'Billing Profiles'
-
-
-class BillingInvoiceTransaction(models.BillingInvoiceTransaction):
-    class Meta:
-        default_permissions = ()
-
-        proxy = True
-
-        verbose_name = 'Billing Invoice Transaction'
-        verbose_name_plural = 'Billing Invoice Transactions'
-
-
 class Company(models.Company):
     class Meta:
         default_permissions = ()
@@ -92,23 +72,3 @@ class PaymentAuthorizeCc(models.PaymentAuthorizeCc):
 
         verbose_name = 'Authorize Credit Card'
         verbose_name_plural = 'Authorize Credit Cards'
-
-
-class StoreProduct(models.StoreProduct):
-    class Meta:
-        default_permissions = ()
-
-        proxy = True
-
-        verbose_name = 'Store Product'
-        verbose_name_plural = 'Store Products'
-
-
-class StoreProductPrice(models.StoreProductPrice):
-    class Meta:
-        default_permissions = ()
-
-        proxy = True
-
-        verbose_name = 'Store Product Price'
-        verbose_name_plural = 'Store Product Prices'
