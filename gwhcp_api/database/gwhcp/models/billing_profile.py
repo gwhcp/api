@@ -1,12 +1,11 @@
 from django.conf import settings
-from django.core import validators
 from django.db import models
 from model_utils import FieldTracker
 
 from database.gwhcp.models import abstract
 
 
-class BillingProfile(abstract.Contact):
+class BillingProfile(abstract.PaymentAuthorizeCim):
     account = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         blank=False,
@@ -25,15 +24,6 @@ class BillingProfile(abstract.Contact):
 
     date_from = models.DateTimeField(
         auto_now_add=True
-    )
-
-    email = models.EmailField(
-        blank=False,
-        null=False,
-        validators=[
-            validators.MinLengthValidator(5),
-            validators.EmailValidator
-        ]
     )
 
     is_active = models.BooleanField(

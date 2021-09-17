@@ -84,6 +84,30 @@ class CreditCard(models.Model):
         abstract = True
 
 
+class PaymentAuthorizeCim(models.Model):
+    authorize_payment_id = models.CharField(
+        blank=False,
+        max_length=30,
+        null=True
+    )
+
+    authorize_profile_id = models.CharField(
+        blank=False,
+        max_length=30,
+        null=True
+    )
+
+    class Meta:
+        abstract = True
+
+        models.Index(
+            fields=[
+                'authorize_payment_id',
+                'authorize_profile_id'
+            ]
+        )
+
+
 class ProductResource(models.Model):
     class IpaddressType(models.TextChoices):
         DEDICATED = 'dedicated'
@@ -205,7 +229,7 @@ class Server(models.Model):
 
     mysql = models.ForeignKey(
         'Server',
-        blank=False,limit_choices_to={
+        blank=False, limit_choices_to={
             'is_active': True,
             'is_installed': True,
             'is_mysql': True

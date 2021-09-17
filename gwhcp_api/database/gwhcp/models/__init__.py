@@ -21,7 +21,6 @@ from .mysql_database import MysqlDatabase
 from .mysql_user import MysqlUser
 from .order import Order
 from .payment_authorize_cc import PaymentAuthorizeCc
-from .payment_authorize_cim import PaymentAuthorizeCim
 from .payment_gateway import PaymentGateway
 from .postgresql_database import PostgresqlDatabase
 from .postgresql_user import PostgresqlUser
