@@ -12,7 +12,7 @@ djangorestframework
 django-rest-auth
 
 # Other Modules
-celery==4.4.6
+celery
 coreapi
 cryptography
 gunicorn
