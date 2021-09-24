@@ -2,6 +2,12 @@ from django.db import models
 
 
 class BillingInvoiceItem(models.Model):
+    class Transaction(models.TextChoices):
+        AUTHCAPTURE = 'auth_capture', 'Authorize & Capture'
+        AUTHONLY = 'auth_only', 'Authorize Only'
+        REFUND = 'refund', 'Refund'
+        VOID = 'void', 'Void'
+
     class Type(models.TextChoices):
         CHARGE = 'charge', 'Charge'
         DEBIT = 'debit', 'Debit'
@@ -14,22 +20,6 @@ class BillingInvoiceItem(models.Model):
         null=False,
         on_delete=models.CASCADE,
         related_name='billing_invoice_item_billing_invoice'
-    )
-
-    billing_invoice_transaction = models.ForeignKey(
-        'BillingInvoiceTransaction',
-        blank=False,
-        null=True,
-        on_delete=models.CASCADE,
-        related_name='billing_invoice_item_billing_invoice_transaction'
-    )
-
-    reason = models.ForeignKey(
-        'Reason',
-        blank=False,
-        null=True,
-        on_delete=models.CASCADE,
-        related_name='billing_invoice_item_reason'
     )
 
     amount = models.DecimalField(
@@ -65,6 +55,18 @@ class BillingInvoiceItem(models.Model):
         default=0.00,
         max_digits=10,
         null=False
+    )
+
+    transaction = models.JSONField(
+        blank=True,
+        null=True
+    )
+
+    transaction_type = models.CharField(
+        blank=False,
+        choices=Transaction.choices,
+        max_length=12,
+        null=True
     )
 
     class Meta:

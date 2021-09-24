@@ -27,12 +27,28 @@ class BillingInvoice(models.Model):
         related_name='billing_invoice_order'
     )
 
+    payment_gateway = models.ForeignKey(
+        'PaymentGateway',
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name='billing_invoice_payment_gateway'
+    )
+
     product_profile = models.ForeignKey(
         'ProductProfile',
         blank=False,
         null=True,
         on_delete=models.CASCADE,
         related_name='billing_invoice_product_profile'
+    )
+
+    reason = models.ForeignKey(
+        'Reason',
+        blank=False,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name='billing_invoice_reason'
     )
 
     store_product = models.ForeignKey(
