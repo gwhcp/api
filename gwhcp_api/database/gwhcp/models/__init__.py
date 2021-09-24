@@ -3,7 +3,6 @@ from .account import Account
 from .banned import Banned
 from .billing_invoice import BillingInvoice
 from .billing_invoice_item import BillingInvoiceItem
-from .billing_invoice_transaction import BillingInvoiceTransaction
 from .billing_profile import BillingProfile
 from .company import Company
 from .cron_tab import CronTab
