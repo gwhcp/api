@@ -28,14 +28,6 @@ class Order(models.Model):
         related_name='order_billing_invoice'
     )
 
-    billing_invoice_transaction = models.ForeignKey(
-        'BillingInvoiceTransaction',
-        blank=False,
-        null=True,
-        on_delete=models.CASCADE,
-        related_name='order_billing_invoice_transaction'
-    )
-
     billing_profile = models.ForeignKey(
         'BillingProfile',
         blank=False,
