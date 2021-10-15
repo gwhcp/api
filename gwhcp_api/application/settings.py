@@ -80,6 +80,7 @@ INSTALLED_APPS.extend([
     'billing.reason',
     'client.account',
     'client.billing',
+    'client.store',
     'company.company',
     'company.dns',
     'company.domain',

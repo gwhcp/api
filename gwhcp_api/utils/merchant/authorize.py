@@ -12,6 +12,59 @@ class Authorize(object):
 
         self.merchant = merchant
 
+    def charge(self):
+        """
+        Charge CIM
+
+        :return: dict
+        """
+
+        if self.merchant.transaction_type == 'auth_only':
+            transaction_type = 'authOnlyTransaction'
+        else:
+            transaction_type = 'authCaptureTransaction'
+
+        billing_profile: models.BillingProfile = self.data['billing_profile']
+
+        store_product: models.StoreProduct = self.data['store_product']
+
+        store_product_price: models.StoreProductPrice = self.data['store_product_price']
+
+        total = store_product_price.base_price + store_product_price.setup_price
+
+        request = {
+            "createTransactionRequest": {
+                "merchantAuthentication": {
+                    "name": self.merchant.decrypt_login_id(),
+                    "transactionKey": self.merchant.decrypt_transaction_key()
+                },
+                "transactionRequest": {
+                    "transactionType": transaction_type,
+                    "amount": total,
+                    "profile": {
+                        "customerProfileId": billing_profile.authorize_profile_id,
+                        "paymentProfile": {
+                            "paymentProfileId": billing_profile.authorize_payment_id
+                        }
+                    },
+                    "lineItems": {
+                        "lineItem": {
+                            "itemId": store_product.pk,
+                            "name": store_product.name,
+                            "description": store_product.product_type,
+                            "quantity": "1",
+                            "unitPrice": total
+                        }
+                    },
+                    "authorizationIndicatorType": {
+                        "authorizationIndicator": "final"
+                    }
+                }
+            }
+        }
+
+        return self.get_response('post', request)
+
     def create_profile(self):
         """
         Create CIM profile
@@ -240,12 +293,16 @@ class Authorize(object):
             if result.get('messages') is not None and result.get('messages').get('resultCode') == 'Error':
                 return {
                     'error': True,
-                    'message': result['messages']['message'][0]['text']
+                    'gateway_id': self.merchant.pk,
+                    'message': result['messages']['message'][0]['text'],
+                    'transaction_type': self.merchant.transaction_type
                 }
             else:
                 return {
                     'error': False,
-                    'result': result
+                    'gateway_id': self.merchant.pk,
+                    'result': result,
+                    'transaction_type': self.merchant.transaction_type
                 }
 
         else:

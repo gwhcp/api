@@ -11,11 +11,33 @@ class PaymentGateway(object):
 
         self.instance = instance
 
+    def charge_cim(self):
+        """
+        Charge (CIM)
+
+        :return: dict
+        """
+
+        if self.get_merchant() is None:
+            return {
+                'error': True,
+                'message': 'There are no available payment gateways.'
+            }
+
+        # Authorize.net
+        if self.get_merchant().payment_gateway.merchant == 'authorize':
+            return authorize.Authorize(self.data, self.get_merchant()).charge()
+        else:
+            return {
+                'error': True,
+                'message': 'Could not charge CIM.'
+            }
+
     def create_cim(self):
         """
         Create customer information manager (CIM)
 
-        :return: dict | boolean
+        :return: dict
         """
 
         if self.get_merchant() is None:
@@ -126,7 +148,10 @@ class PaymentGateway(object):
         card_type = billing.credit_card_type(self.data['credit_card_number'])
 
         # Authorize.net
-        for item in models.PaymentAuthorizeCc.objects.filter(is_active=True):
+        for item in models.PaymentAuthorizeCc.objects.filter(
+                is_active=True,
+                payment_gateway__company=self.data['account'].company
+        ):
             if item.has_amex and card_type == 'amex':
                 merchants['amex'].append(item.payment_gateway_id)
             elif item.has_discover and card_type == 'discover':

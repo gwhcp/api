@@ -3,11 +3,11 @@ import re
 
 from django.db.models import Q
 
-from database.gwhcp import models
+from utils import models
 
 
-class Server:
-    def __init__(self, domain, hardware_type, target_type=None):
+class Server(object):
+    def __init__(self, domain: models.Domain, hardware_type: str, target_type: str = None):
         self.domain = domain
 
         self.hardware_type = hardware_type

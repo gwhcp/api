@@ -9,6 +9,7 @@ urlpatterns = [
     path('billing/reason/', include('billing.reason.urls')),
     path('client/account/', include('client.account.urls')),
     path('client/billing/', include('client.billing.urls')),
+    path('client/store/', include('client.store.urls')),
     path('company/company/', include('company.company.urls')),
     path('company/dns/', include('company.dns.urls')),
     path('company/domain/', include('company.domain.urls')),

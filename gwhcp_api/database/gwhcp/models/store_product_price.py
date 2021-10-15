@@ -69,3 +69,6 @@ class StoreProductPrice(models.Model):
 
         verbose_name = 'Store Product Price'
         verbose_name_plural = 'Store Product Prices'
+
+    def __str__(self):
+        return f"{self.billing_cycle} days - ${self.base_price} + ${self.setup_price}"
