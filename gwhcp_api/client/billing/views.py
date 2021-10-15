@@ -113,6 +113,36 @@ class Profile(generics.RetrieveUpdateAPIView):
         return obj
 
 
+class ProfileInvoice(generics.RetrieveAPIView):
+    """
+    View billing invoice
+    """
+
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAuthenticated
+    )
+
+    gacl = {
+        'view': ['client_billing.view_billinginvoice']
+    }
+
+    serializer_class = serializers.ProfileInvoiceSerializer
+
+    def get_object(self):
+        billing_invoice_object = models.BillingInvoice.objects.get(
+            pk=self.kwargs['pk'],
+            account_id=self.request.user.pk,
+            billing_profile=self.kwargs['profile_id']
+        )
+
+        invoice_items = models.BillingInvoiceItem.objects.filter(billing_invoice=billing_invoice_object)
+
+        billing_invoice_object.items = invoice_items
+
+        return billing_invoice_object
+
+
 class Search(generics.ListAPIView):
     """
     Search billing profiles
@@ -131,3 +161,26 @@ class Search(generics.ListAPIView):
 
     def get_queryset(self):
         return models.BillingProfile.objects.filter(account=self.request.user.pk)
+
+
+class SearchInvoice(generics.ListAPIView):
+    """
+    Search billing profile invoices
+    """
+
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAuthenticated
+    )
+
+    gacl = {
+        'view': ['client_billing.view_billinginvoice']
+    }
+
+    serializer_class = serializers.SearchInvoiceSerializer
+
+    def get_queryset(self):
+        return models.BillingInvoice.objects.filter(
+            account=self.request.user.pk,
+            billing_profile=self.kwargs['pk']
+        )

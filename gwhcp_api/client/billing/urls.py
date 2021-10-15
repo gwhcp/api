@@ -22,8 +22,20 @@ urlpatterns = [
     ),
 
     path(
+        'profile/invoice/<int:profile_id>/<int:pk>',
+        views.ProfileInvoice.as_view(),
+        name='profile-invoice'
+    ),
+
+    path(
         'search',
         views.Search.as_view(),
         name='search'
+    ),
+
+    path(
+        'search/invoice/<int:pk>',
+        views.SearchInvoice.as_view(),
+        name='search-invoice'
     )
 ]
