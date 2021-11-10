@@ -33,6 +33,7 @@ urlpatterns = [
     path('client/account/', include('client.account.urls')),
     path('client/billing/', include('client.billing.urls')),
     path('client/store/', include('client.store.urls')),
+    path('login/', include('login.urls')),
     path('worker/apache/', include('worker.apache.urls')),
     path('worker/awstats/', include('worker.awstats.urls')),
     path('worker/bind/', include('worker.bind.urls')),
