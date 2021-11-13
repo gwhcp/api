@@ -1,3 +1,4 @@
+from django.contrib.sites import models as site_models
 from rest_framework import exceptions
 from rest_framework import generics
 from rest_framework import views
@@ -74,6 +75,8 @@ class Delete(generics.RetrieveDestroyAPIView):
                 'Domain is currently in use and cannot be removed.',
                 code='can_delete'
             )
+
+        site_models.Site.objects.filter(pk=instance.pk).delete()
 
         instance.delete()
 

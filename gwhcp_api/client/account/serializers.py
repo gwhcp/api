@@ -1,4 +1,5 @@
 from django.contrib.auth.password_validation import validate_password
+from django.contrib.sites import models as site_models
 from rest_framework import serializers
 
 from client.account import models
@@ -21,13 +22,24 @@ class CreateSerializer(serializers.ModelSerializer):
         model = models.Account
 
         exclude = [
-            'last_login',
+            'comment_order',
+            'groups',
             'is_active',
-            'is_superuser'
+            'is_staff',
+            'is_superuser',
+            'last_login',
+            'time_format',
+            'time_zone',
+            'user_permissions'
         ]
 
     def create(self, validated_data):
         validated_data['is_staff'] = False
+        validated_data['is_superuser'] = False
+
+        current_site = site_models.Site.objects.get_current()
+
+        validated_data['company_id'] = current_site.pk
 
         user = super(CreateSerializer, self).create(validated_data)
         user.set_password(validated_data['password'])
@@ -36,20 +48,23 @@ class CreateSerializer(serializers.ModelSerializer):
         permissions = {
             'auth': 'view_permission',
             'client_account': [
+                'change_account',
                 'view_accesslog',
-                'view_account',
-                'change_account'
+                'view_account'
             ],
             'client_billing': [
                 'add_billingprofile',
                 'change_billingprofile',
                 'delete_billingprofile',
                 'view_billingprofile'
+            ],
+            'client_store': [
+                'view_storeproduct'
             ]
         }
 
         for key, value in permissions.items():
-            if key == 'client_account' or key == 'client_billing':
+            if key == 'client_account' or key == 'client_billing' or key == 'client_store':
                 for item in value:
                     perm = models.Permission.objects.get(
                         content_type__app_label=key,
