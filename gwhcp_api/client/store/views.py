@@ -88,7 +88,13 @@ class SearchProductTypes(generics.RetrieveAPIView):
     serializer_class = serializers.SearchProductTypesSerializer
 
     def get_object(self):
-        products = {}
+        products = {
+            'domain': False,
+            'mail': False,
+            'mysql': False,
+            'postgresql': False,
+            'private': False
+        }
 
         for item in models.StoreProduct.objects.filter(
                 company=self.request.user.company,
