@@ -12,6 +12,7 @@ urlpatterns = [
     path('admin/company/domain/', include('admin.company.domain.urls')),
     path('admin/company/mail/', include('admin.company.mail.urls')),
     path('admin/company/xmpp/', include('admin.company.xmpp.urls')),
+    path('admin/customer/account/', include('admin.customer.account.urls')),
     path('admin/employee/account/', include('admin.employee.account.urls')),
     path('admin/employee/mail/', include('admin.employee.mail.urls')),
     path('admin/employee/manage/', include('admin.employee.manage.urls')),
