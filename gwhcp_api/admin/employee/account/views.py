@@ -15,6 +15,7 @@ class AccessLog(generics.ListAPIView):
 
     permission_classes = (
         gacl.GaclPermissions,
+        IsAdminUser
     )
 
     gacl = {
@@ -64,6 +65,7 @@ class Password(generics.RetrieveUpdateAPIView):
 
     permission_classes = (
         gacl.GaclPermissions,
+        IsAdminUser
     )
 
     gacl = {
@@ -87,6 +89,7 @@ class Profile(generics.RetrieveUpdateAPIView):
 
     permission_classes = (
         gacl.GaclPermissions,
+        IsAdminUser
     )
 
     gacl = {
