@@ -84,6 +84,7 @@ INSTALLED_APPS.extend([
     'admin.company.mail',
     'admin.company.xmpp',
     'admin.customer.account',
+    'admin.customer.billing',
     'admin.employee.account',
     'admin.employee.mail',
     'admin.employee.manage',
