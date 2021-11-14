@@ -56,7 +56,8 @@ class CreateSerializer(serializers.ModelSerializer):
                 'add_billingprofile',
                 'change_billingprofile',
                 'delete_billingprofile',
-                'view_billingprofile'
+                'view_billingprofile',
+                'view_billinginvoice'
             ],
             'client_store': [
                 'view_storeproduct'
