@@ -40,6 +40,21 @@ class Choices(views.APIView):
     )
 
     def get(self, request):
+        """
+        APIView method to get choices for comment, timeformat, and timezone.
+
+        Parameters:
+        - request: Request object passed to the view.
+
+        Returns:
+        - Response object containing a dictionary with choices for comment, timeformat, and timezone.
+
+        Example usage:
+            response = Choices().get(request)
+            choices = response.data
+
+        """
+
         result = {
             'comment': {},
             'timeformat': {},
@@ -56,6 +71,31 @@ class Choices(views.APIView):
         result['timezone'].update(models.Account.get_time_zones())
 
         return Response(result)
+
+
+class Edit(generics.RetrieveUpdateAPIView):
+    """
+    View account profile
+    """
+
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
+
+    gacl = {
+        'view': ['admin_employee_account.view_account'],
+        'change': ['admin_employee_account.change_account']
+    }
+
+    queryset = models.Account.objects.all()
+
+    serializer_class = serializers.ProfileSerializer
+
+    def get_object(self):
+        return models.Account.objects.get(
+            pk=self.request.user.pk
+        )
 
 
 class Password(generics.RetrieveUpdateAPIView):
@@ -75,31 +115,6 @@ class Password(generics.RetrieveUpdateAPIView):
     queryset = models.Account.objects.all()
 
     serializer_class = serializers.PasswordSerializer
-
-    def get_object(self):
-        return models.Account.objects.get(
-            pk=self.request.user.pk
-        )
-
-
-class Profile(generics.RetrieveUpdateAPIView):
-    """
-    View account profile
-    """
-
-    permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
-    )
-
-    gacl = {
-        'view': ['admin_employee_account.view_account'],
-        'change': ['admin_employee_account.change_account']
-    }
-
-    queryset = models.Account.objects.all()
-
-    serializer_class = serializers.ProfileSerializer
 
     def get_object(self):
         return models.Account.objects.get(

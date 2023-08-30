@@ -16,32 +16,20 @@ urlpatterns = [
     ),
 
     path(
-        'delete/<int:domain>/<int:pk>',
+        '<int:pk>/delete',
         views.Delete.as_view(),
         name='delete'
     ),
 
     path(
-        'ns/<int:domain>',
+        '<int:domain>/ns',
         views.Ns.as_view(),
         name='ns'
     ),
 
     path(
-        'profile/<int:pk>',
-        views.Profile.as_view(),
-        name='profile'
-    ),
-
-    path(
-        'search',
+        '<int:pk>/search',
         views.Search.as_view(),
         name='search'
-    ),
-
-    path(
-        'search/<int:pk>',
-        views.SearchRecord.as_view(),
-        name='search-record'
     )
 ]

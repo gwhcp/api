@@ -10,19 +10,19 @@ urlpatterns = [
     ),
 
     path(
-        'delete/<int:store_product_id>/<int:pk>',
+        '<int:pk>/delete/<int:store_product_id>',
         views.Delete.as_view(),
         name='delete'
     ),
 
     path(
-        'profile/<int:store_product_id>/<int:pk>',
-        views.Profile.as_view(),
-        name='profile'
+        '<int:pk>/edit/<int:store_product_id>',
+        views.Edit.as_view(),
+        name='edit'
     ),
 
     path(
-        'search/<int:store_product_id>',
+        '<int:store_product_id>/search',
         views.Search.as_view(),
         name='search'
     )

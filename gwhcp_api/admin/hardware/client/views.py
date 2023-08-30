@@ -18,11 +18,20 @@ class Choices(views.APIView):
     )
 
     def get(self, request):
+        """
+        This method returns a dictionary containing choices for domain, hardware type, and hardware target.
+
+        Parameters:
+        - request: The request object
+
+        Returns:
+        - Response: A Response object containing the choices dictionary
+        """
+
         result = {
             'domain': {},
             'hardware_type': {},
-            'hardware_target': {},
-            'web': {}
+            'hardware_target': {}
         }
 
         # Domain
@@ -36,9 +45,6 @@ class Choices(views.APIView):
 
         # Haradware Target
         result['hardware_target'].update(dict(models.Server.HardwareTarget.choices))
-
-        # Web Type
-        result['web'].update(dict(models.Server.WebType.choices))
 
         return Response(result)
 
@@ -83,6 +89,26 @@ class Delete(generics.RetrieveDestroyAPIView):
     serializer_class = serializers.SearchSerializer
 
 
+class Edit(generics.RetrieveUpdateAPIView):
+    """
+    View client domain
+    """
+
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
+
+    gacl = {
+        'view': ['admin_hardware_client.view_server'],
+        'change': ['admin_hardware_client.change_server']
+    }
+
+    queryset = models.Server.objects.all()
+
+    serializer_class = serializers.ProfileSerializer
+
+
 class Install(generics.RetrieveUpdateAPIView):
     """
     Install client domain
@@ -101,26 +127,6 @@ class Install(generics.RetrieveUpdateAPIView):
     queryset = models.Server.objects.all()
 
     serializer_class = serializers.InstallSerializer
-
-
-class Profile(generics.RetrieveUpdateAPIView):
-    """
-    View client domain
-    """
-
-    permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
-    )
-
-    gacl = {
-        'view': ['admin_hardware_client.view_server'],
-        'change': ['admin_hardware_client.change_server']
-    }
-
-    queryset = models.Server.objects.all()
-
-    serializer_class = serializers.ProfileSerializer
 
 
 class Search(generics.ListAPIView):

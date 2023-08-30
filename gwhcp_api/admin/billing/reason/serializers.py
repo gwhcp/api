@@ -12,6 +12,21 @@ class CreateSerializer(serializers.ModelSerializer):
         ]
 
     def validate_name(self, value):
+        """
+
+        Validate the name.
+
+        Parameters:
+        - value (str): The name to be validated.
+
+        Raises:
+        - ValidationError: If the name already exists in the Reason model.
+
+        Returns:
+        - str: The validated name.
+
+        """
+
         if models.Reason.objects.filter(
                 name__iexact=value
         ).exists():

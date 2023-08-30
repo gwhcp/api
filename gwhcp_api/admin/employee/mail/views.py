@@ -8,6 +8,29 @@ from utils import security
 from worker.queue.create import CreateQueue
 
 
+class Edit(generics.RetrieveAPIView):
+    """
+    View employee mail account
+    """
+
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
+
+    gacl = {
+        'view': ['admin_employee_mail.view_mail']
+    }
+
+    serializer_class = serializers.ProfileSerializer
+
+    def get_object(self):
+        return models.Mail.objects.get(
+            pk=self.kwargs['pk'],
+            account_id=self.request.user.pk
+        )
+
+
 class Password(generics.RetrieveUpdateAPIView):
     """
     View and edit employee mail account password
@@ -32,6 +55,15 @@ class Password(generics.RetrieveUpdateAPIView):
         )
 
     def perform_update(self, serializer):
+        """
+        Method: perform_update
+
+        This method is used to perform an update operation for a given serializer instance. It takes a serializer as a parameter and does not return any value.
+
+        Parameters:
+        - serializer: An instance of a serializer class.
+        """
+
         instance = serializer.save()
 
         # Mailbox
@@ -56,29 +88,6 @@ class Password(generics.RetrieveUpdateAPIView):
                     }
                 }
             )
-
-
-class Profile(generics.RetrieveAPIView):
-    """
-    View employee mail account
-    """
-
-    permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
-    )
-
-    gacl = {
-        'view': ['admin_employee_mail.view_mail']
-    }
-
-    serializer_class = serializers.ProfileSerializer
-
-    def get_object(self):
-        return models.Mail.objects.get(
-            pk=self.kwargs['pk'],
-            account_id=self.request.user.pk
-        )
 
 
 class Search(generics.ListAPIView):

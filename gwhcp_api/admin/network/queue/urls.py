@@ -4,9 +4,9 @@ from admin.network.queue import views
 
 urlpatterns = [
     path(
-        'profile/<int:pk>',
-        views.Profile.as_view(),
-        name='profile'
+        '<int:pk>/edit',
+        views.Edit.as_view(),
+        name='edit'
     ),
 
     path(

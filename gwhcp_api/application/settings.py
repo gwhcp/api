@@ -2,32 +2,42 @@ import os
 import sys
 
 import environ
+from email.utils import parseaddr
 
 env = environ.Env(
-    ADMINS=(tuple, ()),
     ALLOWED_HOSTS=(list, []),
     CELERY_BROKER_HOST=(str, ''),
     CELERY_BROKER_PASSWORD=(str, ''),
     CELERY_BROKER_PORT=(int, 5672),
     CELERY_BROKER_USER=(str, ''),
     CELERY_BROKER_VHOST=(str, ''),
-    CSRF_COOKIE_SECURE=(bool, True),
-    DEBUG=(bool, False),
-    DEFAULT_FROM_EMAIL=(str, ''),
-    EMAIL_BACKEND=(str, 'django.core.mail.backends.smtp.EmailBackend'),
+    CORS_ALLOWED_ORIGINS=(list, []),
+    CSRF_TRUSTED_ORIGINS=(list, []),
+    DATABASE_HOST=(str, ''),
+    DATABASE_NAME=(str, ''),
+    DATABASE_PASSWORD=(str, ''),
+    DATABASE_PORT=(int, 5432),
+    DATABASE_USER=(str, ''),
+    EMAIL_ADMINS=(tuple, ()),
+    EMAIL_DEFAULT_FROM=(str, ''),
+    EMAIL_DEFAULT_SERVER_FROM=(str, ''),
     EMAIL_HOST=(str, ''),
     EMAIL_HOST_PASSWORD=(str, ''),
+    EMAIL_HOST_PORT=(int, 25),
+    EMAIL_HOST_SUBJECT_PREFIX=(str, ''),
+    EMAIL_HOST_USE_SSL=(bool, False),
+    EMAIL_HOST_USE_TLS=(bool, False),
     EMAIL_HOST_USER=(str, ''),
-    EMAIL_PORT=(int, 587),
-    EMAIL_USE_TLS=(bool, False),
-    FERNET_KEY=(str, b''),
-    MANAGERS=(tuple, ()),
+    EMAIL_MANAGERS=(tuple, ()),
     OS_NIC=(str, ''),
     OS_NS=(int, 0),
     OS_QUEUE_SLEEP_CYCLE=(int, 2),
     OS_QUEUE_SLEEP_TASKS=(int, 5),
     OS_TYPE=(int, 1),
-    SECRET_KEY=(str, ''),
+    SECURITY_ALLOWED_HOSTS=(list, []),
+    SECURITY_DEBUG=(bool, False),
+    SECURITY_FERNET_KEY=(str, b''),
+    SECURITY_SECRET_KEY=(str, ''),
     SESSION_COOKIE_SECURE=(bool, True),
     SITE_ID=(int, 1),
 )
@@ -42,17 +52,17 @@ Security
 """
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env('SECURITY_SECRET_KEY')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # Used to encrypt/decrypt certain features in the database
-FERNET_KEY = env.bytes('FERNET_KEY')
+FERNET_KEY = env.bytes('SECURITY_FERNET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = env('SECURITY_DEBUG')
 
 # A list of strings representing the host/domain names that this Django site can serve.
-ALLOWED_HOSTS = env('ALLOWED_HOSTS')
+ALLOWED_HOSTS = env('SECURITY_ALLOWED_HOSTS')
 
 """
 Application
@@ -69,7 +79,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_celery_results',
     'debug_toolbar',
-    'rest_auth',
+    'dj_rest_auth',
     'rest_framework',
     'rest_framework.authtoken',
 ]
@@ -78,23 +88,24 @@ INSTALLED_APPS = [
 INSTALLED_APPS.extend([
     'admin.billing.payment',
     'admin.billing.reason',
-    'admin.company.company',
+    'admin.company.account',
     'admin.company.dns',
     'admin.company.domain',
     'admin.company.mail',
-    'admin.company.xmpp',
     'admin.customer.account',
-    'admin.customer.billing',
+    'admin.customer.billing.invoice',
+    'admin.customer.billing.profile',
+    'admin.customer.order',
     'admin.employee.account',
     'admin.employee.mail',
     'admin.employee.manage',
-    'admin.employee.xmpp',
     'admin.hardware.client',
     'admin.hardware.company',
     'admin.network.pool',
     'admin.network.queue',
     'admin.setting.banned',
     'admin.setting.email',
+    'admin.store.coupon',
     'admin.store.fraud',
     'admin.store.product',
     'admin.store.product.domain',
@@ -104,14 +115,13 @@ INSTALLED_APPS.extend([
     'admin.store.product.price',
     # 'admin.store.product.server',
     'client.account',
-    'client.billing',
-    'client.store',
+    'client.billing.profile',
+    'client.billing.invoice',
+    'client.store.coupon',
+    'client.store.product',
     'database.gwhcp',
-    'database.xmpp',
     'login',
     'utils',
-    'worker.apache',
-    'worker.awstats',
     'worker.bind',
     'worker.console',
     'worker.cron',
@@ -124,7 +134,6 @@ INSTALLED_APPS.extend([
     'worker.php',
     'worker.postfix',
     'worker.postgresql',
-    'worker.prosody',
     'worker.queue',
     'worker.rabbitmq',
     'worker.system',
@@ -143,7 +152,6 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'corsheaders.middleware.CorsPostCsrfMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware'
@@ -181,23 +189,21 @@ ASGI / WSGI Application
 
 WSGI_APPLICATION = 'application.wsgi.application'
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 """
 Database
 """
 
 DATABASES = {
     'default': env.db('DATABASE_DEFAULT'),
-    'default_read1': env.db('DATABASE_READ1'),
-    'xmpp': env.db('XMPP_DEFAULT'),
-    'xmpp_read1': env.db('XMPP_READ1')
+    'default_read1': env.db('DATABASE_READ1')
 }
 
 # Router
 DATABASE_ROUTERS = [
     'database.router.ReadWrite'
 ]
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 """
 Password Validation
@@ -254,8 +260,19 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated'
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
     ]
 }
+
+if DEBUG:
+    # Enables DRF Forms
+    REST_FRAMEWORK.get('DEFAULT_RENDERER_CLASSES').append('rest_framework.renderers.BrowsableAPIRenderer')
+else:
+    # Disables DRF Forms
+    REST_FRAMEWORK.get('DEFAULT_RENDERER_CLASSES').append('utils.filters.BrowsableAPIRendererWithoutForms')
+
 # TODO move to login?
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'admin.employee.account.serializers.ProfileSerializer',
@@ -274,14 +291,14 @@ LOGOUT_URL = '/api-auth/logout/'
 LOGOUT_REDIRECT_URL = LOGIN_URL
 
 # Authentication Model
-AUTH_USER_MODEL = 'gwhcp.Account'
+AUTH_USER_MODEL = 'database_gwhcp.Account'
 
 """
 Email Settings
 """
 
 # Backend
-EMAIL_BACKEND = env('EMAIL_BACKEND')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # Hostname
 EMAIL_HOST = env('EMAIL_HOST')
@@ -293,46 +310,34 @@ EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
 # Port
-EMAIL_PORT = env('EMAIL_PORT')
+EMAIL_PORT = env('EMAIL_HOST_PORT')
+
+# Subject Prefix
+EMAIL_SUBJECT_PREFIX = env('EMAIL_HOST_SUBJECT_PREFIX')
+
+# SSL Support
+EMAIL_USE_SSL = env('EMAIL_HOST_USE_SSL')
 
 # TLS Support
-EMAIL_USE_TLS = env('EMAIL_USE_TLS')
+EMAIL_USE_TLS = env('EMAIL_HOST_USE_TLS')
 
 # From Email Address
-DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
+DEFAULT_FROM_EMAIL = env('EMAIL_DEFAULT_FROM')
 
-#
+# From Server Email Address
+SERVER_EMAIL = env('EMAIL_DEFAULT_SERVER_FROM')
+
 # Set the administrator email address(es)
-#
-# Only used when important notications need to be sent
-# Example; Queue failed to process
-#
-# For more than 1 admin, recommended to use a mailing list address here
-ADMINS = [
-    env.tuple('ADMINS')
-]
+ADMINS = tuple(parseaddr(email) for email in env.list('EMAIL_ADMINS'))
 
-#
 # Set the manager email address(es)
-#
-# Only used when DEBUG is False
-# Example; 404 Errors
-#
-# For more than 1 manager, recommended to use a mailing list address here
-MANAGERS = [
-    env.tuple('MANAGERS')
-]
+MANAGERS = tuple(parseaddr(email) for email in env.list('EMAIL_MANAGERS'))
 
 """
 COR Headers
 """
 
-CORS_ALLOW_CREDENTIALS = True
-CORS_EXPOSE_HEADERS = (
-    'Access-Control-Allow-Origin: *',
-)
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_REPLACE_HTTPS_REFERER = True
+CORS_ALLOWED_ORIGINS = env('CORS_ALLOWED_ORIGINS')
 
 """
 Sites
@@ -405,7 +410,8 @@ CACHES = {
 CSRF
 """
 
-CSRF_COOKIE_SECURE = env('CSRF_COOKIE_SECURE')
+CSRF_COOKIE_SECURE = False
+CSRF_TRUSTED_ORIGINS = env('CSRF_TRUSTED_ORIGINS')
 
 """
 SSL
@@ -417,9 +423,9 @@ SECURE_HSTS_SECONDS = 0
 Session
 """
 
-SESSION_COOKIE_AGE = 43200
+SESSION_COOKIE_AGE = 21600
 SESSION_COOKIE_SAMESITE = None
-SESSION_COOKIE_SECURE = env('SESSION_COOKIE_SECURE')
-SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_HTTPONLY = False
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True

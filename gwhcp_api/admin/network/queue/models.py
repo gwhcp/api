@@ -23,6 +23,11 @@ class QueueItem(models.QueueItem):
 
 class QueueStatus(models.QueueStatus):
     class Meta:
+        default_permissions = (
+            'change',
+            'view'
+        )
+
         proxy = True
 
         verbose_name = 'Queue Status'

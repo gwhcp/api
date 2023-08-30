@@ -13,14 +13,6 @@ class MailList(models.Model):
         related_name='mail_list_account'
     )
 
-    company = models.ForeignKey(
-        'Company',
-        blank=False,
-        null=True,
-        on_delete=models.CASCADE,
-        related_name='mail_list_company'
-    )
-
     domain = models.ForeignKey(
         'Domain',
         blank=False,

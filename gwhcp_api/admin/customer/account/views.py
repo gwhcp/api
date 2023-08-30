@@ -38,6 +38,16 @@ class Choices(views.APIView):
     )
 
     def get(self, request):
+        """
+        This method returns a dictionary containing various choices related to the customer account.
+
+        Parameters:
+        - request : HttpRequest object
+
+        Returns:
+        - Response object containing a dictionary of choices.
+        """
+
         result = {
             'comment': {},
             'timeformat': {},
@@ -54,6 +64,26 @@ class Choices(views.APIView):
         result['timezone'].update(models.Account.get_time_zones())
 
         return Response(result)
+
+
+class Edit(generics.RetrieveUpdateAPIView):
+    """
+    View account profile
+    """
+
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
+
+    gacl = {
+        'view': ['admin_customer_account.view_account'],
+        'change': ['admin_customer_account.change_account']
+    }
+
+    queryset = models.Account.objects.all()
+
+    serializer_class = serializers.ProfileSerializer
 
 
 class Password(generics.RetrieveUpdateAPIView):
@@ -75,29 +105,7 @@ class Password(generics.RetrieveUpdateAPIView):
     serializer_class = serializers.PasswordSerializer
 
     def get_object(self):
-        return models.Account.objects.get(
-            pk=self.request.user.pk
-        )
-
-
-class Profile(generics.RetrieveUpdateAPIView):
-    """
-    View account profile
-    """
-
-    permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
-    )
-
-    gacl = {
-        'view': ['admin_customer_account.view_account'],
-        'change': ['admin_customer_account.change_account']
-    }
-
-    queryset = models.Account.objects.all()
-
-    serializer_class = serializers.ProfileSerializer
+        return models.Account.objects.get(pk=self.kwargs['pk'])
 
 
 class Search(generics.ListAPIView):

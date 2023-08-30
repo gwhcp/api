@@ -26,7 +26,7 @@ class UserManager(auth_models.BaseUserManager):
         user.save(using=self._db)
 
         if user.is_superuser:
-            permissions = auth_models.Permission.objects.all()
+            permissions = auth_models.Permission.objects.filter(content_type__app_label__istartswith='admin_')
 
             for p in permissions:
                 user.user_permissions.add(p)

@@ -1,33 +1,11 @@
 from django.contrib.sites import models as site_models
 from rest_framework import exceptions
 from rest_framework import generics
-from rest_framework import views
 from rest_framework.permissions import IsAdminUser
-from rest_framework.response import Response
 
 from admin.company.domain import models
 from admin.company.domain import serializers
 from login import gacl
-
-
-class Choices(views.APIView):
-    """
-    Choices
-    """
-
-    permission_classes = (
-        IsAdminUser,
-    )
-
-    def get(self, request):
-        result = {}
-
-        for company in models.Company.objects.all():
-            result.update({
-                company.pk: company.name
-            })
-
-        return Response(result)
 
 
 class Create(generics.CreateAPIView):
@@ -70,6 +48,15 @@ class Delete(generics.RetrieveDestroyAPIView):
     serializer_class = serializers.SearchSerializer
 
     def perform_destroy(self, instance):
+        """
+        Perform destroy operation for a given instance.
+
+        Parameters:
+        - instance: The instance to be destroyed.
+
+        Raises:
+        - exceptions.ValidationError: If the instance cannot be deleted.
+        """
         if not instance.can_delete():
             raise exceptions.ValidationError(
                 'Domain is currently in use and cannot be removed.',
@@ -81,7 +68,7 @@ class Delete(generics.RetrieveDestroyAPIView):
         instance.delete()
 
 
-class Profile(generics.RetrieveAPIView):
+class Edit(generics.RetrieveAPIView):
     """
     View company domain
     """

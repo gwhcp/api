@@ -3,24 +3,10 @@ from django.db import models as django_models
 from database.gwhcp import models
 
 
-class Company(models.Company):
-    class Meta:
-        default_permissions = ()
-
-        ordering = [
-            'name'
-        ]
-
-        proxy = True
-
-        verbose_name = 'Company'
-        verbose_name_plural = 'Companies'
-
-
 class DomainManager(django_models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(
-            company__isnull=False,
+            account__isnull=True,
             related_to__isnull=True
         )
 
@@ -29,6 +15,12 @@ class Domain(models.Domain):
     objects = DomainManager()
 
     class Meta:
+        default_permissions = (
+            'add',
+            'delete',
+            'view'
+        )
+
         ordering = [
             'name'
         ]
@@ -39,6 +31,13 @@ class Domain(models.Domain):
         verbose_name_plural = 'Company Domains'
 
     def can_delete(self):
+        """
+        Check if the current domain can be deleted.
+
+        Returns:
+            bool: True if the domain can be deleted, False otherwise.
+        """
+
         # List of models that should not be checked.
         defer = []
 
@@ -58,6 +57,19 @@ class Domain(models.Domain):
         return True
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        """
+        Save the Domain object to the database.
+
+        Parameters:
+        - force_insert (bool): Determines whether to force the insertion of a new record into the database. Default is False.
+        - force_update (bool): Determines whether to force the update of an existing record in the database. Default is False.
+        - using (str): The name of the database to use. Default is None, which means the default database.
+        - update_fields (list): A list of fields to update. Only these fields will be saved. Default is None.
+
+        Returns:
+        None
+        """
+
         if not self.pk:
             self.created = True
 

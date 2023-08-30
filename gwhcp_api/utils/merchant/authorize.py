@@ -7,7 +7,7 @@ from utils import models
 
 
 class Authorize(object):
-    def __init__(self, data: dict, merchant: models.PaymentAuthorizeCc):
+    def __init__(self, data: dict, merchant: models.PaymentGateway):
         self.data = data
 
         self.merchant = merchant
@@ -19,18 +19,18 @@ class Authorize(object):
         :return: dict
         """
 
-        if self.merchant.transaction_type == 'auth_only':
-            transaction_type = 'authOnlyTransaction'
-        else:
-            transaction_type = 'authCaptureTransaction'
-
         billing_profile: models.BillingProfile = self.data['billing_profile']
+
+        coupon: models.Coupon = self.data['coupon']
 
         store_product: models.StoreProduct = self.data['store_product']
 
         store_product_price: models.StoreProductPrice = self.data['store_product_price']
 
-        total = store_product_price.base_price + store_product_price.setup_price
+        if coupon is not None:
+            total = (store_product_price.base_price + store_product_price.setup_price) - coupon.amount
+        else:
+            total = store_product_price.base_price + store_product_price.setup_price
 
         request = {
             "createTransactionRequest": {
@@ -39,7 +39,7 @@ class Authorize(object):
                     "transactionKey": self.merchant.decrypt_transaction_key()
                 },
                 "transactionRequest": {
-                    "transactionType": transaction_type,
+                    "transactionType": 'authCaptureTransaction',
                     "amount": total,
                     "profile": {
                         "customerProfileId": billing_profile.authorize_profile_id,
@@ -54,6 +54,12 @@ class Authorize(object):
                             "description": store_product.product_type,
                             "quantity": "1",
                             "unitPrice": total
+                        }
+                    },
+                    "transactionSettings": {
+                        "setting": {
+                            "settingName": "duplicateWindow",
+                            "settingValue": "0"
                         }
                     },
                     "authorizationIndicatorType": {
@@ -118,7 +124,7 @@ class Authorize(object):
             if not response['error']:
                 models.BillingProfile.objects.create(
                     account=self.data['account'],
-                    payment_gateway=self.merchant.payment_gateway,
+                    payment_gateway=self.merchant,
                     is_active=True,
                     name=self.data['name'],
                     authorize_profile_id=response['result']['customerProfileId'],
@@ -168,7 +174,7 @@ class Authorize(object):
             if not response['error']:
                 models.BillingProfile.objects.create(
                     account=self.data['account'],
-                    payment_gateway=self.merchant.payment_gateway,
+                    payment_gateway=self.merchant,
                     is_active=True,
                     name=self.data['name'],
                     authorize_profile_id=response['result']['customerProfileId'],
@@ -356,6 +362,32 @@ class Authorize(object):
                     "customerPaymentProfileId": self.data['authorize_payment_id']
                 },
                 "validationMode": "liveMode"
+            }
+        }
+
+        return self.get_response('post', request)
+
+    def void(self):
+        """
+        Void CIM
+
+        :return: dict
+        """
+
+        billing_invoice_item = models.BillingInvoiceItem.objects.filter(
+            billing_invoice=self.data['billing_invoice']['id']
+        ).last()
+
+        request = {
+            "createTransactionRequest": {
+                "merchantAuthentication": {
+                    "name": self.merchant.decrypt_login_id(),
+                    "transactionKey": self.merchant.decrypt_transaction_key()
+                },
+                "transactionRequest": {
+                    "transactionType": 'voidTransaction',
+                    "refTransId": billing_invoice_item.transaction['result']['transactionResponse']['transId']
+                }
             }
         }
 

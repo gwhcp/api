@@ -24,6 +24,19 @@ class Choices(views.APIView):
     }
 
     def get(self, request):
+        """
+        Get a dictionary of choices for the Assigned field of the IpaddressSetup model.
+
+        Parameters:
+            request (HttpRequest): The HTTP request object
+
+        Returns:
+            Response: A response object containing the dictionary of choices for the Assigned field
+
+        Raises:
+            None
+        """
+
         return Response(dict(models.IpaddressSetup.Assigned.choices))
 
 
@@ -67,6 +80,20 @@ class Delete(generics.RetrieveDestroyAPIView):
     serializer_class = serializers.SearchSerializer
 
     def perform_destroy(self, instance):
+        """
+        Method Name: perform_destroy
+        Description: Deletes the instance of IP Address Network if it can be deleted. Raises a ValidationError if the instance is currently in use and cannot be removed.
+
+        Parameters:
+            instance (object): The instance of IP Address Network to be deleted.
+
+        Returns:
+            None
+
+        Raises:
+            ValidationError: If the instance is currently in use and cannot be removed.
+        """
+
         if not instance.can_delete():
             raise exceptions.ValidationError(
                 'IP Address Network is currently in use and cannot be removed.',
@@ -76,7 +103,7 @@ class Delete(generics.RetrieveDestroyAPIView):
         instance.delete()
 
 
-class Profile(generics.RetrieveUpdateAPIView):
+class Edit(generics.RetrieveUpdateAPIView):
     """
     View IP address profile
     """

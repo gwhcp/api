@@ -7,7 +7,13 @@ from admin.store.product import models
 
 class Choices(views.APIView):
     """
-    Choices
+    This class provides an API endpoint for retrieving choices for IP address types.
+
+    Attributes:
+        - permission_classes (tuple): A tuple containing the permission classes for this view. Only admin users are allowed.
+
+    Methods:
+        - get(request): Retrieves the available choices for IP address types.
     """
 
     permission_classes = (
@@ -15,22 +21,20 @@ class Choices(views.APIView):
     )
 
     def get(self, request):
-        result = {
-            'company': {},
-            'ip_type': {},
-            'web': {}
-        }
+        """
+        Endpoint for retrieving choices for IP address types.
 
-        # Company
-        for company in models.Company.objects.all():
-            result['company'].update({
-                company.pk: company.name
-            })
+        Parameters:
+            request (HttpRequest): The HTTP request object.
+
+        Returns:
+            Response: The HTTP response object containing the available choices for IP address types.
+        """
+        result = {
+            'ip_type': {}
+        }
 
         # IP Address Type
         result['ip_type'].update(dict(models.StoreProduct.IpaddressType.choices))
-
-        # Web Type
-        result['web'].update(dict(models.StoreProduct.WebType.choices))
 
         return Response(result)

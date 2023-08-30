@@ -27,6 +27,24 @@ class CreateSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
+        """
+        Create a new user with staff privileges.
+
+        Parameters:
+        - validated_data (dict): The validated data containing the user information.
+
+        Returns:
+        - user (obj): The created user object with staff privileges.
+
+        Example usage:
+        serializer = CreateSerializer()
+        data = {
+            'username': 'testuser',
+            'password': 'testpassword',
+        }
+        user = serializer.create(data)
+        """
+
         validated_data['is_staff'] = True
 
         user = super(CreateSerializer, self).create(validated_data)
@@ -36,6 +54,16 @@ class CreateSerializer(serializers.ModelSerializer):
         return user
 
     def validate_password(self, value):
+        """
+        Method to validate the password.
+
+        Args:
+            value (str): The password to be validated.
+
+        Returns:
+            str: The validated password.
+        """
+
         validate_password(value)
 
         return value
@@ -74,6 +102,16 @@ class PermissionUserSerializer(serializers.ModelSerializer):
         ]
 
     def get_perm(self, obj):
+        """
+        Returns the permission of the user.
+
+        Parameters:
+        - obj: The permission object.
+
+        Returns:
+        - The permission in the format 'app_label.codename'.
+        """
+
         return '{}.{}'.format(
             obj.content_type.app_label,
             obj.codename

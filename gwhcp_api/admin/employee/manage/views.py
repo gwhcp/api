@@ -64,6 +64,26 @@ class Delete(generics.DestroyAPIView):
     queryset = models.Account.objects.all()
 
 
+class Edit(generics.RetrieveUpdateAPIView):
+    """
+    View account profile
+    """
+
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
+
+    gacl = {
+        'view': ['admin_employee_manage.view_account'],
+        'change': ['admin_employee_manage.change_account']
+    }
+
+    queryset = models.Account.objects.all()
+
+    serializer_class = serializers.ProfileSerializer
+
+
 class Permission(generics.RetrieveUpdateAPIView):
     """
     View account permissions
@@ -98,9 +118,10 @@ class PermissionBase(generics.ListAPIView):
         'view': ['auth.view_permission']
     }
 
-    queryset = models.Permission.objects.all()
-
     serializer_class = serializers.PermissionBaseSerializer
+
+    def get_queryset(self):
+        return models.Permission.objects.filter(content_type__app_label__istartswith='admin_')
 
 
 class PermissionUser(generics.ListAPIView):
@@ -123,26 +144,6 @@ class PermissionUser(generics.ListAPIView):
         return models.Permission.objects.filter(
             user=self.request.user
         )
-
-
-class Profile(generics.RetrieveUpdateAPIView):
-    """
-    View account profile
-    """
-
-    permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
-    )
-
-    gacl = {
-        'view': ['admin_employee_manage.view_account'],
-        'change': ['admin_employee_manage.change_account']
-    }
-
-    queryset = models.Account.objects.all()
-
-    serializer_class = serializers.ProfileSerializer
 
 
 class Search(generics.ListAPIView):

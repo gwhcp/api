@@ -31,6 +31,13 @@ class Account(models.Account):
     objects = AccountManager()
 
     class Meta:
+        default_permissions = (
+            'add',
+            'change',
+            'delete',
+            'view'
+        )
+
         ordering = [
             'first_name',
             'last_name'
@@ -44,7 +51,10 @@ class Account(models.Account):
 
 class Permission(auth_models.Permission):
     class Meta:
-        default_permissions = ()
+        default_permissions = (
+            'change',
+            'view'
+        )
 
         proxy = True
 

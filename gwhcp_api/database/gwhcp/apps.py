@@ -2,7 +2,7 @@ from django.apps import AppConfig
 
 
 class Config(AppConfig):
-    label = 'gwhcp'
+    label = 'database_gwhcp'
 
     name = 'database.gwhcp'
 

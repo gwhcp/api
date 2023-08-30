@@ -10,6 +10,19 @@ class CreateSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate(self, attrs):
+        """
+        Validate method for CreateSerializer class.
+
+        Parameters:
+        - attrs (dict): The dictionary of attributes to be validated.
+
+        Returns:
+        - dict: The validated attributes dictionary.
+
+        Raises:
+        - serializers.ValidationError: If the billing cycle already exists.
+        """
+
         obj = models.StoreProductPrice.objects.filter(
             store_product=attrs['store_product'],
             billing_cycle=attrs['billing_cycle']

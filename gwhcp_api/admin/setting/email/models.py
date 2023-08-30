@@ -3,6 +3,12 @@ from database.gwhcp import models
 
 class EmailTemplate(models.EmailTemplate):
     class Meta:
+        default_permissions = (
+            'add',
+            'change',
+            'view'
+        )
+
         ordering = [
             'template'
         ]

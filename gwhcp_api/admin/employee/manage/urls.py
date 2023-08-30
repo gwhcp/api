@@ -4,7 +4,7 @@ from admin.employee.manage import views
 
 urlpatterns = [
     path(
-        'accesslog/<int:pk>',
+        '<int:pk>/accesslog',
         views.AccessLog.as_view(),
         name='accesslog'
     ),
@@ -16,13 +16,19 @@ urlpatterns = [
     ),
 
     path(
-        'delete/<int:pk>',
+        '<int:pk>/delete',
         views.Delete.as_view(),
         name='delete'
     ),
 
     path(
-        'permission/<int:pk>',
+        '<int:pk>/edit',
+        views.Edit.as_view(),
+        name='edit'
+    ),
+
+    path(
+        '<int:pk>/permission',
         views.Permission.as_view(),
         name='permission'
     ),
@@ -37,12 +43,6 @@ urlpatterns = [
         'permission/user',
         views.PermissionUser.as_view(),
         name='permission-user'
-    ),
-
-    path(
-        'profile/<int:pk>',
-        views.Profile.as_view(),
-        name='profile'
     ),
 
     path(

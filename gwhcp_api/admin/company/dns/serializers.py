@@ -10,7 +10,20 @@ class CreateSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate_host(self, value):
-        if models.DnsZone.objects.filter(
+        """
+            Validates the host value.
+
+            Parameters:
+            - value (str): The host value to be validated.
+
+            Returns:
+            - str: The validated host value.
+
+            Raises:
+            - ValidationError: Raised if the host already exists in the DNS zone.
+        """
+
+        if value != '' and models.DnsZone.objects.filter(
                 host__iexact=value
         ).exists():
             raise serializers.ValidationError(
@@ -26,8 +39,7 @@ class DeleteSerializer(serializers.ModelSerializer):
         model = models.DnsZone
 
         fields = [
-            'id',
-            'domain'
+            'id'
         ]
 
 
@@ -48,44 +60,7 @@ class NsSerializer(serializers.ModelSerializer):
         ]
 
 
-class ProfileSerializer(serializers.ModelSerializer):
-    company_name = serializers.StringRelatedField(
-        read_only=True,
-        source='company'
-    )
-
-    class Meta:
-        model = models.Domain
-
-        fields = [
-            'company',
-            'company_name',
-            'id',
-            'manage_dns',
-            'name',
-            'ns'
-        ]
-
-        read_only_fields = [
-            'company',
-            'company_name',
-            'id',
-            'name',
-            'ns'
-        ]
-
-
 class SearchSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.Domain
-
-        fields = [
-            'id',
-            'name'
-        ]
-
-
-class SearchRecordSerializer(serializers.ModelSerializer):
     manage_dns = serializers.BooleanField(
         read_only=True,
         source='domain.manage_dns'

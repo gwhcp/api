@@ -14,7 +14,6 @@ class IpaddressPool(models.Model):
         POSTGRESQL = 'postgresql', 'PostgreSQL'
         STORE = 'store', 'Store'
         UNMANAGED = 'unmanaged', 'Unmanaged'
-        XMPP = 'xmpp', 'XMPP'
 
     class Type(models.TextChoices):
         DEDICATED = 'dedicated', 'Dedicated'

@@ -22,6 +22,8 @@ class PermissionsSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+    has_perm = serializers.SerializerMethodField()
+
     class Meta:
         model = models.Account
 
@@ -29,5 +31,22 @@ class ProfileSerializer(serializers.ModelSerializer):
             'groups',
             'is_superuser',
             'password',
-            'user_permissions'
+            # 'user_permissions'
         ]
+
+    def get_has_perm(self, obj):
+        perms = models.Permission.objects.filter(user=obj)
+
+        permissions = dict()
+
+        for item in perms:
+            name = '{}.{}'.format(
+                item.content_type.app_label,
+                item.codename
+            )
+
+            permissions.update({
+                name: True
+            })
+
+        return permissions

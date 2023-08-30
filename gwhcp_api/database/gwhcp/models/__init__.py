@@ -5,6 +5,7 @@ from .billing_invoice import BillingInvoice
 from .billing_invoice_item import BillingInvoiceItem
 from .billing_profile import BillingProfile
 from .company import Company
+from .coupon import Coupon
 from .cron_tab import CronTab
 from .dns_zone import DnsZone
 from .domain import Domain
@@ -19,7 +20,6 @@ from .mail_list import MailList
 from .mysql_database import MysqlDatabase
 from .mysql_user import MysqlUser
 from .order import Order
-from .payment_authorize_cc import PaymentAuthorizeCc
 from .payment_gateway import PaymentGateway
 from .postgresql_database import PostgresqlDatabase
 from .postgresql_user import PostgresqlUser

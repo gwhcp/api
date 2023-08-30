@@ -12,6 +12,14 @@ class CreateSerializer(serializers.ModelSerializer):
         ]
 
     def validate_name(self, value):
+        """
+        Validate the given name.
+
+        :param value: The name to be validated.
+        :returns: The validated name.
+        :raises: `serializers.ValidationError`: If the name already exists in the database.
+        """
+
         if models.Banned.objects.filter(
                 name__iexact=value
         ).exists():

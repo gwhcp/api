@@ -16,6 +16,22 @@ class CreateSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, attrs):
+        """
+        Validate method to validate the input attributes.
+
+        Parameters:
+        - attrs (dict): A dictionary containing the attributes to be validated.
+
+        Raises:
+        - serializers.ValidationError: if any validation fails.
+
+        Returns:
+        - attrs (dict): The validated attributes.
+
+        Note:
+        This method performs different validations based on the 'fraud_type' attribute value in the 'attrs' dictionary. If the validation fails, it raises a serializers.ValidationError with appropriate error messages.
+        """
+
         if attrs['fraud_type'] in [
             'address',
             'company',

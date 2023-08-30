@@ -2,6 +2,8 @@ from django.conf import settings
 from django.db import models
 from model_utils import FieldTracker
 
+from database.gwhcp import models as gwhcp_models
+
 
 class Order(models.Model):
     class OrderStatus(models.TextChoices):
@@ -11,6 +13,11 @@ class Order(models.Model):
         NEW = 'new', 'New'
         UNVERIFIED = 'unverified', 'Unverified'
         VALID = 'valid', 'Valid'
+
+    class Transaction(models.TextChoices):
+        AUTHCAPTURE = 'auth_capture', 'Authorize & Capture'
+        REFUND = 'refund', 'Refund'
+        VOID = 'void', 'Void'
 
     account = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -36,12 +43,17 @@ class Order(models.Model):
         related_name='order_billing_profile'
     )
 
-    company = models.ForeignKey(
-        'Company',
+    coupon = models.ForeignKey(
+        'Coupon',
         blank=False,
-        null=False,
+        null=True,
         on_delete=models.CASCADE,
-        related_name='order_company'
+        related_name='order_coupon'
+    )
+
+    fraud_string = models.ManyToManyField(
+        gwhcp_models.FraudString,
+        related_name='order_fraud_string'
     )
 
     product_profile = models.ForeignKey(
@@ -54,6 +66,13 @@ class Order(models.Model):
 
     date_from = models.DateTimeField(
         auto_now_add=True
+    )
+
+    payment_status = models.CharField(
+        blank=False,
+        choices=Transaction.choices,
+        max_length=12,
+        null=False
     )
 
     status = models.CharField(

@@ -6,7 +6,7 @@ from database.gwhcp import models
 class DnsZoneManager(django_models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(
-            domain__company__isnull=False
+            domain__account__isnull=True
         )
 
 
@@ -14,6 +14,12 @@ class DnsZone(models.DnsZone):
     objects = DnsZoneManager()
 
     class Meta:
+        default_permissions = (
+            'add',
+            'delete',
+            'view'
+        )
+
         ordering = [
             'host',
             'record_type'
@@ -28,7 +34,7 @@ class DnsZone(models.DnsZone):
 class DomainManager(django_models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(
-            company__isnull=False,
+            account__isnull=True,
             related_to__isnull=True
         )
 

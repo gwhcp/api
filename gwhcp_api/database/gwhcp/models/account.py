@@ -20,14 +20,6 @@ class Account(manager.AbstractBaseUser, abstract.Contact):
         MILITARY = 24, 'YYYY-MM-DD HH:MM:SS'
         STANDARD = 12, 'YYYY-MM-DD H:MM:SS AM/PM'
 
-    company = models.ForeignKey(
-        'Company',
-        blank=False,
-        null=True,
-        on_delete=models.CASCADE,
-        related_name='account_company'
-    )
-
     comment_order = models.CharField(
         blank=False,
         choices=Comment.choices,

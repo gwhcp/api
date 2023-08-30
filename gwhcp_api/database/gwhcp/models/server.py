@@ -32,19 +32,11 @@ class Server(abstract.ServerResource):
         related_name='server_allowed'
     )
 
-    company = models.ForeignKey(
-        'Company',
-        blank=False,
-        null=False,
-        on_delete=models.CASCADE,
-        related_name='server_company'
-    )
-
     domain = models.ForeignKey(
         'Domain',
         blank=False,
         limit_choices_to={
-            'company__isnull': False,
+            'account__isnull': True,
             'related_to__isnull': True,
             'is_active': True
         },

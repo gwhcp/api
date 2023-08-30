@@ -12,6 +12,19 @@ class CreateSerializer(serializers.ModelSerializer):
         ]
 
     def validate_template(self, value):
+        """
+        Validate the email template.
+
+        Parameters:
+        - value (str): The value of the email template.
+
+        Raises:
+        - serializers.ValidationError: If the email template already exists.
+
+        Returns:
+        - str: The validated email template.
+        """
+
         if models.EmailTemplate.objects.filter(
                 template=value
         ).exists():

@@ -4,27 +4,21 @@ from admin.company.domain import views
 
 urlpatterns = [
     path(
-        'choices',
-        views.Choices.as_view(),
-        name='choices'
-    ),
-
-    path(
         'create',
         views.Create.as_view(),
         name='create'
     ),
 
     path(
-        'delete/<int:pk>',
+        '<int:pk>/delete',
         views.Delete.as_view(),
         name='delete'
     ),
 
     path(
-        'profile/<int:pk>',
-        views.Profile.as_view(),
-        name='profile'
+        '<int:pk>/edit',
+        views.Edit.as_view(),
+        name='edit'
     ),
 
     path(

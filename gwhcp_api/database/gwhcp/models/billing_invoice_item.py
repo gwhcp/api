@@ -4,12 +4,12 @@ from django.db import models
 class BillingInvoiceItem(models.Model):
     class Transaction(models.TextChoices):
         AUTHCAPTURE = 'auth_capture', 'Authorize & Capture'
-        AUTHONLY = 'auth_only', 'Authorize Only'
         REFUND = 'refund', 'Refund'
         VOID = 'void', 'Void'
 
     class Type(models.TextChoices):
         CHARGE = 'charge', 'Charge'
+        COUPON = 'coupon', 'Coupon'
         DEBIT = 'debit', 'Debit'
         REFUND = 'refund', 'Refund'
         VOID = 'void', 'Void'
@@ -31,6 +31,14 @@ class BillingInvoiceItem(models.Model):
     )
 
     base_price = models.DecimalField(
+        blank=False,
+        decimal_places=2,
+        default=0.00,
+        max_digits=10,
+        null=False
+    )
+
+    coupon_price = models.DecimalField(
         blank=False,
         decimal_places=2,
         default=0.00,

@@ -18,6 +18,16 @@ class Choices(views.APIView):
     )
 
     def get(self, request):
+        """
+        Get the choices for EmailTemplate Template.
+
+        Parameters:
+        - request: The request object.
+
+        Returns:
+        - Response: The response containing the choices for EmailTemplate Template.
+        """
+
         return Response(dict(models.EmailTemplate.Template.choices))
 
 
@@ -61,7 +71,7 @@ class Delete(generics.RetrieveDestroyAPIView):
     serializer_class = serializers.SearchSerializer
 
 
-class Profile(generics.RetrieveUpdateAPIView):
+class Edit(generics.RetrieveUpdateAPIView):
     """
     View email template profile
     """

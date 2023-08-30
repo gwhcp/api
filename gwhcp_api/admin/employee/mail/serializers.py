@@ -48,6 +48,21 @@ class PasswordSerializer(serializers.ModelSerializer):
         }
 
     def validate(self, attrs):
+        """
+        This method is used to validate the password for an instance of the PasswordSerializer class.
+
+        Parameters:
+        - self: The instance of the PasswordSerializer class.
+        - attrs: A dictionary containing the attributes to be validated.
+
+        Returns:
+        - attrs: The validated attributes.
+
+        Raises:
+        - serializers.ValidationError: If the confirmed password does not match the password.
+        - APIException: If the mail type is not 'mailbox'.
+        """
+
         if self.instance.mail_type == 'mailbox':
             if attrs.get('password') != attrs.get('confirmed_password'):
                 raise serializers.ValidationError(
@@ -62,11 +77,31 @@ class PasswordSerializer(serializers.ModelSerializer):
             raise APIException('Not a mailbox.')
 
     def validate_password(self, value):
+        """
+        Validate the password according to Django's password validation rules.
+
+        :param value: The password to validate (str)
+        :return: The validated password (str)
+        :raises: APIException if the password fails validation
+        """
+
         validate_password(value)
 
         return value
 
     def update(self, instance, validated_data):
+        """
+        Updates the password of an employee.
+
+        :param instance: The instance of the employee whose password needs to be updated.
+        :type instance: object
+        :param validated_data: The validated data containing the new password.
+        :type validated_data: dict
+        :returns: The updated instance of the employee.
+        :rtype: object
+        :raises APIException: If there is an error while updating the password.
+        """
+
         instance.password = security.encrypt_string(validated_data['password'])
         instance.save()
 

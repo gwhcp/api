@@ -1,5 +1,4 @@
 import validators as python_validators
-from django.contrib.sites import models as site_models
 from rest_framework import serializers
 
 from admin.company.domain import models
@@ -10,7 +9,6 @@ class CreateSerializer(serializers.ModelSerializer):
         model = models.Domain
 
         fields = [
-            'company',
             'name'
         ]
 
@@ -18,28 +16,22 @@ class CreateSerializer(serializers.ModelSerializer):
         domain = super(CreateSerializer, self).create(validated_data)
         domain.save()
 
-        company = models.Company.objects.get(pk=validated_data['company'].pk)
-
-        site_models.Site.objects.update_or_create(
-            pk=domain.pk,
-            defaults={
-                'domain': validated_data['name'],
-                'name': company.name
-            }
-        )
-
         return domain
 
-    def validate_company(self, value):
-        if value is None:
-            raise serializers.ValidationError(
-                'This field is required.',
-                code='required'
-            )
-
-        return value
-
     def validate_name(self, value):
+        """
+        Validates name
+
+        Parameters:
+        - value (str): The name to be validated.
+
+        Raises:
+        - serializers.ValidationError: If the provided domain name is not valid or already exists.
+
+        Returns:
+        - str: The validated name.
+        """
+
         if not python_validators.domain(value):
             raise serializers.ValidationError(
                 'Domain is not valid.',
@@ -58,11 +50,6 @@ class CreateSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    company_name = serializers.StringRelatedField(
-        read_only=True,
-        source='company'
-    )
-
     class Meta:
         model = models.Domain
 
@@ -70,11 +57,6 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class SearchSerializer(serializers.ModelSerializer):
-    company_name = serializers.StringRelatedField(
-        read_only=True,
-        source='company'
-    )
-
     class Meta:
         model = models.Domain
 

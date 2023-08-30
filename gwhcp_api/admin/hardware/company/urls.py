@@ -16,27 +16,27 @@ urlpatterns = [
     ),
 
     path(
-        'delete/<int:pk>',
+        '<int:pk>/delete',
         views.Delete.as_view(),
         name='delete'
     ),
 
     path(
-        'domain/<int:pk>',
+        '<int:pk>/edit',
+        views.Edit.as_view(),
+        name='edit'
+    ),
+
+    path(
+        '<int:pk>/domain',
         views.Domain.as_view(),
         name='domain'
     ),
 
     path(
-        'install/<int:pk>',
+        '<int:pk>/install',
         views.Install.as_view(),
         name='install'
-    ),
-
-    path(
-        'profile/<int:pk>',
-        views.Profile.as_view(),
-        name='profile'
     ),
 
     path(

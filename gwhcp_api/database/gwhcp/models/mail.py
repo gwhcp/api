@@ -17,14 +17,6 @@ class Mail(models.Model):
         related_name='mail_account'
     )
 
-    company = models.ForeignKey(
-        'Company',
-        blank=False,
-        null=True,
-        on_delete=models.CASCADE,
-        related_name='mail_company'
-    )
-
     domain = models.ForeignKey(
         'Domain',
         blank=False,

@@ -41,6 +41,16 @@ class BillingProfile(models.BillingProfile):
         verbose_name_plural = 'Billing Profiles'
 
 
+class Coupon(models.Coupon):
+    class Meta:
+        default_permissions = ()
+
+        proxy = True
+
+        verbose_name = 'Coupon'
+        verbose_name_plural = 'Coupons'
+
+
 class Domain(models.Domain):
     class Meta:
         default_permissions = ()
@@ -49,6 +59,16 @@ class Domain(models.Domain):
 
         verbose_name = 'Domain'
         verbose_name_plural = 'Domains'
+
+
+class FraudString(models.FraudString):
+    class Meta:
+        default_permissions = ()
+
+        proxy = True
+
+        verbose_name = 'Fraud String'
+        verbose_name_plural = 'Fraud Strings'
 
 
 class Order(models.Order):
@@ -69,16 +89,6 @@ class PaymentGateway(models.PaymentGateway):
 
         verbose_name = 'Billing Payment Gateway'
         verbose_name_plural = 'Billing Payment Gateways'
-
-
-class PaymentAuthorizeCc(models.PaymentAuthorizeCc):
-    class Meta:
-        default_permissions = ()
-
-        proxy = True
-
-        verbose_name = 'Authorize Credit Card'
-        verbose_name_plural = 'Authorize Credit Cards'
 
 
 class ProductProfile(models.ProductProfile):

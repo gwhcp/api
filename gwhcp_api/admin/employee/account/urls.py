@@ -16,14 +16,14 @@ urlpatterns = [
     ),
 
     path(
-        'password',
-        views.Password.as_view(),
-        name='password'
+        'edit',
+        views.Edit.as_view(),
+        name='edit'
     ),
 
     path(
-        'profile',
-        views.Profile.as_view(),
-        name='profile'
+        'password',
+        views.Password.as_view(),
+        name='password'
     )
 ]

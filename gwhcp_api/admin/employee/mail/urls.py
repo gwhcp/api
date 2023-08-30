@@ -4,15 +4,15 @@ from admin.employee.mail import views
 
 urlpatterns = [
     path(
-        'password/<int:pk>',
-        views.Password.as_view(),
-        name='password'
+        '<int:pk>/edit',
+        views.Edit.as_view(),
+        name='edit'
     ),
 
     path(
-        'profile/<int:pk>',
-        views.Profile.as_view(),
-        name='profile'
+        '<int:pk>/password',
+        views.Password.as_view(),
+        name='password'
     ),
 
     path(

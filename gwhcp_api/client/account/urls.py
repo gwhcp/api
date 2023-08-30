@@ -22,6 +22,12 @@ urlpatterns = [
     ),
 
     path(
+        'edit',
+        views.Edit.as_view(),
+        name='edit'
+    ),
+
+    path(
         'password',
         views.Password.as_view(),
         name='password'
@@ -31,11 +37,5 @@ urlpatterns = [
         'permission/user',
         views.PermissionUser.as_view(),
         name='permission-user'
-    ),
-
-    path(
-        'profile',
-        views.Profile.as_view(),
-        name='profile'
     )
 ]

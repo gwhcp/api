@@ -27,24 +27,10 @@ class Account(models.Account):
         verbose_name_plural = 'Accounts'
 
 
-class Company(models.Company):
-    class Meta:
-        default_permissions = ()
-
-        ordering = [
-            'name'
-        ]
-
-        proxy = True
-
-        verbose_name = 'Company'
-        verbose_name_plural = 'Companies'
-
-
 class DomainManager(django_models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(
-            company__isnull=False,
+            account__isnull=True,
             related_to__isnull=True
         )
 
@@ -68,7 +54,6 @@ class Domain(models.Domain):
 class MailManager(django_models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(
-            company__isnull=False,
             product_profile__isnull=True
         )
 
@@ -77,6 +62,13 @@ class Mail(models.Mail):
     objects = MailManager()
 
     class Meta:
+        default_permissions = (
+            'add',
+            'change',
+            'delete',
+            'view'
+        )
+
         ordering = [
             'name'
         ]

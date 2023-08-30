@@ -62,6 +62,19 @@ class Delete(generics.RetrieveDestroyAPIView):
     serializer_class = serializers.SearchSerializer
 
     def perform_destroy(self, instance):
+        """
+        This method performs the deletion of an instance of a reason object.
+
+        Parameters:
+        - instance (object): The reason object to be deleted.
+
+        Exceptions:
+        - ValidationError: Raised if the reason object cannot be deleted because it is currently in use.
+
+        Returns:
+        - None
+        """
+
         if not instance.can_delete():
             raise exceptions.ValidationError(
                 'Reason is currently in use and cannot be removed.',
@@ -71,7 +84,7 @@ class Delete(generics.RetrieveDestroyAPIView):
         instance.delete()
 
 
-class Profile(generics.RetrieveAPIView):
+class Edit(generics.RetrieveAPIView):
     """
     View billing reason profile
     """

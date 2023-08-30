@@ -13,6 +13,13 @@ class IpaddressPool(models.IpaddressPool):
 
 class IpaddressSetup(models.IpaddressSetup):
     class Meta:
+        default_permissions = (
+            'add',
+            'change',
+            'delete',
+            'view'
+        )
+
         ordering = [
             'network',
             'name'
@@ -24,6 +31,12 @@ class IpaddressSetup(models.IpaddressSetup):
         verbose_name_plural = 'Network IP Address Setups'
 
     def can_delete(self):
+        """
+        Determines if an instance of `IpaddressSetup` can be deleted.
+
+        @return: True if the instance can be deleted, False otherwise.
+        """
+
         # List of models that should not be checked.
         defer = []
 

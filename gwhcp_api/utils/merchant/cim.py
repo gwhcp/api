@@ -1,6 +1,3 @@
-import random
-
-from utils import billing
 from utils import models
 from utils.merchant import authorize
 
@@ -25,7 +22,7 @@ class PaymentGateway(object):
             }
 
         # Authorize.net
-        if self.get_merchant().payment_gateway.merchant == 'authorize':
+        if self.get_merchant().merchant == 'authorize':
             return authorize.Authorize(self.data, self.get_merchant()).charge()
         else:
             return {
@@ -47,7 +44,7 @@ class PaymentGateway(object):
             }
 
         # Authorize.net
-        if self.get_merchant().payment_gateway.merchant == 'authorize':
+        if self.get_merchant().merchant == 'authorize':
             return authorize.Authorize(self.data, self.get_merchant()).create_profile()
         else:
             return {
@@ -57,7 +54,7 @@ class PaymentGateway(object):
 
     def delete_cim(self):
         # Authorize.net
-        if self.get_merchant().payment_gateway.merchant == 'authorize':
+        if self.get_merchant().merchant == 'authorize':
             data = {
                 'pk': self.instance.pk,
                 'account': self.instance.account,
@@ -74,7 +71,7 @@ class PaymentGateway(object):
 
     def get_cim(self):
         # Authorize.net
-        if self.get_merchant().payment_gateway.merchant == 'authorize':
+        if self.get_merchant().merchant == 'authorize':
             data = {
                 'pk': self.instance.pk,
                 'account': self.instance.account,
@@ -113,62 +110,14 @@ class PaymentGateway(object):
         """
         Merchant object
 
-        :return: None | models.PaymentAuthorizeCc
+        :return: None | models.PaymentGateway
         """
 
-        if self.instance is None:
-            merchant = self.get_random_merchant()
-        else:
-            try:
-                merchant = self.instance.payment_gateway.pk
-            except Exception:
-                merchant = self.get_random_merchant()
-
-        if merchant is None:
-            return None
-
-        # Authorize.net
-        if models.PaymentGateway.objects.get(pk=merchant).merchant == 'authorize':
-            return models.PaymentAuthorizeCc.objects.get(payment_gateway=merchant)
-
-    def get_random_merchant(self):
-        """
-        Random Merchant
-
-        :return: str | None
-        """
-
-        merchants = {
-            'amex': [],
-            'discover': [],
-            'mastercard': [],
-            'visa': []
-        }
-
-        card_type = billing.credit_card_type(self.data['credit_card_number'])
-
-        # Authorize.net
-        for item in models.PaymentAuthorizeCc.objects.filter(
-                is_active=True,
-                payment_gateway__company=self.data['account'].company
-        ):
-            if item.has_amex and card_type == 'amex':
-                merchants['amex'].append(item.payment_gateway_id)
-            elif item.has_discover and card_type == 'discover':
-                merchants['discover'].append(item.payment_gateway_id)
-            elif item.has_mastercard and card_type == 'mastercard':
-                merchants['mastercard'].append(item.payment_gateway_id)
-            elif item.has_visa and card_type == 'visa':
-                merchants['visa'].append(item.payment_gateway_id)
-
-        if len(merchants[card_type]) > 0:
-            return random.choice(merchants[card_type])
-        else:
-            return None
+        return models.PaymentGateway.objects.get(is_active=True)
 
     def update_cim(self):
         # Authorize.net
-        if self.get_merchant().payment_gateway.merchant == 'authorize':
+        if self.get_merchant().merchant == 'authorize':
             self.data.update({
                 'account': self.instance.account,
                 'authorize_payment_id': self.instance.authorize_payment_id,
@@ -176,3 +125,25 @@ class PaymentGateway(object):
             })
 
             return authorize.Authorize(self.data, self.get_merchant()).update_profile()
+
+    def void_cim(self):
+        """
+        Void (CIM)
+
+        :return: dict
+        """
+
+        if self.get_merchant() is None:
+            return {
+                'error': True,
+                'message': 'There are no available payment gateways.'
+            }
+
+        # Authorize.net
+        if self.get_merchant().merchant == 'authorize':
+            return authorize.Authorize(self.data, self.get_merchant()).void()
+        else:
+            return {
+                'error': True,
+                'message': 'Could not void CIM.'
+            }

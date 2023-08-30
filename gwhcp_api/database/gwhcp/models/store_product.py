@@ -17,14 +17,6 @@ class StoreProduct(abstract.ProductResource):
         POSTGRESQL = 'postgresql', 'PostgreSQL'
         PRIVATE = 'private', 'Private'
 
-    company = models.ForeignKey(
-        'Company',
-        blank=False,
-        null=False,
-        on_delete=models.CASCADE,
-        related_name='store_product_company'
-    )
-
     product_type = models.CharField(
         blank=False,
         choices=ProductType.choices,

@@ -4,7 +4,7 @@ from admin.customer.account import views
 
 urlpatterns = [
     path(
-        'accesslog/<int:pk>',
+        '<int:pk>/accesslog',
         views.AccessLog.as_view(),
         name='accesslog'
     ),
@@ -16,15 +16,15 @@ urlpatterns = [
     ),
 
     path(
-        'password',
-        views.Password.as_view(),
-        name='password'
+        '<int:pk>/edit',
+        views.Edit.as_view(),
+        name='edit'
     ),
 
     path(
-        'profile/<int:pk>',
-        views.Profile.as_view(),
-        name='profile'
+        '<int:pk>/password',
+        views.Password.as_view(),
+        name='password'
     ),
 
     path(

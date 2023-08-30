@@ -6,4 +6,4 @@ class Config(AppConfig):
 
     name = 'admin.company.dns'
 
-    verbose_name = 'DNS'
+    verbose_name = 'Company DNS'

@@ -16,25 +16,25 @@ urlpatterns = [
     ),
 
     path(
-        'delete/<int:pk>',
+        '<int:pk>/delete',
         views.Delete.as_view(),
         name='delete'
     ),
 
     path(
-        'password/<int:pk>',
+        '<int:pk>/edit/<int:domain_id>',
+        views.Edit.as_view(),
+        name='edit'
+    ),
+
+    path(
+        '<int:pk>/password',
         views.Password.as_view(),
         name='password'
     ),
 
     path(
-        'profile/<int:pk>',
-        views.Profile.as_view(),
-        name='profile'
-    ),
-
-    path(
-        'search',
+        '<int:pk>/search',
         views.Search.as_view(),
         name='search'
     )

@@ -3,6 +3,13 @@ from database.gwhcp import models
 
 class StoreProductPrice(models.StoreProductPrice):
     class Meta:
+        default_permissions = (
+            'add',
+            'change',
+            'delete',
+            'view'
+        )
+
         ordering = [
             'billing_cycle'
         ]
@@ -13,6 +20,14 @@ class StoreProductPrice(models.StoreProductPrice):
         verbose_name_plural = 'Store Product Prices'
 
     def can_delete(self):
+        """
+        Determines whether a StoreProductPrice can be deleted.
+
+        :param self: The StoreProductPrice instance.
+
+        :return: True if the StoreProductPrice can be deleted, False otherwise.
+        """
+
         # List of models that should not be checked.
         defer = []
 

@@ -3,6 +3,12 @@ from database.gwhcp import models
 
 class Banned(models.Banned):
     class Meta:
+        default_permissions = (
+            'add',
+            'delete',
+            'view'
+        )
+
         ordering = [
             'name'
         ]
@@ -13,6 +19,13 @@ class Banned(models.Banned):
         verbose_name_plural = 'Settings Banned Items'
 
     def can_delete(self):
+        """
+        Checks if the current instance of the Banned model can be deleted.
+
+        Returns:
+            True if the instance can be deleted, False otherwise.
+        """
+
         # List of models that should not be checked.
         defer = []
 

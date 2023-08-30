@@ -6,7 +6,7 @@ from database.gwhcp import models
 class DomainManager(django_models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(
-            company__isnull=False,
+            account__isnull=True,
             related_to__isnull=True
         )
 
@@ -71,11 +71,17 @@ class Server(models.Server):
         CP = 'cp', 'Control Panel'
         MAIL = 'mail', 'Mail'
         STORE = 'store', 'Store'
-        XMPP = 'xmpp', 'XMPP'
 
     objects = ServerManager()
 
     class Meta:
+        default_permissions = (
+            'add',
+            'change',
+            'delete',
+            'view'
+        )
+
         ordering = [
             'domain__name'
         ]
@@ -86,6 +92,14 @@ class Server(models.Server):
         verbose_name_plural = 'Hardware Company Servers'
 
     def can_delete(self):
+        """
+
+        Check if the current server can be deleted.
+
+        Returns:
+            bool: True if the server can be deleted, False otherwise.
+        """
+
         # List of models that should not be checked.
         defer = [
             models.IpaddressPool

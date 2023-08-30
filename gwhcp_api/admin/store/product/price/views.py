@@ -51,6 +51,13 @@ class Delete(generics.RetrieveDestroyAPIView):
         )
 
     def perform_destroy(self, instance):
+        """
+        Delete method for the Delete class in the Delete module.
+
+        :param instance: The instance of the object to be deleted.
+        :raises: ValidationError if the instance cannot be deleted.
+        """
+
         if not instance.can_delete():
             raise exceptions.ValidationError(
                 'Store Price is currently in use and cannot be removed.',
@@ -60,7 +67,7 @@ class Delete(generics.RetrieveDestroyAPIView):
         instance.delete()
 
 
-class Profile(generics.RetrieveUpdateAPIView):
+class Edit(generics.RetrieveUpdateAPIView):
     """
     View store product domain price profile
     """

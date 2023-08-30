@@ -34,11 +34,20 @@ class CreateSerializer(serializers.ModelSerializer):
             'is_mail',
             'is_mysql',
             'is_postgresql',
-            'target_type',
-            'web_type'
+            'target_type'
         ]
 
     def create(self, validated_data):
+        """
+        create function to create a new instance of Server based on given data.
+
+        Parameters:
+        - validated_data (dict): A dictionary containing the validated data for creating a new instance of Server.
+
+        Returns:
+        - instance (Server): The newly created instance of Server.
+        """
+
         validated_ip = validated_data['ip']
 
         if validated_data['target_type'] != 'managed' and validated_data['target_type'] != 'unmanaged':
@@ -61,9 +70,6 @@ class CreateSerializer(serializers.ModelSerializer):
                 server_id,
                 validated_data['domain'].name
             )
-
-            validated_data['web_type'] = (
-                validated_data['web_type'] if validated_data['target_type'] == 'domain' else None)
         else:
             if validated_data['target_type'] != 'unmanaged':
                 target_type = 'private'
@@ -86,7 +92,6 @@ class CreateSerializer(serializers.ModelSerializer):
 
         domain = models.Domain.objects.create(
             related_to=validated_data['domain'],
-            company=validated_data['domain'].company,
             manage_dns=False,
             name=domain_name,
             ipaddress_pool=ipaddress_pool,
@@ -94,7 +99,6 @@ class CreateSerializer(serializers.ModelSerializer):
             in_queue=False
         )
 
-        validated_data['company'] = validated_data['domain'].company
         validated_data['domain'] = domain
         validated_data['ipaddress_pool'] = ipaddress_pool
 
@@ -131,6 +135,19 @@ class CreateSerializer(serializers.ModelSerializer):
         return instance
 
     def validate_ip(self, value):
+        """
+        Validates an IP address.
+
+        Args:
+            value (str): The IP address to be validated.
+
+        Raises:
+            serializers.ValidationError: If the IP address is not found in any reserved IP address networks or is already in use.
+
+        Returns:
+            str: The validated IP address.
+        """
+
         if not ip.ip_in_network('reserved', value):
             raise serializers.ValidationError(
                 '%s was not found in any reserved IP Address Networks.' % value,
@@ -159,6 +176,19 @@ class InstallSerializer(serializers.ModelSerializer):
         ]
 
     def validate_in_queue(self, value):
+        """
+        Validate if the hardware is currently in the queue.
+
+        Parameters:
+        - value (boolean): The value indicating if the hardware is in the queue.
+
+        Returns:
+        - value (boolean): The validated value indicating if the hardware is in the queue.
+
+        Raises:
+        - serializers.ValidationError: If the hardware is currently in the queue and the value is True.
+        """
+
         if self.instance.in_queue and value:
             raise serializers.ValidationError(
                 'Hardware is currently in queue.',
@@ -168,6 +198,18 @@ class InstallSerializer(serializers.ModelSerializer):
         return value
 
     def validate_is_installed(self, value):
+        """
+        Validate if the hardware is already installed.
+
+        Parameters:
+            - value (bool): The value indicating if the hardware is installed or not.
+
+        Returns:
+            - bool: The validated value indicating if the hardware is installed or not.
+
+        Raises:
+            - serializers.ValidationError: If the hardware has already been installed.
+        """
         if self.instance.is_installed and value:
             raise serializers.ValidationError(
                 'Hardware has already been installed.',
@@ -178,11 +220,6 @@ class InstallSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    company_name = serializers.StringRelatedField(
-        read_only=True,
-        source='company'
-    )
-
     domain_name = serializers.StringRelatedField(
         read_only=True,
         source='domain'
@@ -203,11 +240,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         source='get_server_type_display'
     )
 
-    web_type_name = serializers.StringRelatedField(
-        read_only=True,
-        source='get_web_type_display'
-    )
-
     class Meta:
         model = models.Server
 
@@ -215,7 +247,6 @@ class ProfileSerializer(serializers.ModelSerializer):
 
         read_only_fields = [
             'account',
-            'company',
             'domain',
             'hardware_type',
             'in_queue',
@@ -231,18 +262,11 @@ class ProfileSerializer(serializers.ModelSerializer):
             'is_postgresql',
             'is_store',
             'is_unmanaged',
-            'is_xmpp',
-            'server_type',
-            'web_type'
+            'server_type'
         ]
 
 
 class SearchSerializer(serializers.ModelSerializer):
-    company_name = serializers.StringRelatedField(
-        read_only=True,
-        source='company'
-    )
-
     domain_name = serializers.StringRelatedField(
         read_only=True,
         source='domain'
@@ -261,11 +285,6 @@ class SearchSerializer(serializers.ModelSerializer):
     server_type_name = serializers.StringRelatedField(
         read_only=True,
         source='get_server_type_display'
-    )
-
-    web_type_name = serializers.StringRelatedField(
-        read_only=True,
-        source='get_web_type_display'
     )
 
     class Meta:

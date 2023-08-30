@@ -5,12 +5,9 @@ from model_utils import FieldTracker
 class FraudString(models.Model):
     class Type(models.TextChoices):
         ADDRESS = 'address', 'Address'
-        COMPANY = 'company', 'Company'
-        DOMAIN = 'domain', 'Domain'
         EMAIL = 'email', 'Email Address'
         IPADDRESS = 'ipaddress', 'IP Address'
         PHONE = 'phone', 'Phone Number'
-        NAME = 'name', 'Name'
 
     date_from = models.DateTimeField(
         auto_now_add=True

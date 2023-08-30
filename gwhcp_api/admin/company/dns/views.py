@@ -20,6 +20,20 @@ class Choices(views.APIView):
     )
 
     def get(self, request):
+        """
+        A method to get the choices for DNS servers and zones.
+
+        Parameters:
+        - request: The HTTP request object.
+
+        Returns:
+        - Response: An HTTP response containing the choices for DNS servers and zones.
+
+        Example usage:
+            request: HttpRequest
+            get(request)
+        """
+
         result = {
             'ns': {},
             'zone': {}
@@ -62,6 +76,19 @@ class Create(generics.CreateAPIView):
     serializer_class = serializers.CreateSerializer
 
     def perform_create(self, serializer):
+        """
+        The `perform_create` method is used in the `Create` class of the `CreateAPIView` in rest_framework to customize the creation process before saving the instance.
+
+        Parameters:
+        - `serializer`: The serializer instance that is used for creating the object.
+
+        Return Type: None
+
+        This method is called when a POST request is made to the corresponding API endpoint. It takes the serialized data as input, saves the instance, and performs any additional logic necessary before saving.
+
+        In the given code, the `perform_create` method saves the serializer instance and then checks if the `manage_dns` flag of the saved instance's associated `domain` object is True. If it is True, it creates a `CreateQueue` instance and adds tasks to the queue for each `ns` item associated with the domain. Each task contains the IP address, task name, and arguments.
+        """
+
         instance = serializer.save()
 
         if instance.domain.manage_dns:
@@ -99,6 +126,17 @@ class Delete(generics.RetrieveDestroyAPIView):
     serializer_class = serializers.DeleteSerializer
 
     def perform_destroy(self, instance):
+        """
+        Perform the destroy operation for a given instance.
+
+        Parameters:
+        - `instance`: the instance to be destroyed
+
+        Return Type: None
+
+        This method performs the destroy operation for the given instance. If the `manage_dns` property of the `domain` associated with the instance is `True`, it queues a task to rebuild the domain using the `CreateQueue` class from the `worker.queue.create` module. The task is created for each `ns` object associated with the `domain`. After queuing the tasks, the instance is deleted.
+        """
+
         if instance.domain.manage_dns:
             create_queue = CreateQueue()
 
@@ -138,91 +176,7 @@ class Ns(generics.RetrieveUpdateAPIView):
     serializer_class = serializers.NsSerializer
 
 
-class Profile(generics.RetrieveUpdateAPIView):
-    """
-    View and edit DNS record
-    """
-
-    permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
-    )
-
-    gacl = {
-        'view': ['admin_company_dns.view_dnszone'],
-        'change': ['admin_company_dns.change_dnszone']
-    }
-
-    queryset = models.Domain.objects.all()
-
-    serializer_class = serializers.ProfileSerializer
-
-    def perform_update(self, serializer):
-        # Previous state
-        obj = self.get_object()
-
-        # Current state
-        instance = serializer.save()
-
-        create_queue = CreateQueue()
-
-        # Remove domain from nameservers
-        if obj.manage_dns and not instance.manage_dns:
-            for item in instance.ns.all():
-                create_queue.item(
-                    {
-                        'ipaddress': item.ipaddress_pool.ipaddress,
-                        'name': 'bind.tasks.delete_domain',
-                        'args': {
-                            'domain': instance.name
-                        }
-                    }
-                )
-
-        # Add domain to nameservers
-        if not obj.manage_dns and instance.manage_dns:
-            for item in instance.ns.all():
-                create_queue.item(
-                    {
-                        'ipaddress': item.ipaddress_pool.ipaddress,
-                        'name': 'bind.tasks.create_domain',
-                        'args': {
-                            'domain': instance.name
-                        }
-                    }
-                )
-
-                create_queue.item(
-                    {
-                        'ipaddress': item.ipaddress_pool.ipaddress,
-                        'name': 'bind.tasks.rebuild_domain',
-                        'args': {
-                            'domain': instance.name
-                        }
-                    }
-                )
-
-
 class Search(generics.ListAPIView):
-    """
-    Search DNS domains
-    """
-
-    permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
-    )
-
-    gacl = {
-        'view': ['admin_company_dns.view_dnszone']
-    }
-
-    queryset = models.Domain.objects.all()
-
-    serializer_class = serializers.SearchSerializer
-
-
-class SearchRecord(generics.ListAPIView):
     """
     Search DNS records
     """
@@ -238,7 +192,7 @@ class SearchRecord(generics.ListAPIView):
 
     queryset = models.DnsZone.objects.all()
 
-    serializer_class = serializers.SearchRecordSerializer
+    serializer_class = serializers.SearchSerializer
 
     filter_backends = [
         filters.OrderingFilter

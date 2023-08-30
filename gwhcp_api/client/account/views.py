@@ -73,6 +73,31 @@ class Create(generics.CreateAPIView):
     serializer_class = serializers.CreateSerializer
 
 
+class Edit(generics.RetrieveUpdateAPIView):
+    """
+    View account profile
+    """
+
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAuthenticated
+    )
+
+    gacl = {
+        'view': ['client_account.view_account'],
+        'change': ['client_account.change_account']
+    }
+
+    queryset = models.Account.objects.all()
+
+    serializer_class = serializers.ProfileSerializer
+
+    def get_object(self):
+        return models.Account.objects.get(
+            pk=self.request.user.pk
+        )
+
+
 class Password(generics.RetrieveUpdateAPIView):
     """
     Update account password
@@ -116,29 +141,4 @@ class PermissionUser(generics.ListAPIView):
     def get_queryset(self):
         return models.Permission.objects.filter(
             user=self.request.user
-        )
-
-
-class Profile(generics.RetrieveUpdateAPIView):
-    """
-    View account profile
-    """
-
-    permission_classes = (
-        gacl.GaclPermissions,
-        IsAuthenticated
-    )
-
-    gacl = {
-        'view': ['client_account.view_account'],
-        'change': ['client_account.change_account']
-    }
-
-    queryset = models.Account.objects.all()
-
-    serializer_class = serializers.ProfileSerializer
-
-    def get_object(self):
-        return models.Account.objects.get(
-            pk=self.request.user.pk
         )

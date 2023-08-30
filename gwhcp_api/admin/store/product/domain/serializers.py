@@ -8,17 +8,28 @@ class CreateSerializer(serializers.ModelSerializer):
         model = models.StoreProduct
 
         fields = [
-            'company',
             'name',
             'has_cron',
             'has_mail',
             'has_mysql',
             'has_postgresql',
-            'ipaddress_type',
-            'web_type'
+            'ipaddress_type'
         ]
 
     def validate_name(self, value):
+        """
+        Validates the name parameter.
+
+        Parameters:
+        value (str): The name to be validated.
+
+        Returns:
+        str: The validated name.
+
+        Raises:
+        serializers.ValidationError: If the name already exists.
+        """
+
         if models.StoreProduct.objects.filter(
                 name__iexact=value
         ).exists():
@@ -31,11 +42,6 @@ class CreateSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    company_name = serializers.StringRelatedField(
-        read_only=True,
-        source='company'
-    )
-
     hardware_type_name = serializers.StringRelatedField(
         read_only=True,
         source='get_hardware_type_display'
@@ -50,8 +56,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = models.StoreProduct
 
         fields = [
-            'company',
-            'company_name',
             'id',
             'date_from',
             'hardware_type',
@@ -63,8 +67,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         ]
 
         read_only_fields = [
-            'company',
-            'company_name',
             'id',
             'date_from',
             'hardware_type',
@@ -75,8 +77,21 @@ class ProfileSerializer(serializers.ModelSerializer):
         ]
 
     def validate_is_active(self, value):
+        """
+        Validates if the profile is active based on the configured resources and prices.
+
+        Parameters:
+        - value: The value of the is_active field in the profile.
+
+        Raises:
+        - serializers.ValidationError: If any required resource or price is not yet configured or active.
+
+        Returns:
+        - The validated value of is_active.
+        """
+
         # Resources
-        if self.instance.has_cron and self.instance.cron_tab <= 0:
+        if self.instance.has_cron and self.instance.cron_tab > 0:
             raise serializers.ValidationError(
                 'Cron resource has not yet been configured.',
                 code='required'
@@ -197,6 +212,16 @@ class ResourceSerializer(serializers.ModelSerializer):
         ]
 
     def validate_diskspace(self, value):
+        """
+        Validates the diskspace value for a resource.
+
+        :param value: The diskspace value to validate.
+        :type value: int
+        :return: The validated diskspace value.
+        :rtype: int
+        :raises serializers.ValidationError: If the diskspace is less than the previous value.
+        """
+
         obj = models.ProductProfile.objects.filter(
             store_product__pk=self.instance.pk
         )
@@ -210,6 +235,19 @@ class ResourceSerializer(serializers.ModelSerializer):
         return value
 
     def validate_bandwidth(self, value):
+        """
+        Validate the bandwidth value.
+
+        Parameters:
+        - value: The bandwidth value to be validated.
+
+        Returns:
+        - The validated bandwidth value.
+
+        Raises:
+        - serializers.ValidationError: If the current bandwidth value is less than the previous bandwidth value.
+        """
+
         obj = models.ProductProfile.objects.filter(
             store_product__pk=self.instance.pk
         )
@@ -223,6 +261,19 @@ class ResourceSerializer(serializers.ModelSerializer):
         return value
 
     def validate_domain(self, value):
+        """
+        Validate the value of the 'domain' field.
+
+        Parameters:
+        value (str): The domain value to be validated.
+
+        Returns:
+        str: The validated domain value.
+
+        Raises:
+        serializers.ValidationError: If the domain value is less than the previous value.
+        """
+
         obj = models.ProductProfile.objects.filter(
             store_product__pk=self.instance.pk
         )
@@ -236,6 +287,16 @@ class ResourceSerializer(serializers.ModelSerializer):
         return value
 
     def validate_sub_domain(self, value):
+        """
+        Validates the sub_domain field.
+
+        :param value: The value of the sub_domain field to be validated.
+
+        :return: The validated value of the sub_domain field.
+
+        :raises serializers.ValidationError: If the sub_domain is less than the current value.
+        """
+
         obj = models.ProductProfile.objects.filter(
             store_product__pk=self.instance.pk
         )
@@ -249,6 +310,19 @@ class ResourceSerializer(serializers.ModelSerializer):
         return value
 
     def validate_cron_tab(self, value):
+        """
+        Validates the cron_tab value.
+
+        Parameters:
+        - value: The cron_tab value to be validated.
+
+        Returns:
+        - The validated cron_tab value.
+
+        Raises:
+        - serializers.ValidationError: If the cron_tab is less than the current value.
+        """
+
         obj = models.ProductProfile.objects.filter(
             store_product__pk=self.instance.pk
         )
@@ -262,6 +336,19 @@ class ResourceSerializer(serializers.ModelSerializer):
         return value
 
     def validate_mail_account(self, value):
+        """
+        Validates the mail account value for a ResourceSerializer instance.
+
+        Parameters:
+        - value (str): The mail account value to validate.
+
+        Returns:
+        - str: The validated mail account value.
+
+        Raises:
+        - serializers.ValidationError: If the mail account value is less than the current value of the instance's mail account.
+        """
+
         obj = models.ProductProfile.objects.filter(
             store_product__pk=self.instance.pk
         )
@@ -276,6 +363,19 @@ class ResourceSerializer(serializers.ModelSerializer):
         return value
 
     def validate_mail_list(self, value):
+        """
+        Validates the mail list value for a ResourceSerializer instance.
+
+        Args:
+            value (int): The mail list value to validate.
+
+        Returns:
+            int: The validated mail list value.
+
+        Raises:
+            serializers.ValidationError: If the mail list value is less than the previous value.
+        """
+
         obj = models.ProductProfile.objects.filter(
             store_product__pk=self.instance.pk
         )
@@ -289,6 +389,21 @@ class ResourceSerializer(serializers.ModelSerializer):
         return value
 
     def validate_ipaddress(self, value):
+        """
+        validate_ipaddress(value)
+
+        Validates the IP address value.
+
+        Parameters:
+            - value (str): The IP address to be validated.
+
+        Returns:
+            - str: The validated IP address.
+
+        Raises:
+            - serializers.ValidationError: If the IP address is less than the current value.
+        """
+
         obj = models.ProductProfile.objects.filter(
             store_product__pk=self.instance.pk
         )
@@ -302,6 +417,19 @@ class ResourceSerializer(serializers.ModelSerializer):
         return value
 
     def validate_ftp_user(self, value):
+        """
+        Validate FTP user.
+
+        Parameters:
+            value (str): The FTP user to validate.
+
+        Returns:
+            str: The validated FTP user.
+
+        Raises:
+            serializers.ValidationError: If the FTP user is less than the current value.
+        """
+
         obj = models.ProductProfile.objects.filter(
             store_product__pk=self.instance.pk
         )
@@ -315,6 +443,21 @@ class ResourceSerializer(serializers.ModelSerializer):
         return value
 
     def validate_mysql_database(self, value):
+        """
+        Method: validate_mysql_database
+
+        Description: This method is used to validate the value of the MySQL database field in the ResourceSerializer class.
+
+        Parameters:
+        - value (str): The value to be validated.
+
+        Returns:
+        - value (str): The validated value.
+
+        Raises:
+        - serializers.ValidationError: If the value is less than the current value of the MySQL database field.
+        """
+
         obj = models.ProductProfile.objects.filter(
             store_product__pk=self.instance.pk
         )
@@ -329,6 +472,21 @@ class ResourceSerializer(serializers.ModelSerializer):
         return value
 
     def validate_mysql_user(self, value):
+        """
+        validate_mysql_user(value)
+
+        Validates the MySQL user for a resource.
+
+        Parameters:
+        - value: str - The MySQL user to validate.
+
+        Returns:
+        - str - The validated MySQL user.
+
+        Raises:
+        - serializers.ValidationError - If the MySQL user is less than the current value.
+        """
+
         obj = models.ProductProfile.objects.filter(
             store_product__pk=self.instance.pk
         )
@@ -342,6 +500,19 @@ class ResourceSerializer(serializers.ModelSerializer):
         return value
 
     def validate_postgresql_database(self, value):
+        """
+        Validate the value of a PostgreSQL database for a resource serializer.
+
+        Parameters:
+        - value (any): The value of the PostgreSQL database to be validated.
+
+        Returns:
+        - value (any): The validated value of the PostgreSQL database.
+
+        Raises:
+        - serializers.ValidationError: If the PostgreSQL database value is less than the current value.
+        """
+
         obj = models.ProductProfile.objects.filter(
             store_product__pk=self.instance.pk
         )
@@ -356,6 +527,21 @@ class ResourceSerializer(serializers.ModelSerializer):
         return value
 
     def validate_postgresql_user(self, value):
+        """
+        This method, `validate_postgresql_user`, is used to validate the given PostgreSQL user value. It checks if the value is valid based on certain conditions and raises a `serializers.ValidationError` if the value is not valid.
+
+        Parameters:
+        - `self`: The serializer instance.
+        - `value`: The PostgreSQL user value to be validated.
+
+        Returns:
+        - `value`: The validated PostgreSQL user value.
+
+        Note:
+        - This method requires the `ProductProfile` model from `admin.store.product.domain.models` to be imported.
+        - This method is intended to be used within the `ResourceSerializer` class.
+        """
+
         obj = models.ProductProfile.objects.filter(
             store_product__pk=self.instance.pk
         )
@@ -371,25 +557,11 @@ class ResourceSerializer(serializers.ModelSerializer):
 
 
 class SearchSerializer(serializers.ModelSerializer):
-    company_name = serializers.StringRelatedField(
-        read_only=True,
-        source='company'
-    )
-
-    web_type_name = serializers.StringRelatedField(
-        read_only=True,
-        source='get_web_type_display'
-    )
-
     class Meta:
         model = models.StoreProduct
 
         fields = [
-            'company',
-            'company_name',
             'id',
             'is_active',
-            'name',
-            'web_type',
-            'web_type_name'
+            'name'
         ]

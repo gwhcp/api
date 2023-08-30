@@ -1,4 +1,5 @@
-from rest_framework import generics, exceptions
+from rest_framework import exceptions
+from rest_framework import generics
 from rest_framework import views
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
@@ -19,6 +20,16 @@ class Choices(views.APIView):
     )
 
     def get(self, request):
+        """
+        This method is used to get a list of choices for a specific endpoint. It returns a dictionary containing the choices for domain and hardware_target.
+
+        Parameters:
+        - request (HttpRequest): The request object.
+
+        Returns:
+        - Response: The response object containing the list of choices.
+        """
+
         result = {
             'domain': {},
             'hardware_target': {}
@@ -56,6 +67,14 @@ class Create(generics.CreateAPIView):
     serializer_class = serializers.CreateSerializer
 
     def perform_create(self, serializer):
+        """
+        Method Name: perform_create
+
+        Description: This method is used to perform the create operation in the Create class. It saves the instance using the provided serializer and updates the bind for the related domain.
+
+        Parameters:
+            serializer (Serializer): The serializer used to save the instance.
+        """
         instance = serializer.save()
 
         create_queue = CreateQueue()
@@ -95,6 +114,16 @@ class Delete(generics.RetrieveDestroyAPIView):
     serializer_class = serializers.SearchSerializer
 
     def perform_destroy(self, instance):
+        """
+        Perform the destruction of an instance.
+
+        Parameters:
+        - instance: The instance to be destroyed.
+
+        Raises:
+        - ValidationError: If the instance cannot be deleted because it is currently in use.
+        """
+
         if not instance.can_delete():
             raise exceptions.ValidationError(
                 'Server is currently in use and cannot be removed.',
@@ -168,39 +197,6 @@ class Delete(generics.RetrieveDestroyAPIView):
             # TODO Delete installation
             pass
 
-        # XMPP
-        elif instance.is_xmpp and instance.is_installed:
-            create_queue.item(
-                {
-                    'ipaddress': instance.ipaddress_pool.ipaddress,
-                    'name': 'console.tasks.ders',
-                    'args': {
-                        'action': 'stop',
-                        'service': 'prosody'
-                    }
-                }
-            )
-
-            create_queue.item(
-                {
-                    'ipaddress': instance.ipaddress_pool.ipaddress,
-                    'name': 'console.tasks.ders',
-                    'args': {
-                        'action': 'disable',
-                        'service': 'prosody'
-                    }
-                }
-            )
-
-            # Uninstall Prosody
-            create_queue.item(
-                {
-                    'ipaddress': instance.ipaddress_pool.ipaddress,
-                    'name': 'prosody.tasks.server_uninstall',
-                    'args': {}
-                }
-            )
-
         create_queue.clean()
 
         instance.delete()
@@ -226,6 +222,26 @@ class Domain(generics.RetrieveUpdateAPIView):
     serializer_class = serializers.DomainSerializer
 
 
+class Edit(generics.RetrieveUpdateAPIView):
+    """
+    View company hardware domain
+    """
+
+    permission_classes = (
+        gacl.GaclPermissions,
+        IsAdminUser
+    )
+
+    gacl = {
+        'view': ['admin_hardware_company.view_server'],
+        'change': ['admin_hardware_company.change_server']
+    }
+
+    queryset = models.Server.objects.all()
+
+    serializer_class = serializers.ProfileSerializer
+
+
 class Install(generics.RetrieveUpdateAPIView):
     """
     Install company hardware domain
@@ -246,6 +262,26 @@ class Install(generics.RetrieveUpdateAPIView):
     serializer_class = serializers.InstallSerializer
 
     def perform_update(self, serializer):
+        """
+        perform_update method updates the instance based on the provided serializer.
+
+        Parameters:
+        - serializer: An instance of the serializer class for the model.
+
+        Returns:
+        - None
+
+        This method performs different actions based on the value of the instance's attributes. If the instance's is_admin attribute is True, it performs the installation for admin. If the instance's is_bind attribute is True, it performs the installation for Bind. If the instance's is_cp attribute is True, it performs the installation for Control Panel. If the instance's is_mail attribute is True, it performs the installation for Mail. If the instance's is_store attribute is True, it performs the installation for Store.
+
+        Please note that the installation actions for admin, control panel, and store are not implemented yet. Currently, they are just placeholders for future implementation.
+
+        The installation for Bind includes queueing installation tasks for Bind service and enabling and starting the named service.
+
+        The installation for Mail includes queueing installation tasks for Dovecot and Postfix services, creating a domain, and enabling and starting the Dovecot and Postfix services.
+
+        After queuing all the installation tasks, the create_queue is cleaned up.
+        """
+
         instance = serializer.save()
 
         create_queue = CreateQueue(
@@ -379,60 +415,7 @@ class Install(generics.RetrieveUpdateAPIView):
             # TODO Create installation
             pass
 
-        # XMPP
-        elif instance.is_xmpp:
-            # Install Prosody
-            create_queue.item(
-                {
-                    'ipaddress': instance.ipaddress_pool.ipaddress,
-                    'name': 'prosody.tasks.server_install',
-                    'args': {}
-                }
-            )
-
-            create_queue.item(
-                {
-                    'ipaddress': instance.ipaddress_pool.ipaddress,
-                    'name': 'console.tasks.ders',
-                    'args': {
-                        'action': 'enable',
-                        'service': 'prosody'
-                    }
-                }
-            )
-
-            create_queue.item(
-                {
-                    'ipaddress': instance.ipaddress_pool.ipaddress,
-                    'name': 'console.tasks.ders',
-                    'args': {
-                        'action': 'start',
-                        'service': 'prosody'
-                    }
-                }
-            )
-
         create_queue.clean()
-
-
-class Profile(generics.RetrieveUpdateAPIView):
-    """
-    View company hardware domain
-    """
-
-    permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
-    )
-
-    gacl = {
-        'view': ['admin_hardware_company.view_server'],
-        'change': ['admin_hardware_company.change_server']
-    }
-
-    queryset = models.Server.objects.all()
-
-    serializer_class = serializers.ProfileSerializer
 
 
 class Search(generics.ListAPIView):

@@ -4,18 +4,6 @@ from admin.billing.payment import views
 
 urlpatterns = [
     path(
-        'authorize/<int:pk>/authentication',
-        views.AuthorizeAuthentication.as_view(),
-        name='authorize-authentication'
-    ),
-
-    path(
-        'authorize/<int:pk>/method',
-        views.AuthorizeMethod.as_view(),
-        name='authorize-method'
-    ),
-
-    path(
         'choices',
         views.Choices.as_view(),
         name='choices'
@@ -28,15 +16,15 @@ urlpatterns = [
     ),
 
     path(
-        'delete/<int:pk>',
+        '<int:pk>/delete',
         views.Delete.as_view(),
         name='delete'
     ),
 
     path(
-        'profile/<int:pk>',
-        views.Profile.as_view(),
-        name='profile'
+        '<int:pk>/edit',
+        views.Edit.as_view(),
+        name='edit'
     ),
 
     path(

@@ -9,7 +9,7 @@ django-model-utils
 
 # Django Rest Modules
 djangorestframework
-django-rest-auth
+dj-rest-auth
 
 # Other Modules
 celery

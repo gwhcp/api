@@ -9,46 +9,6 @@ from admin.billing.payment import serializers
 from login import gacl
 
 
-class AuthorizeAuthentication(generics.RetrieveUpdateAPIView):
-    """
-    Payment gateway authentication
-    """
-
-    permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
-    )
-
-    gacl = {
-        'view': ['admin_billing_payment.view_paymentgateway'],
-        'change': ['admin_billing_payment.change_paymentgateway']
-    }
-
-    queryset = models.PaymentAuthorizeCc.objects.all()
-
-    serializer_class = serializers.AuthorizeAuthenticationSerializer
-
-
-class AuthorizeMethod(generics.RetrieveUpdateAPIView):
-    """
-    Payment gateway payment methods
-    """
-
-    permission_classes = (
-        gacl.GaclPermissions,
-        IsAdminUser
-    )
-
-    gacl = {
-        'view': ['admin_billing_payment.view_paymentgateway'],
-        'change': ['admin_billing_payment.change_paymentgateway']
-    }
-
-    queryset = models.PaymentAuthorizeCc.objects.all()
-
-    serializer_class = serializers.AuthorizeMethodSerializer
-
-
 class Choices(views.APIView):
     """
     Choices
@@ -59,27 +19,37 @@ class Choices(views.APIView):
     )
 
     def get(self, request):
-        result = {
-            'company': {},
-            'merchant': {},
-            'method': {}
-        }
+        """
+        Get method to retrieve the list of payment gateway merchants.
 
-        # Company
-        for company in models.Company.objects.all():
-            result['company'].update({
-                company.pk: company.name
-            })
+        Parameters:
+        - request: The HTTP request object.
+
+        Returns:
+        - Response: The HTTP response object containing the list of payment gateway merchants.
+
+        Raises:
+        - None
+
+        Example usage:
+        response = get(request)
+
+        Example response:
+        {
+          'merchant': {
+            'ACME': 'ACME Payments',
+            'XYZ': 'XYZ Payments',
+            ...
+          }
+        }
+        """
+        result = {
+            'merchant': {}
+        }
 
         # Merchant
         for key, value in models.PaymentGateway.Merchant.choices:
             result['merchant'].update({
-                key: value
-            })
-
-        # Method
-        for key, value in models.PaymentGateway.Method.choices:
-            result['method'].update({
                 key: value
             })
 
@@ -126,6 +96,18 @@ class Delete(generics.RetrieveDestroyAPIView):
     serializer_class = serializers.SearchSerializer
 
     def perform_destroy(self, instance):
+        """
+        Method to delete a Payment Gateway instance.
+
+        Parameters:
+        - instance: The Payment Gateway instance to be deleted.
+
+        Raises:
+        - exceptions.ValidationError: If the Payment Gateway instance cannot be deleted because it is currently in use.
+
+        Returns:
+        - None
+        """
         if not instance.can_delete():
             raise exceptions.ValidationError(
                 'Payment Gateway is currently in use and cannot be removed.',
@@ -135,9 +117,9 @@ class Delete(generics.RetrieveDestroyAPIView):
         instance.delete()
 
 
-class Profile(generics.RetrieveAPIView):
+class Edit(generics.RetrieveUpdateAPIView):
     """
-    View payment gateway profile
+    View and edit payment gateway profile
     """
 
     permission_classes = (
@@ -146,7 +128,8 @@ class Profile(generics.RetrieveAPIView):
     )
 
     gacl = {
-        'view': ['admin_billing_payment.view_paymentgateway']
+        'view': ['admin_billing_payment.view_paymentgateway'],
+        'change': ['admin_billing_payment.change_paymentgateway'],
     }
 
     queryset = models.PaymentGateway.objects.all()

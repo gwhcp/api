@@ -13,14 +13,6 @@ class Domain(models.Model):
         related_name='domain_account'
     )
 
-    company = models.ForeignKey(
-        'Company',
-        blank=False,
-        null=True,
-        on_delete=models.CASCADE,
-        related_name='domain_company'
-    )
-
     ipaddress_pool = models.ForeignKey(
         'IpaddressPool',
         blank=False,

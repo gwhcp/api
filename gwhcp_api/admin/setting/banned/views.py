@@ -19,6 +19,16 @@ class Choices(views.APIView):
     )
 
     def get(self, request):
+        """
+        Get method to retrieve choices for Banned Type.
+
+        :param request: The request object.
+        :type request: rest_framework.request.Request
+        :return: A Response object containing the choices for Banned Type.
+        :rtype: rest_framework.response.Response
+        :raises: None
+        """
+
         return Response(dict(models.Banned.Type.choices))
 
 
@@ -62,6 +72,16 @@ class Delete(generics.RetrieveDestroyAPIView):
     serializer_class = serializers.SearchSerializer
 
     def perform_destroy(self, instance):
+        """
+        The `perform_destroy` method is responsible for deleting a specific instance of banned item. It takes one parameter `instance` which represents the instance to be deleted. This method performs a check to see if the banned item can be deleted and raises a `ValidationError` if it cannot be deleted.
+
+        Parameters:
+        - instance: The instance of banned item to be deleted.
+
+        Raises:
+        - ValidationError: Raised when the banned item is currently in use and cannot be removed.
+        """
+
         if not instance.can_delete():
             raise exceptions.ValidationError(
                 'Banned item is currently in use and cannot be removed.',
@@ -71,7 +91,7 @@ class Delete(generics.RetrieveDestroyAPIView):
         instance.delete()
 
 
-class Profile(generics.RetrieveAPIView):
+class Edit(generics.RetrieveAPIView):
     """
     View banned item profile
     """

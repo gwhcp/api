@@ -113,10 +113,6 @@ class ProductResource(models.Model):
         DEDICATED = 'dedicated'
         NAMEBASED = 'namebased'
 
-    class WebType(models.TextChoices):
-        APACHE = 'apache'
-        NGINX = 'nginx'
-
     bandwidth = models.PositiveIntegerField(
         default=0
     )
@@ -196,13 +192,6 @@ class ProductResource(models.Model):
         default=0
     )
 
-    web_type = models.CharField(
-        blank=True,
-        choices=WebType.choices,
-        max_length=6,
-        null=True
-    )
-
     class Meta:
         abstract = True
 
@@ -263,28 +252,11 @@ class Server(models.Model):
         related_name='product_server_postgresql'
     )
 
-    web = models.ForeignKey(
-        'Server',
-        blank=False,
-        limit_choices_to={
-            'is_active': True,
-            'is_domain': True,
-            'is_installed': True
-        },
-        null=True,
-        on_delete=models.CASCADE,
-        related_name='product_server_web'
-    )
-
     class Meta:
         abstract = True
 
 
 class ServerResource(models.Model):
-    class WebType(models.TextChoices):
-        APACHE = 'apache'
-        NGINX = 'nginx'
-
     is_admin = models.BooleanField(
         default=False
     )
@@ -323,17 +295,6 @@ class ServerResource(models.Model):
 
     is_unmanaged = models.BooleanField(
         default=False
-    )
-
-    is_xmpp = models.BooleanField(
-        default=False
-    )
-
-    web_type = models.CharField(
-        blank=True,
-        choices=WebType.choices,
-        max_length=6,
-        null=True
     )
 
     class Meta:

@@ -12,6 +12,16 @@ class GaclPermissions(permissions.BasePermission):
     """
 
     def has_permission(self, request, view):
+        """
+        Check if the user has permission to perform the requested action on the view.
+
+        :param request: The request object.
+        :type request: rest_framework.request.Request
+        :param view: The view object.
+        :type view: rest_framework.views.APIView
+        :return: Whether the user has permission.
+        :rtype: bool
+        """
         perms = getattr(view, "gacl", {})
 
         if request.method == 'GET' and 'view' in perms:

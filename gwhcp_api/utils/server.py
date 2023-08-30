@@ -72,9 +72,6 @@ class Server(object):
         if self.target_type == 'unmanaged':
             return Q(is_unmanaged=True)
 
-        if self.target_type == 'xmpp':
-            return Q(is_xmpp=True)
-
     def _query(self):
         # Hardware Company
         if not self.hardware_type and self.target_type in [
@@ -82,12 +79,10 @@ class Server(object):
             'bind',
             'cp',
             'mail',
-            'store',
-            'xmpp'
+            'store'
         ]:
             obj = models.Server.objects.filter(
                 self._target(),
-                company=self.domain.company,
                 domain__related_to=self.domain,
                 hardware_type='private',
                 server_type='company'
@@ -97,7 +92,6 @@ class Server(object):
         else:
             obj = models.Server.objects.filter(
                 self._target(),
-                company=self.domain.company,
                 domain__related_to=self.domain,
                 hardware_type=self.hardware_type,
                 server_type='client'
@@ -155,7 +149,6 @@ class GenerateServer:
         """
 
         server = models.Server.objects.filter(
-            company_id=self.order.company_id,
             is_active=True,
             hardware_type='private',
             target_type='bind',
@@ -181,7 +174,6 @@ class GenerateServer:
         """
 
         server = models.Server.objects.filter(
-            company_id=self.order.company_id,
             is_active=True,
             hardware_type='private',
             target_type='cp',
@@ -209,7 +201,6 @@ class GenerateServer:
         """
 
         server = models.Server.objects.filter(
-            company_id=self.order.company_id,
             is_active=True,
             hardware_type='dedicated',
             target_type='domain',
@@ -236,7 +227,6 @@ class GenerateServer:
         """
 
         server = models.Server.objects.filter(
-            company_id=self.order.company_id,
             is_active=True,
             hardware_type='dedicated',
             target_type='mail',
@@ -263,7 +253,6 @@ class GenerateServer:
         """
 
         server = models.Server.objects.filter(
-            company_id=self.order.company_id,
             is_active=True,
             hardware_type='dedicated',
             target_type='mysql',
@@ -290,7 +279,6 @@ class GenerateServer:
         """
 
         server = models.Server.objects.filter(
-            company_id=self.order.company_id,
             is_active=True,
             hardware_type='dedicated',
             target_type='postgresql',
@@ -323,7 +311,6 @@ class GenerateServer:
         """
 
         server = models.Server.objects.filter(
-            company_id=self.order.company_id,
             is_active=True,
             hardware_type='private',
             target_type='custom',
@@ -362,7 +349,6 @@ class GenerateServer:
         """
 
         server = models.Server.objects.filter(
-            company_id=self.order.company_id,
             is_active=True,
             hardware_type='shared',
             target_type='custom',

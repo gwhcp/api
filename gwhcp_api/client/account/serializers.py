@@ -1,5 +1,4 @@
 from django.contrib.auth.password_validation import validate_password
-from django.contrib.sites import models as site_models
 from rest_framework import serializers
 
 from client.account import models
@@ -37,46 +36,38 @@ class CreateSerializer(serializers.ModelSerializer):
         validated_data['is_staff'] = False
         validated_data['is_superuser'] = False
 
-        current_site = site_models.Site.objects.get_current()
-
-        validated_data['company_id'] = current_site.pk
-
         user = super(CreateSerializer, self).create(validated_data)
         user.set_password(validated_data['password'])
         user.save()
 
         permissions = {
-            'auth': 'view_permission',
             'client_account': [
                 'change_account',
                 'view_accesslog',
                 'view_account'
             ],
-            'client_billing': [
+            'client_billing_invoice': [
+                'view_billinginvoice'
+            ],
+            'client_billing_profile': [
                 'add_billingprofile',
                 'change_billingprofile',
                 'delete_billingprofile',
-                'view_billingprofile',
-                'view_billinginvoice'
+                'view_billingprofile'
             ],
-            'client_store': [
+            'client_store_coupon': [
+                'view_coupon'
+            ],
+            'client_store_product': [
                 'view_storeproduct'
             ]
         }
 
         for key, value in permissions.items():
-            if key == 'client_account' or key == 'client_billing' or key == 'client_store':
-                for item in value:
-                    perm = models.Permission.objects.get(
-                        content_type__app_label=key,
-                        codename=item
-                    )
-
-                    user.user_permissions.add(perm)
-            else:
+            for item in value:
                 perm = models.Permission.objects.get(
                     content_type__app_label=key,
-                    codename=value
+                    codename=item
                 )
 
                 user.user_permissions.add(perm)
