@@ -145,7 +145,7 @@ class OrderSerializer(serializers.ModelSerializer):
                                          transaction_type='void')
                 billing_invoice.update()
 
-            # Refund
+            # Refund payment
             if instance.payment_status == 'auth_capture' and 'batch' in payment_transaction['result']['transaction']:
                 payment = cim.PaymentGateway(self.data, instance.billing_profile).refund_cim(
                     payment_transaction['result']['transaction']['authAmount'],
@@ -186,6 +186,9 @@ class OrderSerializer(serializers.ModelSerializer):
 
         # Valid
         elif validated_data['status'] == 'valid':
+            # Charge payment
+
+            # Process
             pass
 
         # Update status
