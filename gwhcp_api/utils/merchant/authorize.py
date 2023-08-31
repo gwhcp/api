@@ -314,6 +314,27 @@ class Authorize(object):
         else:
             return None
 
+    def get_transaction(self, transaction_id: str):
+        """
+        Transaction Detail CIM
+
+        :param str transaction_id: Transaction ID
+
+        :return: dict
+        """
+
+        request = {
+            "getTransactionDetailsRequest": {
+                "merchantAuthentication": {
+                    "name": self.merchant.decrypt_login_id(),
+                    "transactionKey": self.merchant.decrypt_transaction_key()
+                },
+                "transId": transaction_id
+            }
+        }
+
+        return self.get_response('post', request)
+
     def get_url(self):
         """
         End point URL
@@ -325,6 +346,48 @@ class Authorize(object):
             return 'https://apitest.authorize.net/xml/v1/request.api'
         else:
             return 'https://api.authorize.net/xml/v1/request.api'
+
+    def refund(self, amount: str, credit_card_number: str):
+        """
+        Refund CIM
+
+        :param str amount: Amount to be Refunded
+        :param str credit_card_number: Last 4 digits of Credit Card
+
+        :return: dict
+        """
+
+        billing_invoice_item = models.BillingInvoiceItem.objects.filter(
+            billing_invoice=self.data['billing_invoice']['id']
+        ).last()
+
+        request = {
+            "createTransactionRequest": {
+                "merchantAuthentication": {
+                    "name": self.merchant.decrypt_login_id(),
+                    "transactionKey": self.merchant.decrypt_transaction_key()
+                },
+                "transactionRequest": {
+                    "transactionType": 'refundTransaction',
+                    "amount": amount,
+                    "payment": {
+                        "creditCard": {
+                            "cardNumber": credit_card_number,
+                            "expirationDate": 'XXXX'
+                        }
+                    },
+                    "refTransId": billing_invoice_item.transaction['result']['transactionResponse']['transId'],
+                    "transactionSettings": {
+                        "setting": {
+                            "settingName": "duplicateWindow",
+                            "settingValue": "0"
+                        }
+                    }
+                }
+            }
+        }
+
+        return self.get_response('post', request)
 
     def update_profile(self):
         """

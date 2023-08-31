@@ -104,8 +104,19 @@ class OrderSerializer(serializers.ModelSerializer):
             'fraud',
             'unverified'
         ]:
+            # Get Transaction ID
+            billing_invoice_item = models.BillingInvoiceItem.objects.filter(
+                billing_invoice=self.data['billing_invoice']['id']
+            ).last()
+
+            # Get Transaction
+            payment_transaction = cim.PaymentGateway(self.data, instance.billing_profile).get_transaction(
+                billing_invoice_item.transaction['result']['transactionResponse']['transId']
+            )
+
             # Void payment
-            if instance.payment_status == 'auth_capture':
+            if (instance.payment_status == 'auth_capture' and
+                    'batch' not in payment_transaction['result']['transaction']):
                 payment = cim.PaymentGateway(self.data, instance.billing_profile).void_cim()
 
                 if payment['error']:
@@ -132,6 +143,39 @@ class OrderSerializer(serializers.ModelSerializer):
 
                 billing_invoice.set_item('void', instance.billing_invoice.store_product_price, transaction=payment,
                                          transaction_type='void')
+                billing_invoice.update()
+
+            # Refund
+            if instance.payment_status == 'auth_capture' and 'batch' in payment_transaction['result']['transaction']:
+                payment = cim.PaymentGateway(self.data, instance.billing_profile).refund_cim(
+                    payment_transaction['result']['transaction']['authAmount'],
+                    payment_transaction['result']['transaction']['payment']['creditCard']['cardNumber'][-4:]
+                )
+
+                if payment['error']:
+                    raise serializers.ValidationError(
+                        {
+                            'message': payment['message']
+                        },
+                        code='payment_error'
+                    )
+
+                # Set payment_status to Refund
+                instance.payment_status = 'refund'
+
+                # Update Billing Invoice
+                billing_invoice = invoice.Invoice(
+                    account=instance.account,
+                    billing_invoice=instance.billing_invoice,
+                    billing_profile=instance.billing_profile,
+                    payment_gateway=instance.billing_profile.payment_gateway,
+                    product_profile=instance.product_profile,
+                    store_product=instance.billing_invoice.store_product,
+                    store_product_price=instance.billing_invoice.store_product_price
+                )
+
+                billing_invoice.set_item('refund', instance.billing_invoice.store_product_price, transaction=payment,
+                                         transaction_type='refund')
                 billing_invoice.update()
 
             # Fraud Strings

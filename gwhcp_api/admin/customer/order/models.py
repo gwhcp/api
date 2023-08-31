@@ -21,6 +21,16 @@ class BillingInvoice(models.BillingInvoice):
         verbose_name_plural = 'Billing Invoices'
 
 
+class BillingInvoiceItem(models.BillingInvoiceItem):
+    class Meta:
+        default_permissions = ()
+
+        proxy = True
+
+        verbose_name = 'Billing Invoice Item'
+        verbose_name_plural = 'Billing Invoice Items'
+
+
 class BillingProfile(models.BillingProfile):
     class Meta:
         default_permissions = ()
@@ -59,13 +69,23 @@ class Order(models.Order):
         )
 
         ordering = [
-            'date_from'
+            '-date_from'
         ]
 
         proxy = True
 
         verbose_name = 'Order'
         verbose_name_plural = 'Orders'
+
+
+class PaymentGateway(models.PaymentGateway):
+    class Meta:
+        default_permissions = ()
+
+        proxy = True
+
+        verbose_name = 'Payment Gateway'
+        verbose_name_plural = 'Payment Gateways'
 
 
 class ProductProfile(models.ProductProfile):

@@ -13,6 +13,11 @@ class PaymentGateway(models.Model):
         REFUND = 'refund', 'Refund'
         VOID = 'void', 'Void'
 
+    batch_out = models.TimeField(
+        blank=False,
+        null=True
+    )
+
     date_from = models.DateTimeField(
         auto_now_add=True
     )

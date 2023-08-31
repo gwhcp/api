@@ -115,6 +115,58 @@ class PaymentGateway(object):
 
         return models.PaymentGateway.objects.get(is_active=True)
 
+    def get_transaction(self, transaction_id: str):
+        """
+        Transaction Details (CIM)
+
+        :param str transaction_id: Transaction ID
+
+        :return: dict
+        """
+
+        if self.get_merchant() is None:
+            return {
+                'error': True,
+                'message': 'There are no available payment gateways.'
+            }
+
+        # Authorize.net
+        if self.get_merchant().merchant == 'authorize':
+            return authorize.Authorize(self.data, self.get_merchant()).get_transaction(transaction_id)
+        else:
+            return {
+                'error': True,
+                'message': 'Could not use CIM.'
+            }
+
+    def refund_cim(self, amount: str, credit_card_number: str):
+        """
+        Refund CIM Method
+
+        Parameters:
+        - amount (str): The amount to be refunded.
+        - credit_card_number (str): Last 4 digits of the credit card.
+
+        Returns:
+        - dict:
+        ```
+        """
+
+        if self.get_merchant() is None:
+            return {
+                'error': True,
+                'message': 'There are no available payment gateways.'
+            }
+
+        # Authorize.net
+        if self.get_merchant().merchant == 'authorize':
+            return authorize.Authorize(self.data, self.get_merchant()).refund(amount, credit_card_number)
+        else:
+            return {
+                'error': True,
+                'message': 'Could not refund CIM.'
+            }
+
     def update_cim(self):
         # Authorize.net
         if self.get_merchant().merchant == 'authorize':
