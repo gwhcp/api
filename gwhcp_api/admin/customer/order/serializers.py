@@ -1,3 +1,6 @@
+from datetime import timedelta
+
+from django.utils import timezone
 from rest_framework import serializers
 
 from admin.customer.order import models
@@ -187,9 +190,66 @@ class OrderSerializer(serializers.ModelSerializer):
         # Valid
         elif validated_data['status'] == 'valid':
             # Charge payment
+            if instance.payment_status in ['refund', 'void']:
+                payment_data = {
+                    'billing_profile': instance.billing_profile,
+                    'coupon': instance.coupon,
+                    'store_product': instance.billing_invoice.store_product,
+                    'store_product_price': instance.billing_invoice.store_product_price,
+                }
 
-            # Process
-            pass
+                payment = cim.PaymentGateway(payment_data, instance.billing_profile).charge_cim()
+
+                if payment['error']:
+                    raise serializers.ValidationError(
+                        {
+                            'message': payment['message']
+                        },
+                        code='payment_error'
+                    )
+
+                # Set payment_status to auth_capture
+                instance.payment_status = 'auth_capture'
+
+                # Update Billing Invoice
+                billing_invoice = invoice.Invoice(
+                    account=instance.account,
+                    billing_invoice=instance.billing_invoice,
+                    billing_profile=instance.billing_profile,
+                    payment_gateway=instance.billing_profile.payment_gateway,
+                    product_profile=instance.product_profile,
+                    store_product=instance.billing_invoice.store_product,
+                    store_product_price=instance.billing_invoice.store_product_price
+                )
+
+                if instance.coupon:
+                    billing_invoice.set_item('debit', instance.billing_invoice.store_product_price,
+                                             coupon=instance.coupon)
+                    billing_invoice.set_item('charge', instance.billing_invoice.store_product_price,
+                                             coupon=instance.coupon, transaction=payment,
+                                             transaction_type='auth_capture')
+                else:
+                    billing_invoice.set_item('debit', instance.billing_invoice.store_product_price)
+                    billing_invoice.set_item('charge', instance.billing_invoice.store_product_price,
+                                             transaction=payment, transaction_type='auth_capture')
+                billing_invoice.update()
+
+            # Product Profile
+            product_profile_date_to = timezone.now() + timedelta(
+                days=instance.billing_invoice.store_product_price.billing_cycle)
+
+            instance.product_profile.date_from = timezone.now()
+            instance.product_profile.date_paid_to = product_profile_date_to
+            instance.product_profile.date_to = product_profile_date_to
+            instance.product_profile.is_active = True
+            instance.product_profile.save(
+                update_fields=[
+                    'date_from',
+                    'date_paid_to',
+                    'date_to',
+                    'is_active',
+                ]
+            )
 
         # Update status
         instance.status = validated_data['status']

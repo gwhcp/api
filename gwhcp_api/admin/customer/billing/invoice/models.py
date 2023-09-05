@@ -7,6 +7,10 @@ class BillingInvoice(models.BillingInvoice):
             'view',
         )
 
+        ordering = [
+            '-date_from'
+        ]
+
         proxy = True
 
         verbose_name = 'Billing Invoice'
